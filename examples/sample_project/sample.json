@@ -1,0 +1,97 @@
+{
+    "py/object": "osvcad.nodes.Assembly", 
+    "node": {
+        "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {}, 
+        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {}, 
+        "<osvcad.nodes.GeometryNodePyScript object at 0x00000000119174E0>": {}
+    }, 
+    "graph": {}, 
+    "edge_attr_dict_factory": {
+        "py/type": "__builtin__.dict"
+    }, 
+    "succ": {
+        "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {}, 
+        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {}, 
+        "<osvcad.nodes.GeometryNodePyScript object at 0x00000000119174E0>": {
+            "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {
+                "object": {
+                    "py/id": 2
+                }
+            }, 
+            "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {
+                "object": {
+                    "py/id": 1
+                }
+            }
+        }
+    }, 
+    "edge": {
+        "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {}, 
+        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {}, 
+        "<osvcad.nodes.GeometryNodePyScript object at 0x00000000119174E0>": {
+            "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {
+                "object": {
+                    "py/id": 2
+                }
+            }, 
+            "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {
+                "object": {
+                    "py/id": 1
+                }
+            }
+        }
+    }, 
+    "node_dict_factory": {
+        "py/type": "__builtin__.dict"
+    }, 
+    "adjlist_dict_factory": {
+        "py/type": "__builtin__.dict"
+    }, 
+    "adj": {
+        "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {}, 
+        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {}, 
+        "<osvcad.nodes.GeometryNodePyScript object at 0x00000000119174E0>": {
+            "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAbsolutePositionning", 
+                    "tz": 20, 
+                    "tx": 0, 
+                    "ty": 0, 
+                    "rx": 0, 
+                    "ry": 0, 
+                    "rz": 0, 
+                    "quaternion": null
+                }
+            }, 
+            "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAbsolutePositionning", 
+                    "tz": 0, 
+                    "tx": 50, 
+                    "ty": 25, 
+                    "rx": 0, 
+                    "ry": 0, 
+                    "rz": 0, 
+                    "quaternion": null
+                }
+            }
+        }
+    }, 
+    "pred": {
+        "<osvcad.nodes.GeometryNodeStep object at 0x0000000011917240>": {
+            "<osvcad.nodes.GeometryNodePyScript object at 0x00000000119174E0>": {
+                "object": {
+                    "py/id": 2
+                }
+            }
+        }, 
+        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000011917DD8>": {
+            "<osvcad.nodes.GeometryNodePyScript object at 0x00000000119174E0>": {
+                "object": {
+                    "py/id": 1
+                }
+            }
+        }, 
+        "<osvcad.nodes.GeometryNodePyScript object at 0x00000000119174E0>": {}
+    }
+}
