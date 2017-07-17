@@ -1,0 +1,5 @@
+ccad
+numpy
+networkx
+matplotlib
+jsonpickle

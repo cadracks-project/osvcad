@@ -7,4 +7,4 @@
 Deplacement des anchors lors des déplacements dus au contraintes
   -> fonctions de transformation sur les nodes
 
-setup.py for osvcad
+rotation et translation autour des ancres
