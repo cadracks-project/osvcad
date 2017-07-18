@@ -3,3 +3,5 @@ numpy
 networkx
 matplotlib
 jsonpickle
+wx
+aocutils
