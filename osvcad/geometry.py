@@ -46,16 +46,37 @@ def transformation_from_2_anchors(anchor_master,
     axis_dir = vector_product(anchor_master["direction"],
                               anchor_slave["direction"])
 
+    add = 0.
+
     if np.array_equal(axis_dir, np.array([0, 0, 0])):
+        # print("Anchors directions are colinear")
+
         # anchor directions are collinear, any perpendicular axis will do
+        # BUT
+        # we have to distinguish between:
+        #   - collinear in the same direction
+        #   - collinear in opposite directions
+        if np.linalg.norm(np.array(anchor_master["direction"]) + np.array(anchor_slave["direction"])) > np.linalg.norm(np.array(anchor_master["direction"])):
+            same_direction = True
+            add = np.pi
+
+        else:
+            same_direction = False
+
+        # print(same_direction)
 
         # arbitrary unit vector
-        k = np.array([1.,  0., 0.])
+        if np.array_equal(np.cross(np.array([1.,  0., 0.]), anchor_master["direction"]), np.array([0, 0, 0])):
+            k = np.array([0.,  1., 0.])
+        else:
+            k = np.array([1., 0., 0.])
+
         y = np.cross(k, anchor_master["direction"])
 
         axis_dir = y
 
-    rot_matrix = rotation_matrix(angle + np.pi, axis_dir)
+    # rot_matrix = rotation_matrix(angle + np.pi, axis_dir)
+    rot_matrix = rotation_matrix(angle % np.pi + add, axis_dir)
 
     translation_2 = (pa_x, pa_y, pa_z)
 

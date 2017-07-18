@@ -109,16 +109,20 @@ def main():
     app = wx.App()
     frame = MyFrame()
 
-    possibilities = ["top", "bottom", "north", "east", "south", "west"]
+    cube1_possibilities = ["top", "south"]
+    cube2_possibilities = ["top", "bottom", "north", "east", "south", "west"]
 
     cases = list()
-
-    for i, possibility in enumerate(possibilities):
-        cases.append(make_case(case_offset=(0., i * 50., 0.),
-                               internal_offset=(100., 0., 0.),
-                               cube_1_dimensions=(20., 10., 10.),
-                               cube_2_dimensions=(20., 20., 20.),
-                               anchor_1="top", anchor_2=possibility))
+    for i, cube_1_possibility in enumerate(cube1_possibilities):
+        for j, cube2_possibility in enumerate(cube2_possibilities):
+            cases.append(make_case(case_offset=(0.,
+                                                (i * len(cube2_possibilities) + j) * 50.,
+                                                 0.),
+                                   internal_offset=(100., 0., 0.),
+                                   cube_1_dimensions=(20., 10., 10.),
+                                   cube_2_dimensions=(20., 20., 20.),
+                                   anchor_1=cube_1_possibility,
+                                   anchor_2=cube2_possibility))
 
     for (n1, n2, n3) in cases:
 
