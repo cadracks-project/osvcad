@@ -127,11 +127,13 @@ class GeometryNode(object):
         r"""Abstract method to get anchors content"""
         raise NotImplementedError
 
-    def place(self, self_anchor, other, other_anchor):
+    def place(self, self_anchor, other, other_anchor, angle=0., distance=0.):
         r"""Place other node so that its anchor is on self anchor"""
         # TODO : add translation and rotation around master anchor axis
-        transformation_mat_, _, _, _ = transformation_from_2_anchors(
-            self.anchors[self_anchor], other.anchors[other_anchor])
+        transformation_mat_ = transformation_from_2_anchors(
+            self.anchors[self_anchor], other.anchors[other_anchor],
+            angle=angle,
+            distance=distance)
 
         new_shape = transformed(other.shape, transformation_mat_)
         new_anchors = dict()

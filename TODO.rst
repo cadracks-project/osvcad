@@ -7,4 +7,4 @@
 Deplacement des anchors lors des déplacements dus au contraintes
   -> fonctions de transformation sur les nodes
 
-rotation et translation autour des ancres
+******** rotation et translation autour des ancres

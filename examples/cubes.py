@@ -13,9 +13,9 @@ from ccad.model import box, translated
 def main():
     r"""Main example function"""
     # Create n cubes with anchors
-    random_range = 800
+    random_range = 20
 
-    nb_cubes = 200
+    nb_cubes = 10
 
     cubes = list()
     new_cubes = list()
@@ -40,7 +40,9 @@ def main():
     for i, cube in enumerate(cubes[:-1]):
         new_cubes.append(new_cubes[i].place(self_anchor="top",
                                             other=cubes[i + 1],
-                                            other_anchor="bottom"))
+                                            other_anchor="bottom",
+                                            angle=30. + 30. * i,
+                                            distance=0.))
 
     class MyFrame(wx.Frame):
         r"""Frame for testing"""

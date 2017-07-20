@@ -22,69 +22,82 @@ def transformation_from_2_anchors(anchor_master,
     anchor_master : dict
         {"position": (1, 2, 3), "direction": (4, 5, 6)}
     anchor_slave : same as vector_a
-    angle : float
+    angle : float, optional (default is 0.)
         Angle in degrees
         Putting the master and slave anchors in opposition
         leaves one degree of freedom that is dealt with by the angle
-    distance : float
+    distance : float, optional (default is 0.)
         Distance between the anchor positions
 
     Returns
     -------
+    np.ndarray : 4 x 3 transformation matrix
 
     """
-    # translation
     pa_x, pa_y, pa_z = anchor_master["position"]
     pb_x, pb_y, pb_z = anchor_slave["position"]
 
-    translation_1 = (-pb_x, -pb_y, -pb_z)
+    trans_slave_to_orig = (-pb_x, -pb_y, -pb_z)
 
-    # rotation
-    angle = angle_between_vectors(anchor_master["direction"],
-                                  anchor_slave["direction"])
+    angle_anchors = angle_between_vectors(anchor_master["direction"],
+                                          anchor_slave["direction"])
 
     axis_dir = vector_product(anchor_master["direction"],
                               anchor_slave["direction"])
 
-    add = 0.
+    angle_correction = 0.  # correction for special cases
 
     if np.array_equal(axis_dir, np.array([0, 0, 0])):
-        # print("Anchors directions are colinear")
-
-        # anchor directions are collinear, any perpendicular axis will do
+        # anchor directions are parallel, any perpendicular axis will do
         # BUT
         # we have to distinguish between:
         #   - collinear in the same direction
         #   - collinear in opposite directions
-        if np.linalg.norm(np.array(anchor_master["direction"]) + np.array(anchor_slave["direction"])) > np.linalg.norm(np.array(anchor_master["direction"])):
-            same_direction = True
-            add = np.pi
+        norm_of_sum = np.linalg.norm(np.array(anchor_master["direction"]) +
+                                     np.array(anchor_slave["direction"]))
+        if norm_of_sum > np.linalg.norm(np.array(anchor_master["direction"])):
+            angle_correction = np.pi
 
-        else:
-            same_direction = False
-
-        # print(same_direction)
-
-        # arbitrary unit vector
-        if np.array_equal(np.cross(np.array([1.,  0., 0.]), anchor_master["direction"]), np.array([0, 0, 0])):
+        # arbitrary unit vector, just make sure not parallel
+        if np.array_equal(np.cross(np.array([1.,  0., 0.]),
+                                   np.array(anchor_master["direction"])),
+                          np.array([0, 0, 0])):
             k = np.array([0.,  1., 0.])
         else:
             k = np.array([1., 0., 0.])
 
-        y = np.cross(k, anchor_master["direction"])
+        y = np.cross(k, np.array(anchor_master["direction"]))
 
         axis_dir = y
 
     # rot_matrix = rotation_matrix(angle + np.pi, axis_dir)
-    rot_matrix = rotation_matrix(angle % np.pi + add, axis_dir)
+    rot_angle = angle_anchors % np.pi + angle_correction
+    rot_matrix_anchors_opposition = rotation_matrix(rot_angle,
+                                                    axis_dir)
 
-    translation_2 = (pa_x, pa_y, pa_z)
+    trans_orig_to_master = (pa_x, pa_y, pa_z)
 
-    transformation_mat = np.dot(rot_matrix, translation_matrix(translation_1))
-    transformation_mat = np.dot(translation_matrix(translation_2),
-                                transformation_mat)[:3]
+    transformation_mat_anchors_opposition = \
+        np.dot(translation_matrix(trans_orig_to_master),
+               np.dot(rot_matrix_anchors_opposition,
+                      translation_matrix(trans_slave_to_orig)))
 
-    return transformation_mat,\
-        translation_matrix(translation_1),\
-        rot_matrix,\
-        translation_matrix(translation_2)
+    # angle and distance
+    trans_master_to_orig = (-pa_x, -pa_y, -pa_z)
+
+    rot_matrix_around_anchor = rotation_matrix(np.radians(angle),
+                                               anchor_master["direction"])
+    unit_anchor_direction = [c / np.linalg.norm(anchor_master["direction"])
+                             for c in anchor_master["direction"]]
+
+    assert np.linalg.norm(unit_anchor_direction) == 1.
+
+    transformation_mat_near_anchor = \
+        np.dot(translation_matrix(np.array(anchor_master["position"]) + np.array(unit_anchor_direction) * distance),
+               np.dot(rot_matrix_around_anchor,
+                      translation_matrix(trans_master_to_orig)))[:3]
+
+    transformation_mat = np.dot(transformation_mat_near_anchor,
+                                transformation_mat_anchors_opposition)[:3]
+
+    return transformation_mat
