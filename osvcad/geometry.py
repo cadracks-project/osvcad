@@ -72,8 +72,7 @@ def transformation_from_2_anchors(anchor_master,
 
     # rot_matrix = rotation_matrix(angle + np.pi, axis_dir)
     rot_angle = angle_anchors % np.pi + angle_correction
-    rot_matrix_anchors_opposition = rotation_matrix(rot_angle,
-                                                    axis_dir)
+    rot_matrix_anchors_opposition = rotation_matrix(rot_angle, axis_dir)
 
     trans_orig_to_master = (pa_x, pa_y, pa_z)
 

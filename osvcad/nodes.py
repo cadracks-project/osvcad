@@ -2,6 +2,7 @@
 
 r"""Graph nodes"""
 
+from math import radians
 import abc
 
 from os.path import basename, splitext, exists, join, dirname
@@ -12,6 +13,8 @@ import jsonpickle
 import matplotlib.pyplot as plt
 import numpy as np
 from random import uniform
+from OCC.gp import gp_Pnt, gp_Vec
+from aocutils.display.wx_viewer import colour_wx_to_occ
 from ccad.model import transformed, from_step
 
 import ccad.display as cd
@@ -19,6 +22,7 @@ import ccad.display as cd
 from party.library_use import generate
 
 from osvcad.geometry import transformation_from_2_anchors
+from osvcad.transformations import translation_matrix, rotation_matrix
 
 
 class Assembly(nx.DiGraph):
@@ -128,23 +132,121 @@ class GeometryNode(object):
         raise NotImplementedError
 
     def place(self, self_anchor, other, other_anchor, angle=0., distance=0.):
-        r"""Place other node so that its anchor is on self anchor"""
-        # TODO : add translation and rotation around master anchor axis
+        r"""Place other node so that its anchor origin is on self anchor
+        origin and its direction is opposite to the 'self' anchor direction
+        
+        Parameters
+        ----------
+        self_anchor : str
+            Anchor identifier
+        other : GeometryNode or subclass
+        other_anchor : str
+            Anchor identifier on the 'other' node
+        angle : float
+            The rotation angle around the anchor
+        distance : float
+            The distance between the anchor origin
+
+        Returns
+        -------
+        GeometryNode
+
+        """
         transformation_mat_ = transformation_from_2_anchors(
             self.anchors[self_anchor], other.anchors[other_anchor],
             angle=angle,
             distance=distance)
 
-        new_shape = transformed(other.shape, transformation_mat_)
+        # new_shape = transformed(other.shape, transformation_mat_)
+        # new_anchors = dict()
+        #
+        # for anchor_name, anchor_dict in other.anchors.items():
+        #     new_anchors[anchor_name] = _transform_anchor(anchor_dict,
+        #                                                  transformation_mat_)
+        #
+        # return GeometryNodeDirect(new_shape, new_anchors)
+
+        return other.transform(transformation_mat_)
+
+    def transform(self, transformation_matrix):
+        r"""Transform the node with a 4x3 transformation matrix
+        
+        Parameters
+        ----------
+        transformation_matrix : np.ndarray
+        
+        Returns
+        -------
+        GeometryNode
+
+        """
+        new_shape = transformed(self.shape, transformation_matrix)
         new_anchors = dict()
 
-        for anchor_name, anchor_dict in other.anchors.items():
+        for anchor_name, anchor_dict in self.anchors.items():
             new_anchors[anchor_name] = _transform_anchor(anchor_dict,
-                                                         transformation_mat_)
+                                                         transformation_matrix)
 
-        new_node = GeometryNodeDirect(new_shape, new_anchors)
+        return GeometryNodeDirect(new_shape, new_anchors)
 
-        return new_node
+    def translate(self, vector):
+        r"""Translate the node
+        
+        Parameters
+        ----------
+        vector : Tuple[float, float, float]
+            The translation vector
+
+        Returns
+        -------
+        GeometryNode
+
+        """
+        return self.transform(translation_matrix(vector))
+
+    def rotate(self, rotation_angle, rotation_axis, axis_point):
+        r"""Rotate the node
+        
+        Parameters
+        ----------
+        rotation_angle : float
+            Rotation angle in degrees
+            Positive is the 'screwing' direction to progress along rotation axis
+        rotation_axis : Tuple[float, float, float]
+            Axis of rotation
+        axis_point : Tuple[float, float, float]
+            A point through which the axis of rotation passes
+
+        Returns
+        -------
+
+        """
+        return self.transform(rotation_matrix(radians(rotation_angle),
+                                              rotation_axis,
+                                              axis_point))
+
+    def display(self, viewer, color_255, transparency=0.):
+        r"""Display the node in a 
+        
+        Parameters
+        ----------
+        viewer : aocutils.display.wx_viewer.Wx3dViewer
+            The viewer where the node should be displayed
+        color_255 : Tuple[float, float, float]
+            8-bit (0 - 255) color tuple
+        transparency : float
+            From 0. (not transparent) to 1 (fully transparent)
+
+        Returns
+        -------
+
+        """
+        for k, _ in self.anchors.items():
+            viewer.display_vector(gp_Vec(*self.anchors[k]["direction"]),
+                                  gp_Pnt(*self.anchors[k]["position"]))
+        viewer.display_shape(self.shape.shape,
+                             color=colour_wx_to_occ(color_255),
+                             transparency=transparency)
 
     def __str__(self):
         return self.__repr__()
