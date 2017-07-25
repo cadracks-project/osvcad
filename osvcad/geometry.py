@@ -2,10 +2,15 @@
 
 r"""Geometry computations"""
 
+import logging
+
 import numpy as np
 
 from osvcad.transformations import translation_matrix, rotation_matrix,\
     angle_between_vectors, vector_product
+
+
+logger = logging.getLogger(__name__)
 
 
 def transformation_from_2_anchors(anchor_master,
@@ -34,6 +39,12 @@ def transformation_from_2_anchors(anchor_master,
     np.ndarray : 4 x 3 transformation matrix
 
     """
+    # TODO : some operations could be simplified by passing a point to the
+    # transformations.rotation_matrix(angle, dir, point=None) function
+
+    logger.debug("Master direction : %s" % str(anchor_master["direction"]))
+    logger.debug("Slave direction  : %s" % str(anchor_slave["direction"]))
+
     pa_x, pa_y, pa_z = anchor_master["position"]
     pb_x, pb_y, pb_z = anchor_slave["position"]
 
@@ -42,12 +53,20 @@ def transformation_from_2_anchors(anchor_master,
     angle_anchors = angle_between_vectors(anchor_master["direction"],
                                           anchor_slave["direction"])
 
+    logger.debug("Angle between anchors : %f" % angle_anchors)
+    import math
+    if math.isnan(angle_anchors):
+        logger.critical("Angle between anchors is NAN")
+
     axis_dir = vector_product(anchor_master["direction"],
                               anchor_slave["direction"])
+
+    logger.debug("Axis dir : %s" % axis_dir)
 
     angle_correction = 0.  # correction for special cases
 
     if np.array_equal(axis_dir, np.array([0, 0, 0])):
+        logger.debug("Axis dir is equal to [0, 0, 0]")
         # anchor directions are parallel, any perpendicular axis will do
         # BUT
         # we have to distinguish between:
@@ -69,6 +88,7 @@ def transformation_from_2_anchors(anchor_master,
         y = np.cross(k, np.array(anchor_master["direction"]))
 
         axis_dir = y
+        logger.debug("Axis dir is now %s" % axis_dir)
 
     # rot_matrix = rotation_matrix(angle + np.pi, axis_dir)
     rot_angle = angle_anchors % np.pi + angle_correction
@@ -89,7 +109,9 @@ def transformation_from_2_anchors(anchor_master,
     unit_anchor_direction = [c / np.linalg.norm(anchor_master["direction"])
                              for c in anchor_master["direction"]]
 
-    assert np.linalg.norm(unit_anchor_direction) == 1.
+    logger.debug("Unit anchor direction: %s" % unit_anchor_direction)
+
+    assert 1 - 1e-6 <= np.linalg.norm(unit_anchor_direction) <= 1. + 1e-6
 
     transformation_mat_near_anchor = \
         np.dot(translation_matrix(np.array(anchor_master["position"]) + np.array(unit_anchor_direction) * distance),
@@ -98,5 +120,5 @@ def transformation_from_2_anchors(anchor_master,
 
     transformation_mat = np.dot(transformation_mat_near_anchor,
                                 transformation_mat_anchors_opposition)[:3]
-
+    logger.debug("Transformation matrix from 2 anchors : %s" % transformation_mat)
     return transformation_mat

@@ -2,6 +2,7 @@
 
 r"""Graph nodes"""
 
+import logging
 from math import radians
 import abc
 
@@ -23,6 +24,9 @@ from party.library_use import generate
 
 from osvcad.geometry import transformation_from_2_anchors
 from osvcad.transformations import translation_matrix, rotation_matrix
+
+
+logger = logging.getLogger(__name__)
 
 
 class Assembly(nx.DiGraph):
@@ -180,6 +184,8 @@ class GeometryNode(object):
         GeometryNode
 
         """
+        logger.debug("transform()")
+        logger.debug("transformation matrix : %s" % transformation_matrix)
         new_shape = transformed(self.shape, transformation_matrix)
         new_anchors = dict()
 
@@ -202,6 +208,7 @@ class GeometryNode(object):
         GeometryNode
 
         """
+        logger.debug("translate()")
         return self.transform(translation_matrix(vector))
 
     def rotate(self, rotation_angle, rotation_axis, axis_point):
@@ -221,6 +228,7 @@ class GeometryNode(object):
         -------
 
         """
+        logger.debug("rotate() with angle:%f, axis: %s, point: %s" % (rotation_angle, str(rotation_axis), str(axis_point)))
         return self.transform(rotation_matrix(radians(rotation_angle),
                                               rotation_axis,
                                               axis_point))
@@ -265,6 +273,9 @@ class GeometryNode(object):
 
 def _transform_anchor(anchor, transformation_matrix):
     r"""Transform an anchor using a transformation matrix"""
+
+    logger.debug("_transform_anchor()")
+    logger.debug("Transformation matrix : %s" % transformation_matrix)
 
     translation_vec = transformation_matrix.T[-1:, :3][0]
     matrix_3x3 = transformation_matrix[:3, :3]

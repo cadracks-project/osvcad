@@ -1,6 +1,13 @@
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""Placing a cube over another cube using anchors"""
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s :: %(levelname)6s :: %(module)20s '
+                           ':: %(lineno)3d :: %(message)s')
 
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
 from OCC.gp import gp_Pnt, gp_Vec
@@ -73,4 +80,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()

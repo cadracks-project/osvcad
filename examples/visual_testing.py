@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""Visual testing of placing a cube relative to another cube

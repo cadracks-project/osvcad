@@ -1801,8 +1801,14 @@ def angle_between_vectors(v0, v1, directed=True, axis=0):
     v0 = numpy.array(v0, dtype=numpy.float64, copy=False)
     v1 = numpy.array(v1, dtype=numpy.float64, copy=False)
     dot = numpy.sum(v0 * v1, axis=axis)
+    # print(dot)
     dot /= vector_norm(v0, axis=axis) * vector_norm(v1, axis=axis)
-    return numpy.arccos(dot if directed else numpy.fabs(dot))
+    # print("**dot**")
+    # print(dot)
+    # print(numpy.arccos(dot))
+
+    # Creating bounds for the arccos argument to avoid a nan return value
+    return numpy.arccos(min([max([dot, -1]), 1]) if directed else numpy.fabs(dot))
 
 
 def inverse_matrix(matrix):

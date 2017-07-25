@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 # coding: utf-8
 
-r"""Anchor transformation example"""
+r"""Anchor transformation tests"""
 
 import numpy as np
 
