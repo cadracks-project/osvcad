@@ -4,59 +4,65 @@ r"""Graph edges"""
 
 import abc
 
-import ccad.model as cm
-
 
 class Constraint(object):
     r"""Abstract base class for constraints"""
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
-        self.tx = 0.
-        self.ty = 0.
-        self.tz = 0.
-
-        self.rx = 0.
-        self.ry = 0.
-        self.rz = 0.
-
-        self.quaternion = None
-
     @abc.abstractmethod
-    def transform(self, shape):
+    def transform(self, *args):
         r"""Shape placement function to respect the constraint"""
         raise NotImplementedError
 
 
-class ConstraintCoaxial(Constraint):
-    r"""Coaxiality constraint"""
-    def __init__(self, obj1, obj2, axis1, axis2):
-        super(ConstraintCoaxial, self).__init__()
-        self.obj1 = obj1
-        self.obj2 = obj2
-        self.axis1 = axis1
-        self.axis2 = axis2
-        # solve constraint and affect t, r and quaternion
-
-    def transform(self, shape):
-        raise NotImplementedError
-
-
-class ConstraintAbsolutePositioning(Constraint):
-    r"""Positioning relative to the origin (of an assembly)
+class ConstraintAnchor(Constraint):
+    r"""A constraint created by 2 anchors on different GeometryNode(s). For the
+    constraint to be satisfied, the 2 anchors have to:
+    - be of opposite directions
+    - have their positions separated by distance
     
     Parameters
     ----------
-    t : tuple
-    r : tuple
+    anchor_name_master : str
+        The name of the anchor on the master GeometryNode
+    anchor_name_slave : str
+        The name of the anchor on the slave GeometryNode
+    distance : float, optional (default is 0.)
+        The distance between the anchors positions
+    angle : float, optional (default is 0.)
+        The angle to rotate the slave by after both anchors are colinear
 
     """
-    def __init__(self, t, r):
-        super(ConstraintAbsolutePositioning, self).__init__()
-        self.tx, self.ty, self.tz = t
-        self.rx, self.ry, self.rz = r
+    def __init__(self,
+                 anchor_name_master,
+                 anchor_name_slave,
+                 distance=0.,
+                 angle=0.):
+        super(ConstraintAnchor, self).__init__()
+        self.anchor_name_master = anchor_name_master
+        self.anchor_name_slave = anchor_name_slave
+        self.distance = distance
+        self.angle = angle
 
-    def transform(self, shape):
-        return cm.translated(
-            cm.rotatedx(cm.rotatedy(cm.rotatedz(shape, self.rz), self.ry), self.rx),
-            (self.tx, self.ty, self.tz))
+    def transform(self, geometry_node_master, geometry_node_slave):
+        r"""Transform a slave GeometryNode that is the target of an edge coming
+        from a master GeometryNode
+        
+        Parameters
+        ----------
+        geometry_node_master : GeometryNode
+            The master GeometryNode (i.e. the node that does not move)
+        geometry_node_slave : GeometryNode
+            The slave GeometryNode (i.e. the node that moves to satisfy the 
+            anchor constraint)
+            
+        Returns
+        -------
+        GeometryNode
+        
+        """
+        return geometry_node_master.place(self_anchor=self.anchor_name_master,
+                                          other=geometry_node_slave,
+                                          other_anchor=self.anchor_name_slave,
+                                          angle=self.angle,
+                                          distance=self.distance)

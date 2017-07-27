@@ -29,98 +29,6 @@ from osvcad.transformations import translation_matrix, rotation_matrix
 logger = logging.getLogger(__name__)
 
 
-class Assembly(nx.DiGraph):
-    r"""Acyclic directed graph modelling of a assembly
-    
-    The Assembly is an nx.DiGraph with serialization, deserialization and
-    3D viewing methods
-    
-    """
-    def __init__(self):
-        super(Assembly, self).__init__()
-
-    def write_yaml(self, yaml_file_name):
-        r"""Export to YAML format
-
-        Parameters
-        ----------
-        yaml_file_name : str
-            Path to the YAML file
-
-        """
-        nx.write_yaml(self, yaml_file_name)
-
-    def write_json(self, json_file_name):
-        r"""Export to JSON format
-        
-        Parameters
-        ----------
-        json_file_name : str
-            Path to the JSON file
-    
-        """
-        jsonpickle.load_backend('json')
-        jsonpickle.set_encoder_options('json', sort_keys=False, indent=4)
-
-        with open(json_file_name, "w") as f:
-            f.write(jsonpickle.encode(self))
-
-    @classmethod
-    def read_json(cls, json_file_name):
-        r"""Construct the assembly from a JSON file"""
-        j_ = ""
-        with open(json_file_name) as f:
-            j_ = f.read()
-        return jsonpickle.decode(j_)
-
-    def show_plot(self):
-        r"""Create a Matplotlib graph of the plot"""
-        val_map = {'A': 1.0,
-                   'D': 0.5714285714285714,
-                   'H': 0.0}
-
-        values = [val_map.get(node, 0.25) for node in self.nodes()]
-
-        pos = nx.spring_layout(self)
-        nx.draw_networkx_nodes(self, pos, cmap=plt.get_cmap('jet'),
-                               node_color=values)
-        nx.draw_networkx_edges(self, pos, edgelist=self.edges(), edge_color='r',
-                               arrows=True)
-        nx.draw_networkx_labels(self, pos)
-        nx.draw_networkx_edge_labels(self, pos)
-        plt.show()
-
-    def display_3d(self):
-        r"""Display the Assembly in a 3D viewer (currently ccad viewer)"""
-        v = cd.view()
-
-        for node in self.nodes():
-
-            # Use edges to place nodes
-            in_edges_of_node = self.in_edges(node, data=True)
-
-            # WE limit ourselves to 1 or 0 incoming edge to start with ...
-            # TODO : generalize
-            assert len(in_edges_of_node) <= 1
-
-            if len(in_edges_of_node) == 1:
-                placed_shape = \
-                    in_edges_of_node[0][2]['object'].transform(node.shape)
-            elif len(in_edges_of_node) == 0:
-                placed_shape = node.shape
-            else:
-                raise NotImplementedError
-
-            v.display(placed_shape,
-                      color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
-                      transparency=0.)
-            if node.anchors is not None:
-                for k, anchor in node.anchors.items():
-                    v.display_vector(origin=anchor['position'],
-                                     direction=anchor['direction'])
-        cd.start()
-
-
 class GeometryNode(object):
     r"""Abstract base class for geometry nodes"""
     __metaclass__ = abc.ABCMeta
@@ -135,7 +43,13 @@ class GeometryNode(object):
         r"""Abstract method to get anchors content"""
         raise NotImplementedError
 
-    def place(self, self_anchor, other, other_anchor, angle=0., distance=0.):
+    def place(self,
+              self_anchor,
+              other,
+              other_anchor,
+              angle=0.,
+              distance=0.,
+              inplace=False):
         r"""Place other node so that its anchor origin is on self anchor
         origin and its direction is opposite to the 'self' anchor direction
         
@@ -150,10 +64,11 @@ class GeometryNode(object):
             The rotation angle around the anchor
         distance : float
             The distance between the anchor origin
+        inplace : bool, optional (default is False)
 
         Returns
         -------
-        GeometryNode
+        GeometryNode if inplace is False, None if inplace is True
 
         """
         transformation_mat_ = transformation_from_2_anchors(
@@ -161,16 +76,12 @@ class GeometryNode(object):
             angle=angle,
             distance=distance)
 
-        # new_shape = transformed(other.shape, transformation_mat_)
-        # new_anchors = dict()
-        #
-        # for anchor_name, anchor_dict in other.anchors.items():
-        #     new_anchors[anchor_name] = _transform_anchor(anchor_dict,
-        #                                                  transformation_mat_)
-        #
-        # return GeometryNodeDirect(new_shape, new_anchors)
-
-        return other.transform(transformation_mat_)
+        if inplace is False:
+            return other.transform(transformation_mat_)
+        else:
+            modified = other.transform(transformation_mat_)
+            other._shape = modified.shape
+            other._anchors = modified.anchors
 
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
@@ -228,7 +139,8 @@ class GeometryNode(object):
         -------
 
         """
-        logger.debug("rotate() with angle:%f, axis: %s, point: %s" % (rotation_angle, str(rotation_axis), str(axis_point)))
+        logger.debug("rotate() with angle:%f, axis: %s, point: %s" %
+                     (rotation_angle, str(rotation_axis), str(axis_point)))
         return self.transform(rotation_matrix(radians(rotation_angle),
                                               rotation_axis,
                                               axis_point))
@@ -264,15 +176,25 @@ class GeometryNode(object):
         l.append("GeometryNode")
         l.append("\tShape : %s" % str(self.shape))
         l.append("\tAnchors :")
-        for anchor_name, anchor_dict in self.anchors.items():
-            l.append("\t\t%s : <dir>:%s@<pos>:%s" % (anchor_name,
-                                                     str(anchor_dict["direction"]),
-                                                     str(anchor_dict["position"])))
+        if self.anchors is not None:
+            for anchor_name, anchor_dict in self.anchors.items():
+                l.append("\t\t%s : <dir>:%s@<pos>:%s" % (anchor_name,
+                                                         str(anchor_dict["direction"]),
+                                                         str(anchor_dict["position"])))
+            else:
+                l.append("\t\tNo anchor")
         return "\n".join(l)
 
 
 def _transform_anchor(anchor, transformation_matrix):
-    r"""Transform an anchor using a transformation matrix"""
+    r"""Transform an anchor using a transformation matrix
+    
+    Parameters
+    ----------
+    anchor : dict
+        A dict with a least the position and direction keys
+    transformation_matrix : np.ndarray
+        4 x 3 matrix"""
 
     logger.debug("_transform_anchor()")
     logger.debug("Transformation matrix : %s" % transformation_matrix)
@@ -296,7 +218,7 @@ def _transform_anchor(anchor, transformation_matrix):
 class GeometryNodePyScript(GeometryNode):
     r"""Geometry node created from a Python script"""
     def __init__(self, py_script_path):
-        super(GeometryNode, self).__init__()
+        super(GeometryNodePyScript, self).__init__()
         self.py_script_path = py_script_path
 
         # TODO : use Part.from_py of ccad
@@ -322,7 +244,7 @@ class GeometryNodePyScript(GeometryNode):
 class GeometryNodeStep(GeometryNode):
     r"""Geometry node created from a STEP file"""
     def __init__(self, step_file_path, anchors=None):
-        super(GeometryNode, self).__init__()
+        super(GeometryNodeStep, self).__init__()
         assert exists(step_file_path)
         self.step_file_path = step_file_path
         self._anchors = anchors
@@ -342,7 +264,7 @@ class GeometryNodeStep(GeometryNode):
 class GeometryNodeLibraryPart(GeometryNode):
     r"""Geometry node created from a parts library"""
     def __init__(self, library_file_path, part_id):
-        super(GeometryNode, self).__init__()
+        super(GeometryNodeLibraryPart, self).__init__()
         self.library_file_path = library_file_path
         self.part_id = part_id
 
@@ -374,7 +296,7 @@ class GeometryNodeLibraryPart(GeometryNode):
 class GeometryNodeDirect(GeometryNode):
     r"""Geometry node created from a parts library"""
     def __init__(self, shape, anchors):
-        super(GeometryNode, self).__init__()
+        super(GeometryNodeDirect, self).__init__()
 
         self._shape = shape
         self._anchors = anchors
@@ -388,3 +310,113 @@ class GeometryNodeDirect(GeometryNode):
     def anchors(self):
         r"""Anchors getter"""
         return self._anchors
+
+
+class Assembly(nx.DiGraph, GeometryNode):
+    r"""Acyclic directed graph modelling of a assembly
+
+    The Assembly is an nx.DiGraph with serialization, deserialization and
+    3D viewing methods
+
+    """
+
+    def __init__(self, root):
+        super(Assembly, self).__init__()
+        self.root = root
+
+    def build(self):
+        r"""Build the assembly using the graph used to represent it"""
+        assert self.root in self.nodes()
+
+        for edge in nx.bfs_edges(self, self.root):
+            edge_origin = edge[0]
+            edge_target = edge[1]
+            edge_constraint = self.get_edge_data(edge_origin, edge_target)["object"]
+            try:
+
+                edge_origin.place(self_anchor=edge_constraint.anchor_name_master,
+                                  other=edge_target,
+                                  other_anchor=edge_constraint.anchor_name_slave,
+                                  angle=edge_constraint.angle,
+                                  distance=edge_constraint.distance,
+                                  inplace=True)
+            except nx.exception.NetworkXError:
+                msg = "NetworkX error"
+                logger.warning(msg)
+
+    def write_yaml(self, yaml_file_name):
+        r"""Export to YAML format
+
+        Parameters
+        ----------
+        yaml_file_name : str
+            Path to the YAML file
+
+        """
+        nx.write_yaml(self, yaml_file_name)
+
+    def write_json(self, json_file_name):
+        r"""Export to JSON format
+
+        Parameters
+        ----------
+        json_file_name : str
+            Path to the JSON file
+
+        """
+        jsonpickle.load_backend('json')
+        jsonpickle.set_encoder_options('json', sort_keys=False, indent=4)
+
+        with open(json_file_name, "w") as f:
+            f.write(jsonpickle.encode(self))
+
+    @classmethod
+    def read_json(cls, json_file_name):
+        r"""Construct the assembly from a JSON file"""
+        j_ = ""
+        with open(json_file_name) as f:
+            j_ = f.read()
+        return jsonpickle.decode(j_)
+
+    def show_plot(self):
+        r"""Create a Matplotlib graph of the plot"""
+        val_map = {'A': 1.0,
+                   'D': 0.5714285714285714,
+                   'H': 0.0}
+
+        values = [val_map.get(node, 0.25) for node in self.nodes()]
+
+        pos = nx.spring_layout(self)
+        nx.draw_networkx_nodes(self, pos, cmap=plt.get_cmap('jet'),
+                               node_color=values)
+        nx.draw_networkx_edges(self, pos, edgelist=self.edges(), edge_color='r',
+                               arrows=True)
+        # nx.draw_networkx_labels(self, pos)
+        # nx.draw_networkx_edge_labels(self, pos)
+        plt.show()
+
+    def display_3d(self):
+        r"""Display the Assembly in a 3D viewer (currently ccad viewer)"""
+        v = cd.view()
+
+        self.build()
+
+        for node in self.nodes():
+            v.display(node.shape,
+                      color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
+                      transparency=0.)
+        cd.start()
+
+    @property
+    def shape(self):
+        r"""Abstract property implementation"""
+        raise NotImplementedError
+
+    def anchors(self):
+        r"""Abstract property implementation"""
+        a = dict()
+        for node in self.nodes():
+            for anchor_name, anchor_value in node.anchors:
+                a[str(hash(node)) + "/" + anchor_name] = anchor_value
+
+        return a

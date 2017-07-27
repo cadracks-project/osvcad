@@ -2,17 +2,19 @@
 
 r"""Flat plate with holes Python creation script"""
 
+from __future__ import division
+
 from ccad.model import prism, filling, ngon, cylinder, translated, box
 
 units = 'mm'
 
-e = 10
-l = 200
-w = 100
+e = 5
+l = 20
+w = 30
 
-hole_d = 10
+hole_d = 2
 
-hole_positions = ((50, -25), (50, 25), (-50, -25), (-50, 25))
+hole_positions = ((l/4, -w/4), (l/4, w/4), (-l/4, -w/4), (-l/4, w/4))
 
 plate = translated(box(l, w, e), (-l /2, -w/2, 0))
 
@@ -26,9 +28,9 @@ for c in cylinders:
 part = plate
 
 anchors = dict()
-for i, (x, y) in enumerate(hole_positions):
-    anchors[i] = {"position": (x, y, e),
-                  "direction": (0., 0., 1.),
+for i, (x, y) in enumerate(hole_positions, 1):
+    anchors[str(i)] = {"position": (x, y, e),
+                  "direction": (0., 0., -1.),
                   "dimension": hole_d,
                   "description": "%s mm hole" % hole_d}
 
