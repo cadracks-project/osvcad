@@ -5,6 +5,7 @@ r"""Graph nodes"""
 import logging
 from math import radians
 import abc
+import re
 
 from os.path import basename, splitext, exists, join, dirname
 
@@ -24,6 +25,7 @@ from party.library_use import generate
 
 from osvcad.geometry import transformation_from_2_anchors
 from osvcad.transformations import translation_matrix, rotation_matrix
+from osvcad.stepzip import extract_stepzip
 
 
 logger = logging.getLogger(__name__)
@@ -249,6 +251,22 @@ class GeometryNodeStep(GeometryNode):
         self.step_file_path = step_file_path
         self._anchors = anchors
         self._shape = from_step(step_file_path)
+
+    @classmethod
+    def from_stepzip(cls, stepzip_file):
+        r"""Alternative constructor from a STEP + anchors zip file"""
+        anchors = dict()
+        stepfile_path, anchorsfile_path = extract_stepzip(stepzip_file)
+        with open(anchorsfile_path) as f:
+            lines = f.readlines()
+            for line in lines:
+                items = re.findall(r'\S+', line)
+                key = items[0]
+                data = [float(v) for v in items[1].split(",")]
+                position = (data[0], data[1], data[2])
+                direction = (data[3], data[4], data[5])
+                anchors[key] = {"position": position, "direction": direction}
+        return cls(stepfile_path, anchors)
 
     @property
     def shape(self):
