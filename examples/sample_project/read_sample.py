@@ -11,4 +11,3 @@ print(A.number_of_nodes())
 print(A.number_of_edges())
 
 A.display_3d()
-

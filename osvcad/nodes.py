@@ -174,6 +174,10 @@ class GeometryNode(object):
         return self.__repr__()
 
     def __repr__(self):
+        return "GeometryNode : " + str(id(self))
+
+    def ldesc(self):
+        r"""Long description"""
         l = list()
         l.append("GeometryNode")
         l.append("\tShape : %s" % str(self.shape))
@@ -404,13 +408,18 @@ class Assembly(nx.DiGraph, GeometryNode):
 
         values = [val_map.get(node, 0.25) for node in self.nodes()]
 
-        pos = nx.spring_layout(self)
-        nx.draw_networkx_nodes(self, pos, cmap=plt.get_cmap('jet'),
+        pos = nx.circular_layout(self)
+        nx.draw_networkx_nodes(self,
+                               pos,
+                               cmap=plt.get_cmap('jet'),
                                node_color=values)
-        nx.draw_networkx_edges(self, pos, edgelist=self.edges(), edge_color='r',
+        nx.draw_networkx_edges(self,
+                               pos,
+                               edgelist=self.edges(),
+                               edge_color='r',
                                arrows=True)
-        # nx.draw_networkx_labels(self, pos)
-        # nx.draw_networkx_edge_labels(self, pos)
+        nx.draw_networkx_labels(self, pos)
+        nx.draw_networkx_edge_labels(self, pos)
         plt.show()
 
     def display_3d(self):

@@ -1,45 +1,221 @@
 {
     "py/object": "osvcad.nodes.Assembly", 
     "node": {
-        "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {}, 
-        "<osvcad.nodes.GeometryNodePyScript object at 0x0000000015794CF8>": {}, 
-        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {}
+        "GeometryNode : 360177848": {}, 
+        "GeometryNode : 358947920": {}, 
+        "GeometryNode : 358948368": {}, 
+        "GeometryNode : 358947024": {}, 
+        "GeometryNode : 358986136": {}, 
+        "GeometryNode : 358948704": {}, 
+        "GeometryNode : 358986472": {}, 
+        "GeometryNode : 359626120": {}, 
+        "GeometryNode : 359626568": {}
     }, 
     "graph": {}, 
+    "root": {
+        "py/object": "osvcad.nodes.GeometryNodePyScript", 
+        "py_script_path": "py_scripts/plate_with_holes.py", 
+        "_shape": {
+            "py/object": "ccad.model.Solid", 
+            "shape": {
+                "py/object": "OCC.TopoDS.TopoDS_Compound", 
+                "py/state": {
+                    "py/tuple": [
+                        "\nCASCADE Topology V1, (c) Matra-Datavision\nLocations 0\nCurve2ds 40\n1 0 0 0 1 \n1 0 0 0 1 \n1 0 0 1 0 \n1 0 0 1 0 \n1 0 30 1 0 \n1 20 0 0 1 \n1 0 5 1 0 \n2 0 0 1 0 -0 1 1\n2 15 7.5 1 0 -0 1 1\n1 0 5 1 0 \n2 0 0 1 0 -0 1 1\n2 15 22.5 1 0 -0 1 1\n1 0 5 1 0 \n2 0 0 1 0 -0 1 1\n2 5 7.5 1 0 -0 1 1\n1 0 5 1 0 \n2 0 0 1 0 -0 1 1\n2 5 22.5 1 0 -0 1 1\n1 0 30 1 0 \n1 20 0 0 1 \n1 0 0 1 0 \n2 0 0 1 0 -0 1 1\n2 15 7.5 1 0 -0 1 1\n1 0 0 1 0 \n2 0 0 1 0 -0 1 1\n2 15 22.5 1 0 -0 1 1\n1 0 0 1 0 \n2 0 0 1 0 -0 1 1\n2 5 7.5 1 0 -0 1 1\n1 0 0 1 0 \n2 0 0 1 0 -0 1 1\n2 5 22.5 1 0 -0 1 1\n1 6.2831853071795862 -0 0 1 \n1 0 -0 0 1 \n1 6.2831853071795862 -0 0 1 \n1 0 -0 0 1 \n1 6.2831853071795862 -0 0 1 \n1 0 -0 0 1 \n1 6.2831853071795862 -0 0 1 \n1 0 -0 0 1 \nCurves 24\n1 -10 -15 0 0 0 1 \n1 -10 -15 5 -0 1 0 \n1 -10 15 0 0 0 1 \n1 -10 -15 0 -0 1 0 \n1 -10 -15 0 1 0 -0 \n1 10 -15 0 0 0 1 \n1 -10 -15 5 1 0 -0 \n1 -10 15 5 1 0 -0 \n1 10 -15 5 0 1 0 \n2 5 -7.5 5 0 0 1 1 0 -0 -0 1 0 1\n2 5 7.5 5 0 0 1 1 0 -0 -0 1 0 1\n2 -5 -7.5 5 0 0 1 1 0 -0 -0 1 0 1\n2 -5 7.5 5 0 0 1 1 0 -0 -0 1 0 1\n1 -10 15 0 1 0 -0 \n1 10 15 0 0 0 1 \n1 10 -15 0 -0 1 0 \n2 5 -7.5 0 0 0 1 1 0 -0 -0 1 0 1\n2 5 7.5 0 0 0 1 1 0 -0 -0 1 0 1\n2 -5 -7.5 0 0 0 1 1 0 -0 -0 1 0 1\n2 -5 7.5 0 0 0 1 1 0 -0 -0 1 0 1\n1 6 -7.5 0 0 0 1 \n1 6 7.5 0 0 0 1 \n1 -4 -7.5 0 0 0 1 \n1 -4 7.5 0 0 0 1 \nPolygon3D 0\nPolygonOnTriangulations 0\nSurfaces 18\n1 -10 -15 0 1 0 -0 0 0 1 0 -1 0 \n1 -10 -15 5 0 0 1 1 0 -0 -0 1 0 \n1 -10 -15 0 0 0 1 1 0 -0 -0 1 0 \n1 -10 -15 0 -0 1 0 0 0 1 1 0 -0 \n2 5 -7.5 0 0 0 1 1 0 -0 -0 1 0 1\n1 5 -7.5 5 0 0 1 1 0 -0 -0 1 0 \n2 5 7.5 0 0 0 1 1 0 -0 -0 1 0 1\n1 5 7.5 5 0 0 1 1 0 -0 -0 1 0 \n2 -5 -7.5 0 0 0 1 1 0 -0 -0 1 0 1\n1 -5 -7.5 5 0 0 1 1 0 -0 -0 1 0 \n2 -5 7.5 0 0 0 1 1 0 -0 -0 1 0 1\n1 -5 7.5 5 0 0 1 1 0 -0 -0 1 0 \n1 -10 15 0 -0 1 0 0 0 1 1 0 -0 \n1 5 -7.5 0 0 0 1 1 0 -0 -0 1 0 \n1 5 7.5 0 0 0 1 1 0 -0 -0 1 0 \n1 -5 -7.5 0 0 0 1 1 0 -0 -0 1 0 \n1 -5 7.5 0 0 0 1 1 0 -0 -0 1 0 \n1 10 -15 0 1 0 -0 0 0 1 0 -1 0 \nTriangulations 0\n\nTShapes 71\nVe\n1e-007\n-10 -15 5\n0 0\n\n0101101\n*\nVe\n1e-007\n-10 -15 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  1 0 0 5\n0\n\n0101000\n-71 0 +70 0 *\nVe\n1e-007\n-10 15 5\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  2 0 0 30\n2  1 2 0 0 30\n0\n\n0101000\n-68 0 +71 0 *\nVe\n1e-007\n-10 15 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  3 0 0 5\n0\n\n0101000\n-68 0 +66 0 *\nEd\n 1e-007 1 1 0\n1  4 0 0 30\n2  2 3 0 0 30\n0\n\n0101000\n-66 0 +70 0 *\nWi\n\n0101100\n-69 0 -67 0 +65 0 +64 0 *\nFa\n0  1e-007 1 0\n\n0111000\n+63 0 *\nVe\n1e-007\n10 -15 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  5 0 0 20\n2  3 3 0 0 20\n0\n\n0101000\n-61 0 +70 0 *\nVe\n1e-007\n10 -15 5\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  6 0 0 5\n0\n\n0101000\n-59 0 +61 0 *\nEd\n 1e-007 1 1 0\n1  7 0 0 20\n2  4 2 0 0 20\n0\n\n0101000\n-59 0 +71 0 *\nWi\n\n0101100\n-60 0 -58 0 +57 0 +69 0 *\nFa\n0  1e-007 4 0\n\n0101000\n+56 0 *\nVe\n1e-007\n10 15 5\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  8 0 0 20\n2  5 2 0 0 20\n0\n\n0101000\n-54 0 +68 0 *\nEd\n 1e-007 1 1 0\n1  9 0 0 30\n2  6 2 0 0 30\n0\n\n0101000\n-54 0 +59 0 *\nWi\n\n0101100\n-67 0 -53 0 +57 0 +52 0 *\nVe\n1e-007\n6 -7.5 5\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  10 0 0 6.28318530717959\n2  7 5 0 0 6.28318530717959\n2  8 6 0 0 6.28318530717959\n2  9 2 0 0 6.28318530717959\n0\n\n0101000\n+50 0 -50 0 *\nWi\n\n0101100\n-49 0 *\nVe\n1e-007\n6 7.5 5\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  11 0 0 6.28318530717959\n2  10 7 0 0 6.28318530717959\n2  11 8 0 0 6.28318530717959\n2  12 2 0 0 6.28318530717959\n0\n\n0101000\n+47 0 -47 0 *\nWi\n\n0101100\n-46 0 *\nVe\n1e-007\n-4 -7.5 5\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  12 0 0 6.28318530717959\n2  13 9 0 0 6.28318530717959\n2  14 10 0 0 6.28318530717959\n2  15 2 0 0 6.28318530717959\n0\n\n0101000\n+44 0 -44 0 *\nWi\n\n0101100\n-43 0 *\nVe\n1e-007\n-4 7.5 5\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  13 0 0 6.28318530717959\n2  16 11 0 0 6.28318530717959\n2  17 12 0 0 6.28318530717959\n2  18 2 0 0 6.28318530717959\n0\n\n0101000\n+41 0 -41 0 *\nWi\n\n0101100\n-40 0 *\nFa\n0  1e-007 2 0\n\n0111000\n+51 0 +48 0 +45 0 +42 0 +39 0 *\nVe\n1e-007\n10 15 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  14 0 0 20\n2  19 3 0 0 20\n0\n\n0101000\n-37 0 +66 0 *\nEd\n 1e-007 1 1 0\n1  15 0 0 5\n0\n\n0101000\n-54 0 +37 0 *\nWi\n\n0101100\n-36 0 -35 0 +53 0 +65 0 *\nFa\n0  1e-007 13 0\n\n0101000\n+34 0 *\nEd\n 1e-007 1 1 0\n1  16 0 0 30\n2  20 3 0 0 30\n0\n\n0101000\n-37 0 +61 0 *\nWi\n\n0101100\n-64 0 -36 0 +60 0 +32 0 *\nVe\n1e-007\n6 -7.5 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  17 0 0 6.28318530717959\n2  21 5 0 0 6.28318530717959\n2  22 14 0 0 6.28318530717959\n2  23 3 0 0 6.28318530717959\n0\n\n0101000\n+30 0 -30 0 *\nWi\n\n0101100\n-29 0 *\nVe\n1e-007\n6 7.5 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  18 0 0 6.28318530717959\n2  24 7 0 0 6.28318530717959\n2  25 15 0 0 6.28318530717959\n2  26 3 0 0 6.28318530717959\n0\n\n0101000\n+27 0 -27 0 *\nWi\n\n0101100\n-26 0 *\nVe\n1e-007\n-4 -7.5 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  19 0 0 6.28318530717959\n2  27 9 0 0 6.28318530717959\n2  28 16 0 0 6.28318530717959\n2  29 3 0 0 6.28318530717959\n0\n\n0101000\n+24 0 -24 0 *\nWi\n\n0101100\n-23 0 *\nVe\n1e-007\n-4 7.5 0\n0 0\n\n0101101\n*\nEd\n 1e-007 1 1 0\n1  20 0 0 6.28318530717959\n2  30 11 0 0 6.28318530717959\n2  31 17 0 0 6.28318530717959\n2  32 3 0 0 6.28318530717959\n0\n\n0101000\n+21 0 -21 0 *\nWi\n\n0101100\n-20 0 *\nFa\n0  1e-007 3 0\n\n0111000\n+31 0 +28 0 +25 0 +22 0 +19 0 *\nWi\n\n0101100\n-58 0 -52 0 +35 0 +32 0 *\nFa\n0  1e-007 18 0\n\n0111000\n+17 0 *\nEd\n 1e-007 1 1 0\n1  21 0 0 5\n3  33 34CN 5 0 0 5\n0\n\n0101000\n-50 0 +30 0 *\nWi\n\n0101100\n+15 0 +29 0 -15 0 -49 0 *\nFa\n0  1e-007 5 0\n\n0101000\n+14 0 *\nEd\n 1e-007 1 1 0\n1  22 0 0 5\n3  35 36CN 7 0 0 5\n0\n\n0101000\n-47 0 +27 0 *\nWi\n\n0101100\n+12 0 +26 0 -12 0 -46 0 *\nFa\n0  1e-007 7 0\n\n0101000\n+11 0 *\nEd\n 1e-007 1 1 0\n1  23 0 0 5\n3  37 38CN 9 0 0 5\n0\n\n0101000\n-44 0 +24 0 *\nWi\n\n0101100\n+9 0 +23 0 -9 0 -43 0 *\nFa\n0  1e-007 9 0\n\n0101000\n+8 0 *\nEd\n 1e-007 1 1 0\n1  24 0 0 5\n3  39 40CN 11 0 0 5\n0\n\n0101000\n-41 0 +21 0 *\nWi\n\n0101100\n+6 0 +20 0 -6 0 -40 0 *\nFa\n0  1e-007 11 0\n\n0111000\n+5 0 *\nSh\n\n0101100\n-62 0 -55 0 +38 0 +33 0 -18 0 +16 0 -13 0 -10 0 -7 0 -4 0 \n*\nSo\n\n0100000\n+3 0 *\nCo\n\n1100000\n+2 0 *\n\n", 
+                        0
+                    ]
+                }
+            }
+        }, 
+        "_anchors": {
+            "1": {
+                "position": {
+                    "py/tuple": [
+                        5.0, 
+                        -7.5, 
+                        5
+                    ]
+                }, 
+                "direction": {
+                    "py/tuple": [
+                        0.0, 
+                        0.0, 
+                        -1.0
+                    ]
+                }, 
+                "description": "2 mm hole", 
+                "dimension": 2
+            }, 
+            "3": {
+                "position": {
+                    "py/tuple": [
+                        -5.0, 
+                        -7.5, 
+                        5
+                    ]
+                }, 
+                "direction": {
+                    "py/tuple": [
+                        0.0, 
+                        0.0, 
+                        -1.0
+                    ]
+                }, 
+                "description": "2 mm hole", 
+                "dimension": 2
+            }, 
+            "2": {
+                "position": {
+                    "py/tuple": [
+                        5.0, 
+                        7.5, 
+                        5
+                    ]
+                }, 
+                "direction": {
+                    "py/tuple": [
+                        0.0, 
+                        0.0, 
+                        -1.0
+                    ]
+                }, 
+                "description": "2 mm hole", 
+                "dimension": 2
+            }, 
+            "4": {
+                "position": {
+                    "py/tuple": [
+                        -5.0, 
+                        7.5, 
+                        5
+                    ]
+                }, 
+                "direction": {
+                    "py/tuple": [
+                        0.0, 
+                        0.0, 
+                        -1.0
+                    ]
+                }, 
+                "description": "2 mm hole", 
+                "dimension": 2
+            }
+        }
+    }, 
     "edge_attr_dict_factory": {
         "py/type": "__builtin__.dict"
     }, 
     "succ": {
-        "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {}, 
-        "<osvcad.nodes.GeometryNodePyScript object at 0x0000000015794CF8>": {
-            "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {
+        "GeometryNode : 360177848": {}, 
+        "GeometryNode : 358947920": {
+            "GeometryNode : 358948368": {
                 "object": {
-                    "py/id": 2
-                }
-            }, 
-            "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {
-                "object": {
-                    "py/id": 1
+                    "py/id": 5
                 }
             }
         }, 
-        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {}
+        "GeometryNode : 358948368": {}, 
+        "GeometryNode : 358947024": {
+            "GeometryNode : 358986472": {
+                "object": {
+                    "py/id": 4
+                }
+            }, 
+            "GeometryNode : 358947920": {
+                "object": {
+                    "py/id": 1
+                }
+            }, 
+            "GeometryNode : 358986136": {
+                "object": {
+                    "py/id": 3
+                }
+            }, 
+            "GeometryNode : 358948704": {
+                "object": {
+                    "py/id": 2
+                }
+            }
+        }, 
+        "GeometryNode : 358986136": {
+            "GeometryNode : 359626120": {
+                "object": {
+                    "py/id": 7
+                }
+            }
+        }, 
+        "GeometryNode : 358948704": {
+            "GeometryNode : 359626568": {
+                "object": {
+                    "py/id": 6
+                }
+            }
+        }, 
+        "GeometryNode : 358986472": {
+            "GeometryNode : 360177848": {
+                "object": {
+                    "py/id": 8
+                }
+            }
+        }, 
+        "GeometryNode : 359626120": {}, 
+        "GeometryNode : 359626568": {}
     }, 
     "edge": {
-        "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {}, 
-        "<osvcad.nodes.GeometryNodePyScript object at 0x0000000015794CF8>": {
-            "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {
+        "GeometryNode : 360177848": {}, 
+        "GeometryNode : 358947920": {
+            "GeometryNode : 358948368": {
                 "object": {
-                    "py/id": 2
-                }
-            }, 
-            "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {
-                "object": {
-                    "py/id": 1
+                    "py/id": 5
                 }
             }
         }, 
-        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {}
+        "GeometryNode : 358948368": {}, 
+        "GeometryNode : 358947024": {
+            "GeometryNode : 358986472": {
+                "object": {
+                    "py/id": 4
+                }
+            }, 
+            "GeometryNode : 358947920": {
+                "object": {
+                    "py/id": 1
+                }
+            }, 
+            "GeometryNode : 358986136": {
+                "object": {
+                    "py/id": 3
+                }
+            }, 
+            "GeometryNode : 358948704": {
+                "object": {
+                    "py/id": 2
+                }
+            }
+        }, 
+        "GeometryNode : 358986136": {
+            "GeometryNode : 359626120": {
+                "object": {
+                    "py/id": 7
+                }
+            }
+        }, 
+        "GeometryNode : 358948704": {
+            "GeometryNode : 359626568": {
+                "object": {
+                    "py/id": 6
+                }
+            }
+        }, 
+        "GeometryNode : 358986472": {
+            "GeometryNode : 360177848": {
+                "object": {
+                    "py/id": 8
+                }
+            }
+        }, 
+        "GeometryNode : 359626120": {}, 
+        "GeometryNode : 359626568": {}
     }, 
     "node_dict_factory": {
         "py/type": "__builtin__.dict"
@@ -48,48 +224,148 @@
         "py/type": "__builtin__.dict"
     }, 
     "adj": {
-        "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {}, 
-        "<osvcad.nodes.GeometryNodePyScript object at 0x0000000015794CF8>": {
-            "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {
+        "GeometryNode : 360177848": {}, 
+        "GeometryNode : 358947920": {
+            "GeometryNode : 358948368": {
                 "object": {
-                    "py/object": "osvcad.edges.ConstraintAbsolutePositioning", 
-                    "tz": 20, 
-                    "tx": 0, 
-                    "ty": 0, 
-                    "rx": 0, 
-                    "ry": 0, 
-                    "rz": 0, 
-                    "quaternion": null
-                }
-            }, 
-            "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {
-                "object": {
-                    "py/object": "osvcad.edges.ConstraintAbsolutePositioning", 
-                    "tz": 0, 
-                    "tx": 50, 
-                    "ty": 25, 
-                    "rx": 0, 
-                    "ry": 0, 
-                    "rz": 0, 
-                    "quaternion": null
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": -6.6, 
+                    "anchor_name_master": 1, 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
                 }
             }
         }, 
-        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {}
+        "GeometryNode : 358948368": {}, 
+        "GeometryNode : 358947024": {
+            "GeometryNode : 358986472": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": 0, 
+                    "anchor_name_master": "4", 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
+                }
+            }, 
+            "GeometryNode : 358947920": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": 0, 
+                    "anchor_name_master": "1", 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
+                }
+            }, 
+            "GeometryNode : 358986136": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": 0, 
+                    "anchor_name_master": "3", 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
+                }
+            }, 
+            "GeometryNode : 358948704": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": 0, 
+                    "anchor_name_master": "2", 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
+                }
+            }
+        }, 
+        "GeometryNode : 358986136": {
+            "GeometryNode : 359626120": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": -6.6, 
+                    "anchor_name_master": 1, 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
+                }
+            }
+        }, 
+        "GeometryNode : 358948704": {
+            "GeometryNode : 359626568": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": -6.6, 
+                    "anchor_name_master": 1, 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
+                }
+            }
+        }, 
+        "GeometryNode : 358986472": {
+            "GeometryNode : 360177848": {
+                "object": {
+                    "py/object": "osvcad.edges.ConstraintAnchor", 
+                    "distance": -6.6, 
+                    "anchor_name_master": 1, 
+                    "angle": 0, 
+                    "anchor_name_slave": 1
+                }
+            }
+        }, 
+        "GeometryNode : 359626120": {}, 
+        "GeometryNode : 359626568": {}
     }, 
     "pred": {
-        "<osvcad.nodes.GeometryNodeStep object at 0x0000000015794BE0>": {
-            "<osvcad.nodes.GeometryNodePyScript object at 0x0000000015794CF8>": {
+        "GeometryNode : 360177848": {
+            "GeometryNode : 358986472": {
+                "object": {
+                    "py/id": 8
+                }
+            }
+        }, 
+        "GeometryNode : 358947920": {
+            "GeometryNode : 358947024": {
+                "object": {
+                    "py/id": 1
+                }
+            }
+        }, 
+        "GeometryNode : 358948368": {
+            "GeometryNode : 358947920": {
+                "object": {
+                    "py/id": 5
+                }
+            }
+        }, 
+        "GeometryNode : 358947024": {}, 
+        "GeometryNode : 358986136": {
+            "GeometryNode : 358947024": {
+                "object": {
+                    "py/id": 3
+                }
+            }
+        }, 
+        "GeometryNode : 358948704": {
+            "GeometryNode : 358947024": {
                 "object": {
                     "py/id": 2
                 }
             }
         }, 
-        "<osvcad.nodes.GeometryNodePyScript object at 0x0000000015794CF8>": {}, 
-        "<osvcad.nodes.GeometryNodeLibraryPart object at 0x0000000015794E48>": {
-            "<osvcad.nodes.GeometryNodePyScript object at 0x0000000015794CF8>": {
+        "GeometryNode : 358986472": {
+            "GeometryNode : 358947024": {
                 "object": {
-                    "py/id": 1
+                    "py/id": 4
+                }
+            }
+        }, 
+        "GeometryNode : 359626120": {
+            "GeometryNode : 358986136": {
+                "object": {
+                    "py/id": 7
+                }
+            }
+        }, 
+        "GeometryNode : 359626568": {
+            "GeometryNode : 358948704": {
+                "object": {
+                    "py/id": 6
                 }
             }
         }

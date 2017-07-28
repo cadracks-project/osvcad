@@ -14,6 +14,9 @@ Custom serialization and deserialization
 ******** Format for STEP + anchors
 
 Show car graph from BU's reverse engineering
+  Utiliser Gephi
+  Strategie reconstitution
+    Start with 'black boxes'
 
 Assemblies in assemblies in assemblies ...
 

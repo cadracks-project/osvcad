@@ -66,3 +66,7 @@ class ConstraintAnchor(Constraint):
                                           other_anchor=self.anchor_name_slave,
                                           angle=self.angle,
                                           distance=self.distance)
+
+    def __repr__(self):
+        return "%s -> %s" % (str(self.anchor_name_master),
+                             str(self.anchor_name_slave))
