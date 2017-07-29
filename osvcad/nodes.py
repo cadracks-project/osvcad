@@ -81,9 +81,12 @@ class GeometryNode(object):
         if inplace is False:
             return other.transform(transformation_mat_)
         else:
-            modified = other.transform(transformation_mat_)
-            other._shape = modified.shape
-            other._anchors = modified.anchors
+            if issubclass(other.__class__, nx.DiGraph):
+                other.transform(transformation_mat_)
+            else:
+                modified = other.transform(transformation_mat_)
+                other._shape = modified.shape
+                other._anchors = modified.anchors
 
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
@@ -97,15 +100,14 @@ class GeometryNode(object):
         GeometryNode
 
         """
-        logger.debug("transform()")
-        logger.debug("transformation matrix : %s" % transformation_matrix)
+        # logger.debug("transform()")
+        # logger.debug("transformation matrix : %s" % transformation_matrix)
         new_shape = transformed(self.shape, transformation_matrix)
         new_anchors = dict()
 
         for anchor_name, anchor_dict in self.anchors.items():
             new_anchors[anchor_name] = _transform_anchor(anchor_dict,
                                                          transformation_matrix)
-
         return GeometryNodeDirect(new_shape, new_anchors)
 
     def translate(self, vector):
@@ -121,7 +123,7 @@ class GeometryNode(object):
         GeometryNode
 
         """
-        logger.debug("translate()")
+        # logger.debug("translate()")
         return self.transform(translation_matrix(vector))
 
     def rotate(self, rotation_angle, rotation_axis, axis_point):
@@ -141,8 +143,8 @@ class GeometryNode(object):
         -------
 
         """
-        logger.debug("rotate() with angle:%f, axis: %s, point: %s" %
-                     (rotation_angle, str(rotation_axis), str(axis_point)))
+        # logger.debug("rotate() with angle:%f, axis: %s, point: %s" %
+        #              (rotation_angle, str(rotation_axis), str(axis_point)))
         return self.transform(rotation_matrix(radians(rotation_angle),
                                               rotation_axis,
                                               axis_point))
@@ -202,8 +204,8 @@ def _transform_anchor(anchor, transformation_matrix):
     transformation_matrix : np.ndarray
         4 x 3 matrix"""
 
-    logger.debug("_transform_anchor()")
-    logger.debug("Transformation matrix : %s" % transformation_matrix)
+    # logger.debug("_transform_anchor()")
+    # logger.debug("Transformation matrix : %s" % transformation_matrix)
 
     translation_vec = transformation_matrix.T[-1:, :3][0]
     matrix_3x3 = transformation_matrix[:3, :3]
@@ -344,7 +346,30 @@ class Assembly(nx.DiGraph, GeometryNode):
 
     def __init__(self, root):
         super(Assembly, self).__init__()
+        self.add_node(root)
         self.root = root
+
+    def transform(self, transformation_matrix):
+        r"""Transform the node with a 4x3 transformation matrix
+
+        Parameters
+        ----------
+        transformation_matrix : np.ndarray
+
+        Returns
+        -------
+        GeometryNode
+
+        """
+        # Do it in place
+        for node in self.nodes():
+            node._shape = transformed(node.shape, transformation_matrix)
+            new_anchors = dict()
+
+            for anchor_name, anchor_dict in node.anchors.items():
+                new_anchors[anchor_name] = _transform_anchor(anchor_dict,
+                                                            transformation_matrix)
+            node._anchors = new_anchors
 
     def build(self):
         r"""Build the assembly using the graph used to represent it"""
@@ -437,13 +462,22 @@ class Assembly(nx.DiGraph, GeometryNode):
     @property
     def shape(self):
         r"""Abstract property implementation"""
-        raise NotImplementedError
+        self.build()
+        shapes = list()
+        for node in self.nodes():
+            shapes.append(node.shape)
+        s = shapes[0]
+        for shape in shapes[1:]:
+            s += shape
+        return s
 
+    @property
     def anchors(self):
         r"""Abstract property implementation"""
+        self.build()
         a = dict()
         for node in self.nodes():
-            for anchor_name, anchor_value in node.anchors:
-                a[str(hash(node)) + "/" + anchor_name] = anchor_value
+            for anchor_name, anchor_value in node.anchors.items():
+                a[str(hash(node)) + "/" + str(anchor_name)] = anchor_value
 
         return a

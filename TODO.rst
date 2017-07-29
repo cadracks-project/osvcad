@@ -18,6 +18,10 @@ Show car graph from BU's reverse engineering
   Strategie reconstitution
     Start with 'black boxes'
 
-Assemblies in assemblies in assemblies ...
+-> Assemblies in assemblies in assemblies ...
+      Document the code
+      Clean
+      More complex case
+      GeometryNode -> One class with multiple constructors
 
 New anchors concept (normal + tangent)
