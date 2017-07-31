@@ -12,24 +12,22 @@ logging.basicConfig(level=logging.DEBUG,
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
 from OCC.gp import gp_Pnt, gp_Vec
 import wx
-from osvcad.nodes import GeometryNodeDirect
+from osvcad.nodes import GeometryNode
 from ccad.model import box, translated
 
 
 def main():
     r"""Main example function"""
     # Create nodes
-    node_1 = GeometryNodeDirect(box(10, 10, 10),
-                                anchors={"only_anchor": {"position": (5, 5, 10),
-                                                         "direction": (0, 0, 20)
-                                                         }})
+    node_1 = GeometryNode(box(10, 10, 10),
+                          anchors={"only_anchor": {"position": (5, 5, 10),
+                                                   "direction": (0, 0, 20)
+                                                   }})
 
-    node_2 = GeometryNodeDirect(translated(box(20, 20, 20), (100, 0, 0)),
-                                anchors={"only_anchor": {"position": (110,
-                                                                      10,
-                                                                      20),
-                                                         "direction": (0, 0, 20)
-                                                         }})
+    node_2 = GeometryNode(translated(box(20, 20, 20), (100, 0, 0)),
+                          anchors={"only_anchor": {"position": (110, 10, 20),
+                                                   "direction": (0, 0, 20)
+                                                   }})
 
     node_3 = node_1.place(self_anchor="only_anchor",
                           other=node_2,

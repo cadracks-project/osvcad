@@ -4,7 +4,6 @@ r"""Graph nodes"""
 
 import logging
 from math import radians
-import abc
 import re
 
 from os.path import basename, splitext, exists, join, dirname
@@ -32,18 +31,79 @@ logger = logging.getLogger(__name__)
 
 
 class GeometryNode(object):
-    r"""Abstract base class for geometry nodes"""
-    __metaclass__ = abc.ABCMeta
+    r"""Geometry node class
+    
+    A geometry node is a shape with ist accompanying anchors
 
-    @abc.abstractproperty
+    """
+    def __init__(self, shape, anchors):
+        self._shape = shape
+        self._anchors = anchors
+
+    @classmethod
+    def from_library_part(cls, library_file_path, part_id):
+        r"""Create the GeometryNode from a library part"""
+        generate(library_file_path)
+        scripts_folder = join(dirname(library_file_path), "scripts")
+        module_path = join(scripts_folder, "%s.py" % part_id)
+        module_ = imp.load_source(splitext(module_path)[0],
+                                  module_path)
+
+        if not hasattr(module_, 'part'):
+            raise ValueError("The Python module should have a 'part' variable")
+        return cls(module_.part, module_.anchors)
+
+    @classmethod
+    def from_step(cls, step_file_path, anchors=None):
+        r"""Create the GeometryNode from a step file and anchors definition"""
+        assert exists(step_file_path)
+        return cls(from_step(step_file_path), anchors)
+
+    @classmethod
+    def from_stepzip(cls, stepzip_file):
+        r"""Alternative constructor from a STEP + anchors zip file"""
+        anchors = dict()
+        stepfile_path, anchorsfile_path = extract_stepzip(stepzip_file)
+        with open(anchorsfile_path) as f:
+            lines = f.readlines()
+            for line in lines:
+                items = re.findall(r'\S+', line)
+                key = items[0]
+                data = [float(v) for v in items[1].split(",")]
+                position = (data[0], data[1], data[2])
+                direction = (data[3], data[4], data[5])
+                anchors[key] = {"position": position, "direction": direction}
+        return cls.from_step(stepfile_path, anchors)
+
+    @classmethod
+    def from_py_script(cls, py_script_path):
+        r"""Create the GeometryNode from a python script (module) that has a
+        part and an anchors attributes"""
+        # TODO : use Part.from_py of ccad
+        # cm.Part.from_py("sphere_r_2.py").geometry
+
+        name, ext = splitext(basename(py_script_path))
+        module_ = imp.load_source(name, py_script_path)
+
+        return cls(module_.part, module_.anchors)
+
+    @property
     def shape(self):
-        r"""Abstract method to get shape content"""
-        raise NotImplementedError
+        r"""Shape getter"""
+        return self._shape
 
-    @abc.abstractproperty
+    @shape.setter
+    def shape(self, value):
+        self._shape = value
+
+    @property
     def anchors(self):
-        r"""Abstract method to get anchors content"""
-        raise NotImplementedError
+        r"""Anchors getter"""
+        return self._anchors
+
+    @anchors.setter
+    def anchors(self, value):
+        self._anchors = value
 
     def place(self,
               self_anchor,
@@ -108,7 +168,7 @@ class GeometryNode(object):
         for anchor_name, anchor_dict in self.anchors.items():
             new_anchors[anchor_name] = _transform_anchor(anchor_dict,
                                                          transformation_matrix)
-        return GeometryNodeDirect(new_shape, new_anchors)
+        return GeometryNode(new_shape, new_anchors)
 
     def translate(self, vector):
         r"""Translate the node
@@ -221,119 +281,6 @@ def _transform_anchor(anchor, transformation_matrix):
 
     return {"position": (new_px, new_py, new_pz),
             "direction": (new_dx, new_dy, new_dz)}
-
-
-class GeometryNodePyScript(GeometryNode):
-    r"""Geometry node created from a Python script"""
-    def __init__(self, py_script_path):
-        super(GeometryNodePyScript, self).__init__()
-        self.py_script_path = py_script_path
-
-        # TODO : use Part.from_py of ccad
-        # cm.Part.from_py("sphere_r_2.py").geometry
-
-        name, ext = splitext(basename(py_script_path))
-        module_ = imp.load_source(name, py_script_path)
-
-        self._shape = module_.part
-        self._anchors = module_.anchors
-
-    @property
-    def shape(self):
-        r"""Shape getter"""
-        return self._shape
-
-    @property
-    def anchors(self):
-        r"""Anchors getter"""
-        return self._anchors
-
-
-class GeometryNodeStep(GeometryNode):
-    r"""Geometry node created from a STEP file"""
-    def __init__(self, step_file_path, anchors=None):
-        super(GeometryNodeStep, self).__init__()
-        assert exists(step_file_path)
-        self.step_file_path = step_file_path
-        self._anchors = anchors
-        self._shape = from_step(step_file_path)
-
-    @classmethod
-    def from_stepzip(cls, stepzip_file):
-        r"""Alternative constructor from a STEP + anchors zip file"""
-        anchors = dict()
-        stepfile_path, anchorsfile_path = extract_stepzip(stepzip_file)
-        with open(anchorsfile_path) as f:
-            lines = f.readlines()
-            for line in lines:
-                items = re.findall(r'\S+', line)
-                key = items[0]
-                data = [float(v) for v in items[1].split(",")]
-                position = (data[0], data[1], data[2])
-                direction = (data[3], data[4], data[5])
-                anchors[key] = {"position": position, "direction": direction}
-        return cls(stepfile_path, anchors)
-
-    @property
-    def shape(self):
-        r"""Shape getter"""
-        return self._shape
-
-    @property
-    def anchors(self):
-        r"""Anchors getter"""
-        return self._anchors
-
-
-class GeometryNodeLibraryPart(GeometryNode):
-    r"""Geometry node created from a parts library"""
-    def __init__(self, library_file_path, part_id):
-        super(GeometryNodeLibraryPart, self).__init__()
-        self.library_file_path = library_file_path
-        self.part_id = part_id
-
-        generate(library_file_path)
-
-        scripts_folder = join(dirname(library_file_path), "scripts")
-
-        module_path = join(scripts_folder, "%s.py" % part_id)
-
-        module_ = imp.load_source(splitext(module_path)[0],
-                                  module_path)
-
-        if not hasattr(module_, 'part'):
-            raise ValueError("The Python module should have a 'part' variable")
-        self._shape = module_.part
-        self._anchors = module_.anchors
-
-    @property
-    def shape(self):
-        r"""Shape getter"""
-        return self._shape
-
-    @property
-    def anchors(self):
-        r"""Anchors getter"""
-        return self._anchors
-
-
-class GeometryNodeDirect(GeometryNode):
-    r"""Geometry node created from a parts library"""
-    def __init__(self, shape, anchors):
-        super(GeometryNodeDirect, self).__init__()
-
-        self._shape = shape
-        self._anchors = anchors
-
-    @property
-    def shape(self):
-        r"""Shape getter"""
-        return self._shape
-
-    @property
-    def anchors(self):
-        r"""Anchors getter"""
-        return self._anchors
 
 
 class Assembly(nx.DiGraph, GeometryNode):

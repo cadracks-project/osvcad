@@ -22,6 +22,8 @@ Show car graph from BU's reverse engineering
       Document the code
       Clean
       More complex case
-      GeometryNode -> One class with multiple constructors
+      ******** GeometryNode -> One class with multiple constructors
 
 New anchors concept (normal + tangent)
+
+Class diagram

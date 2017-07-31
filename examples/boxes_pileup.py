@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG,
 from random import randint
 import wx
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
-from osvcad.nodes import GeometryNodeDirect
+from osvcad.nodes import GeometryNode
 from ccad.model import box, translated
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ def main():
         randx = randint(-random_range, random_range)
         randy = randint(-random_range, random_range)
         randz = randint(-random_range, random_range)
-        cubes.append(GeometryNodeDirect(
+        cubes.append(GeometryNode(
             box(30, 20, 10),
             anchors={"top": {"position": (15, 10, 10), "direction": (0, 0, 1)},
                      "bottom": {"position": (15, 10, 0), "direction": (0, 0, -1)}

@@ -7,16 +7,16 @@ from __future__ import division
 
 from aocutils.display.wx_viewer import Wx3dViewer
 import wx
-from osvcad.nodes import GeometryNodeDirect
+from osvcad.nodes import GeometryNode
 from ccad.model import box, translated
 
-node_1 = GeometryNodeDirect(translated(box(30, 20, 10),
-                                       (0, 0, 0)),
-                            anchors={"a1": {"position": (5, 5, 10),
-                                            "direction": (0, 0, 1)},
-                                     "a2": {"position": (30, 10, 5),
-                                            "direction": (1, 0, 1)}
-                                     })
+node_1 = GeometryNode(translated(box(30, 20, 10),
+                                 (0, 0, 0)),
+                      anchors={"a1": {"position": (5, 5, 10),
+                                      "direction": (0, 0, 1)},
+                               "a2": {"position": (30, 10, 5),
+                                      "direction": (1, 0, 1)}
+                               })
 
 node_2 = node_1.translate((0, 0, 15))
 

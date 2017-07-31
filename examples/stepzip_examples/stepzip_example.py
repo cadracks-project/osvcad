@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import shutil
 from osvcad.stepzip import create_stepzip, extract_stepzip
-from osvcad.nodes import GeometryNodeStep
+from osvcad.nodes import GeometryNode
 
 create_stepzip("models/spacer.stp", "models/spacer.anchors")
 
@@ -14,7 +14,7 @@ shutil.copy("models/spacer.zip", "models/spacer_copy.zip")
 
 s, a = extract_stepzip("models/spacer_copy.zip")
 
-n = GeometryNodeStep.from_stepzip("models/spacer.zip")
+n = GeometryNode.from_stepzip("models/spacer.zip")
 
 print(s)
 print(a)
