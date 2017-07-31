@@ -25,6 +25,7 @@ from party.library_use import generate
 from osvcad.geometry import transformation_from_2_anchors
 from osvcad.transformations import translation_matrix, rotation_matrix
 from osvcad.stepzip import extract_stepzip
+from osvcad.coding import overrides
 
 
 logger = logging.getLogger(__name__)
@@ -141,12 +142,9 @@ class GeometryNode(object):
         if inplace is False:
             return other.transform(transformation_mat_)
         else:
-            if issubclass(other.__class__, nx.DiGraph):
-                other.transform(transformation_mat_)
-            else:
-                modified = other.transform(transformation_mat_)
-                other._shape = modified.shape
-                other._anchors = modified.anchors
+            modified = other.transform(transformation_mat_)
+            other._shape = modified.shape
+            other._anchors = modified.anchors
 
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
@@ -296,6 +294,7 @@ class Assembly(nx.DiGraph, GeometryNode):
         self.add_node(root)
         self.root = root
 
+    @overrides
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
 
@@ -327,7 +326,6 @@ class Assembly(nx.DiGraph, GeometryNode):
             edge_target = edge[1]
             edge_constraint = self.get_edge_data(edge_origin, edge_target)["object"]
             try:
-
                 edge_origin.place(self_anchor=edge_constraint.anchor_name_master,
                                   other=edge_target,
                                   other_anchor=edge_constraint.anchor_name_slave,
@@ -338,16 +336,16 @@ class Assembly(nx.DiGraph, GeometryNode):
                 msg = "NetworkX error"
                 logger.warning(msg)
 
-    def write_yaml(self, yaml_file_name):
-        r"""Export to YAML format
-
-        Parameters
-        ----------
-        yaml_file_name : str
-            Path to the YAML file
-
-        """
-        nx.write_yaml(self, yaml_file_name)
+    # def write_yaml(self, yaml_file_name):
+    #     r"""Export to YAML format
+    #
+    #     Parameters
+    #     ----------
+    #     yaml_file_name : str
+    #         Path to the YAML file
+    #
+    #     """
+    #     nx.write_yaml(self, yaml_file_name)
 
     def write_json(self, json_file_name):
         r"""Export to JSON format
@@ -405,6 +403,41 @@ class Assembly(nx.DiGraph, GeometryNode):
                       color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
                       transparency=0.)
         cd.start()
+
+    @overrides
+    def place(self,
+              self_anchor,
+              other,
+              other_anchor,
+              angle=0.,
+              distance=0.,
+              inplace=True):
+        r"""Place other node so that its anchor origin is on self anchor
+        origin and its direction is opposite to the 'self' anchor direction
+
+        Parameters
+        ----------
+        self_anchor : str
+            Anchor identifier
+        other : GeometryNode or subclass
+        other_anchor : str
+            Anchor identifier on the 'other' node
+        angle : float
+            The rotation angle around the anchor
+        distance : float
+            The distance between the anchor origin
+
+        Returns
+        -------
+        GeometryNode if inplace is False, None if inplace is True
+
+        """
+        transformation_mat_ = transformation_from_2_anchors(
+            self.anchors[self_anchor], other.anchors[other_anchor],
+            angle=angle,
+            distance=distance)
+
+        other.transform(transformation_mat_)
 
     @property
     def shape(self):

@@ -41,7 +41,7 @@ print(A.number_of_edges())
 #
 # A.write_yaml("sample.yaml")
 
-A.write_json("sample.json")
+# A.write_json("sample.json")
 
 A.display_3d()
 

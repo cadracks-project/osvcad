@@ -38,7 +38,7 @@ for i in range(4):
 #
 # A.write_yaml("sample.yaml")
 
-project.write_json("project.json")
+# project.write_json("project.json")
 
 project.display_3d()
 
