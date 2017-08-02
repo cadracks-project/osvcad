@@ -1,4 +1,6 @@
 /.idea
+*.3dmbak
+*.3dm.rhl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

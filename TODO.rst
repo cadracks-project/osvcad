@@ -21,7 +21,7 @@ Show car graph from BU's reverse engineering
 -> Assemblies in assemblies in assemblies ...
       Document the code
       Clean
-      More complex case
+      More complex case -> rc car?
       ******** GeometryNode -> One class with multiple constructors
 
 New anchors concept (normal + tangent)
