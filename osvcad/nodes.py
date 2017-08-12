@@ -68,12 +68,14 @@ class GeometryNode(object):
         with open(anchorsfile_path) as f:
             lines = f.readlines()
             for line in lines:
-                items = re.findall(r'\S+', line)
-                key = items[0]
-                data = [float(v) for v in items[1].split(",")]
-                position = (data[0], data[1], data[2])
-                direction = (data[3], data[4], data[5])
-                anchors[key] = {"position": position, "direction": direction}
+                if line != "\n" and not line.startswith("#"):
+                    items = re.findall(r'\S+', line)
+                    key = items[0]
+                    data = [float(v) for v in items[1].split(",")]
+                    position = (data[0], data[1], data[2])
+                    direction = (data[3], data[4], data[5])
+                    anchors[key] = {"position": position,
+                                    "direction": direction}
         return cls.from_step(stepfile_path, anchors)
 
     @classmethod

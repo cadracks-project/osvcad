@@ -1,6 +1,7 @@
 /.idea
 *.3dmbak
 *.3dm.rhl
+*.3dm
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -104,3 +105,5 @@ ENV/
 # mypy
 .mypy_cache/
 /examples/sample_project/libraries/scripts/
+/examples/car/0_tabby2.step
+!/examples/car/0_tabby2.step
