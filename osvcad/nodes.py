@@ -68,8 +68,10 @@ class GeometryNode(object):
         with open(anchorsfile_path) as f:
             lines = f.readlines()
             for line in lines:
+                # print(line)
                 if line != "\n" and not line.startswith("#"):
                     items = re.findall(r'\S+', line)
+                    # print(items)
                     key = items[0]
                     data = [float(v) for v in items[1].split(",")]
                     position = (data[0], data[1], data[2])
