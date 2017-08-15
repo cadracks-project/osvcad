@@ -138,6 +138,7 @@ class GeometryNode(object):
         GeometryNode if inplace is False, None if inplace is True
 
         """
+        print("Placing %s/%s on %s/%s witk angle:%f -distance%f :inplace=%s" % (other, other_anchor, self, self_anchor, angle, distance, inplace))
         transformation_mat_ = transformation_from_2_anchors(
             self.anchors[self_anchor], other.anchors[other_anchor],
             angle=angle,
@@ -147,8 +148,10 @@ class GeometryNode(object):
             return other.transform(transformation_mat_)
         else:
             modified = other.transform(transformation_mat_)
-            other._shape = modified.shape
-            other._anchors = modified.anchors
+            other.shape = modified.shape
+            other.anchors = modified.anchors
+
+        print("Anchors of %s: %s" % (other, other.anchors))
 
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
@@ -325,7 +328,8 @@ class Assembly(nx.DiGraph, GeometryNode):
         r"""Build the assembly using the graph used to represent it"""
         assert self.root in self.nodes()
 
-        for edge in nx.bfs_edges(self, self.root):
+        # for edge in nx.bfs_edges(self, self.root):
+        for edge in nx.dfs_edges(self, self.root):
             edge_origin = edge[0]
             edge_target = edge[1]
             edge_constraint = self.get_edge_data(edge_origin, edge_target)["object"]

@@ -86,7 +86,57 @@ def make_front_suspension_assembly():
 
 def make_rear_suspension_assembly():
     r"""Rear suspension assembly creation"""
-    pass
+    p1 = [GeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(4)]
+    p2 = GeometryNode.from_stepzip("shelf/suspension/arr/P2.stepzip")
+    p5 = GeometryNode.from_stepzip("shelf/suspension/arr/P5.stepzip")
+    p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
+    p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
+
+    rear_suspension_assembly = Assembly(root=p2)
+
+    rear_suspension_assembly.add_edge(p2, p1[0], object=ConstraintAnchor(
+        anchor_name_master="out1",
+        anchor_name_slave="wide_out",
+        distance=0,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p2, p1[1], object=ConstraintAnchor(
+        anchor_name_master="out2",
+        anchor_name_slave="wide_out",
+        distance=0,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p2, p1[2], object=ConstraintAnchor(
+        anchor_name_master="in1",
+        anchor_name_slave="wide_out",
+        distance=0,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p2, p1[3], object=ConstraintAnchor(
+        anchor_name_master="in2",
+        anchor_name_slave="wide_out",
+        distance=0,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p1[3], p5, object=ConstraintAnchor(
+        anchor_name_master="narrow_out",
+        anchor_name_slave="bottom2",
+        distance=0,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p5, p8, object=ConstraintAnchor(
+        anchor_name_master="side1_top",
+        anchor_name_slave="side1_top",
+        distance=0,
+        angle=14.566))
+
+    rear_suspension_assembly.add_edge(p8, p9, object=ConstraintAnchor(
+        anchor_name_master="top",
+        anchor_name_slave="bottom",
+        distance=0,
+        angle=0))
+
+    return rear_suspension_assembly
 
 
 def make_wheel_assembly():
@@ -106,8 +156,11 @@ def make_wheel_assembly():
 
 
 if __name__ == "__main__":
-    chassis_assembly = make_chassis_assembly()
-    chassis_assembly.display_3d()
+    # chassis_assembly_ = make_chassis_assembly()
+    # chassis_assembly_.display_3d()
+
+    rear_suspension_assembly_ = make_rear_suspension_assembly()
+    rear_suspension_assembly_.display_3d()
 
     # wheel_assembly = make_wheel_assembly()
     # wheel_assembly.display_3d()
