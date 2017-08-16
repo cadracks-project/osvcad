@@ -38,12 +38,14 @@ class GeometryNode(object):
 
     """
     def __init__(self, shape, anchors):
+        logger.debug("Direct instantiation of GeometryNode %s" % self)
         self._shape = shape
         self._anchors = anchors
 
     @classmethod
     def from_library_part(cls, library_file_path, part_id):
         r"""Create the GeometryNode from a library part"""
+        logger.info("Creating GeometryNode from library (%s) part (id: %s)" % (library_file_path, part_id))
         generate(library_file_path)
         scripts_folder = join(dirname(library_file_path), "scripts")
         module_path = join(scripts_folder, "%s.py" % part_id)
@@ -57,12 +59,14 @@ class GeometryNode(object):
     @classmethod
     def from_step(cls, step_file_path, anchors=None):
         r"""Create the GeometryNode from a step file and anchors definition"""
+        logger.info("Creating GeometryNode from step file %s" % basename(step_file_path))
         assert exists(step_file_path)
         return cls(from_step(step_file_path), anchors)
 
     @classmethod
     def from_stepzip(cls, stepzip_file):
         r"""Alternative constructor from a STEP + anchors zip file"""
+        logger.info("Creating GeometryNode from stepzip file %s" % basename(stepzip_file))
         anchors = dict()
         stepfile_path, anchorsfile_path = extract_stepzip(stepzip_file)
         with open(anchorsfile_path) as f:
@@ -84,6 +88,7 @@ class GeometryNode(object):
     def from_py_script(cls, py_script_path):
         r"""Create the GeometryNode from a python script (module) that has a
         part and an anchors attributes"""
+        logger.info("Creating GeometryNode from py script %s" % basename(py_script_path))
         # TODO : use Part.from_py of ccad
         # cm.Part.from_py("sphere_r_2.py").geometry
 
@@ -138,7 +143,7 @@ class GeometryNode(object):
         GeometryNode if inplace is False, None if inplace is True
 
         """
-        print("Placing %s/%s on %s/%s witk angle:%f -distance%f :inplace=%s" % (other, other_anchor, self, self_anchor, angle, distance, inplace))
+        logger.info("GeometryNode.Place() %s/%s on %s/%s witk angle:%f -distance%f :inplace=%s" % (other, other_anchor, self, self_anchor, angle, distance, inplace))
         transformation_mat_ = transformation_from_2_anchors(
             self.anchors[self_anchor], other.anchors[other_anchor],
             angle=angle,
@@ -151,7 +156,7 @@ class GeometryNode(object):
             other.shape = modified.shape
             other.anchors = modified.anchors
 
-        print("Anchors of %s: %s" % (other, other.anchors))
+        # print("Anchors of %s: %s" % (other, other.anchors))
 
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
@@ -269,7 +274,7 @@ def _transform_anchor(anchor, transformation_matrix):
     transformation_matrix : np.ndarray
         4 x 3 matrix"""
 
-    # logger.debug("_transform_anchor()")
+    logger.debug("_transform_anchor()")
     # logger.debug("Transformation matrix : %s" % transformation_matrix)
 
     translation_vec = transformation_matrix.T[-1:, :3][0]
@@ -301,6 +306,8 @@ class Assembly(nx.DiGraph, GeometryNode):
         self.add_node(root)
         self.root = root
 
+        self.built = False
+
     @overrides
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
@@ -326,23 +333,26 @@ class Assembly(nx.DiGraph, GeometryNode):
 
     def build(self):
         r"""Build the assembly using the graph used to represent it"""
-        assert self.root in self.nodes()
+        if self.built is False:
+            logger.debug("Building assembly %s" % self)
+            assert self.root in self.nodes()
 
-        # for edge in nx.bfs_edges(self, self.root):
-        for edge in nx.dfs_edges(self, self.root):
-            edge_origin = edge[0]
-            edge_target = edge[1]
-            edge_constraint = self.get_edge_data(edge_origin, edge_target)["object"]
-            try:
-                edge_origin.place(self_anchor=edge_constraint.anchor_name_master,
-                                  other=edge_target,
-                                  other_anchor=edge_constraint.anchor_name_slave,
-                                  angle=edge_constraint.angle,
-                                  distance=edge_constraint.distance,
-                                  inplace=True)
-            except nx.exception.NetworkXError:
-                msg = "NetworkX error"
-                logger.warning(msg)
+            # for edge in nx.bfs_edges(self, self.root):
+            for edge in nx.bfs_edges(self, self.root):
+                edge_origin = edge[0]
+                edge_target = edge[1]
+                edge_constraint = self.get_edge_data(edge_origin, edge_target)["object"]
+                try:
+                    edge_origin.place(self_anchor=edge_constraint.anchor_name_master,
+                                      other=edge_target,
+                                      other_anchor=edge_constraint.anchor_name_slave,
+                                      angle=edge_constraint.angle,
+                                      distance=edge_constraint.distance,
+                                      inplace=True)
+                except nx.exception.NetworkXError:
+                    msg = "NetworkX error"
+                    logger.warning(msg)
+            self.built = True
 
     # def write_yaml(self, yaml_file_name):
     #     r"""Export to YAML format
@@ -440,6 +450,9 @@ class Assembly(nx.DiGraph, GeometryNode):
         GeometryNode if inplace is False, None if inplace is True
 
         """
+        logger.info(
+            "Assembly.Place() %s/%s on %s/%s witk angle:%f -distance%f :inplace=%s" % (
+            other, other_anchor, self, self_anchor, angle, distance, inplace))
         transformation_mat_ = transformation_from_2_anchors(
             self.anchors[self_anchor], other.anchors[other_anchor],
             angle=angle,
@@ -450,6 +463,7 @@ class Assembly(nx.DiGraph, GeometryNode):
     @property
     def shape(self):
         r"""Abstract property implementation"""
+        logger.debug("Accessing shapes of assembly %s" % self)
         self.build()
         shapes = list()
         for node in self.nodes():
@@ -462,6 +476,7 @@ class Assembly(nx.DiGraph, GeometryNode):
     @property
     def anchors(self):
         r"""Abstract property implementation"""
+        logger.debug("Accessing anchors of assembly %s" % self)
         self.build()
         a = dict()
         for node in self.nodes():

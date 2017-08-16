@@ -2,8 +2,12 @@
 
 r"""Utilities to group a STEP file and an anchors file in a zip file"""
 
+import logging
+
 from os.path import basename, splitext, dirname, join
 import zipfile
+
+logger = logging.getLogger(__name__)
 
 
 def create_stepzip(step_file, anchors_file):

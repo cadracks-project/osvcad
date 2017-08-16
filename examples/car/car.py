@@ -2,6 +2,8 @@
 
 r"""Example of a car model"""
 
+import logging
+
 from osvcad.nodes import GeometryNode, Assembly
 from osvcad.edges import ConstraintAnchor
 
@@ -133,7 +135,7 @@ def make_rear_suspension_assembly():
     rear_suspension_assembly.add_edge(p8, p9, object=ConstraintAnchor(
         anchor_name_master="top",
         anchor_name_slave="bottom",
-        distance=0,
+        distance=-216.148,
         angle=0))
 
     return rear_suspension_assembly
@@ -156,6 +158,17 @@ def make_wheel_assembly():
 
 
 if __name__ == "__main__":
+    # Workaround badly formatted log messages
+    # Probably originating from aocutils (likely cause: call to logger.* before
+    # call to basicConfig)
+    root = logging.getLogger()
+    if root.handlers:
+        [root.removeHandler(handler) for handler in root.handlers]
+
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(relativeCreated)6d :: %(levelname)6s :: '
+                               '%(module)20s :: %(lineno)3d :: %(message)s')
+
     # chassis_assembly_ = make_chassis_assembly()
     # chassis_assembly_.display_3d()
 

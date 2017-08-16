@@ -45,6 +45,12 @@ def transformation_from_2_anchors(anchor_master,
     # logger.debug("Master direction : %s" % str(anchor_master["direction"]))
     # logger.debug("Slave direction  : %s" % str(anchor_slave["direction"]))
 
+    logger.debug("Computing transformation from 2 anchors")
+    logger.debug(("Master | pos : %s | dir : %s" % (anchor_master["position"], anchor_master["direction"])))
+    logger.debug(("Slave  | pos : %s | dir : %s" % (anchor_slave["position"], anchor_slave["direction"])))
+    logger.debug("Distance : %f" % distance)
+    logger.debug("Angle : %f" % angle)
+
     pa_x, pa_y, pa_z = anchor_master["position"]
     pb_x, pb_y, pb_z = anchor_slave["position"]
 
@@ -52,9 +58,12 @@ def transformation_from_2_anchors(anchor_master,
 
     angle_anchors = angle_between_vectors(anchor_master["direction"],
                                           anchor_slave["direction"])
+    import math
+
+    logger.debug("Angle between anchors : %f deg" % math.degrees(angle_anchors))
 
     # logger.debug("Angle between anchors : %f" % angle_anchors)
-    import math
+
     if math.isnan(angle_anchors):
         logger.critical("Angle between anchors is NAN")
 
@@ -91,7 +100,7 @@ def transformation_from_2_anchors(anchor_master,
         # logger.debug("Axis dir is now %s" % axis_dir)
 
     # rot_matrix = rotation_matrix(angle + np.pi, axis_dir)
-    rot_angle = angle_anchors % np.pi + angle_correction
+    rot_angle = -angle_anchors % np.pi + angle_correction
     rot_matrix_anchors_opposition = rotation_matrix(rot_angle, axis_dir)
 
     trans_orig_to_master = (pa_x, pa_y, pa_z)
@@ -121,4 +130,5 @@ def transformation_from_2_anchors(anchor_master,
     transformation_mat = np.dot(transformation_mat_near_anchor,
                                 transformation_mat_anchors_opposition)[:3]
     # logger.debug("Transformation matrix from 2 anchors : %s" % transformation_mat)
+    logger.debug("... Done computing transformation from 2 anchors")
     return transformation_mat
