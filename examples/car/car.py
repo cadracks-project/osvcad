@@ -93,6 +93,9 @@ def make_rear_suspension_assembly():
     p5 = GeometryNode.from_stepzip("shelf/suspension/arr/P5.stepzip")
     p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
     p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
+    p10 = GeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
+    p11 = GeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
+    p12 = GeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
 
     rear_suspension_assembly = Assembly(root=p2)
 
@@ -136,6 +139,24 @@ def make_rear_suspension_assembly():
         anchor_name_master="top",
         anchor_name_slave="bottom",
         distance=-216.148,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p9, p12, object=ConstraintAnchor(
+        anchor_name_master="top",
+        anchor_name_slave="bottom",
+        distance=1.24,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p12, p11, object=ConstraintAnchor(
+        anchor_name_master="bottom",
+        anchor_name_slave="bottom",
+        distance=0,
+        angle=0))
+
+    rear_suspension_assembly.add_edge(p11, p10, object=ConstraintAnchor(
+        anchor_name_master="wide_flat",
+        anchor_name_slave="axis_bottom",
+        distance=0,
         angle=0))
 
     return rear_suspension_assembly
