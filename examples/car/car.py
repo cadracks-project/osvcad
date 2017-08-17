@@ -83,7 +83,98 @@ def make_chassis_assembly():
 
 def make_front_suspension_assembly():
     r"""Front suspension assembly creation"""
-    pass
+    p1 = [GeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(2)]
+    p2 = GeometryNode.from_stepzip("shelf/suspension/av/P2.stepzip")
+    p3 = GeometryNode.from_stepzip("shelf/suspension/av/P3.stepzip")
+    p4 = GeometryNode.from_stepzip("shelf/suspension/av/P4.stepzip")
+    p5 = GeometryNode.from_stepzip("shelf/suspension/av/P5.stepzip")
+    p6 = GeometryNode.from_stepzip("shelf/suspension/common/P6.stepzip")
+    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip")
+    p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
+    p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
+    p10 = GeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
+    p11 = GeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
+    p12 = GeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
+
+    front_suspension_assembly = Assembly(root=p2)
+
+    front_suspension_assembly.add_edge(p2, p1[0], object=ConstraintAnchor(
+        anchor_name_master="out1",
+        anchor_name_slave="wide_out",
+        distance=0,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p2, p1[1], object=ConstraintAnchor(
+        anchor_name_master="out2",
+        anchor_name_slave="wide_out",
+        distance=0,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p2, p3, object=ConstraintAnchor(
+        anchor_name_master="in_inside",
+        anchor_name_slave="main",
+        distance=-71.396,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p3, p4, object=ConstraintAnchor(
+        anchor_name_master="perp",
+        anchor_name_slave="cone",
+        distance=6.2,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p4, p5, object=ConstraintAnchor(
+        anchor_name_master="ball",
+        anchor_name_slave="ball",
+        distance=0,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p5, p8, object=ConstraintAnchor(
+        anchor_name_master="side1_top",
+        anchor_name_slave="side2_top",
+        distance=0,
+        angle=-14.566))
+
+    front_suspension_assembly.add_edge(p8, p9, object=ConstraintAnchor(
+        anchor_name_master="top",
+        anchor_name_slave="bottom",
+        distance=-216.148,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p9, p12, object=ConstraintAnchor(
+        anchor_name_master="top",
+        anchor_name_slave="bottom",
+        distance=1.24,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p12, p11, object=ConstraintAnchor(
+        anchor_name_master="bottom",
+        anchor_name_slave="bottom",
+        distance=0,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p11, p10, object=ConstraintAnchor(
+        anchor_name_master="wide_flat",
+        anchor_name_slave="axis_bottom",
+        distance=0,
+        angle=0))
+
+    # TODO : create a way to position p6 on p5 and p7 on p6 so that the
+    #        holes are in front of one another without requiring
+    #        a 'magic' angle value
+
+    front_suspension_assembly.add_edge(p5, p6, object=ConstraintAnchor(
+        anchor_name_master="wheel_axis",
+        anchor_name_slave="axis_drive",
+        distance=0,
+        angle=0))
+
+    front_suspension_assembly.add_edge(p6, p7, object=ConstraintAnchor(
+        anchor_name_master="axis_disc",
+        anchor_name_slave="inside",
+        distance=0,
+        angle=0))
+
+    return front_suspension_assembly
 
 
 def make_rear_suspension_assembly():
@@ -193,8 +284,11 @@ if __name__ == "__main__":
     # chassis_assembly_ = make_chassis_assembly()
     # chassis_assembly_.display_3d()
 
-    rear_suspension_assembly_ = make_rear_suspension_assembly()
-    rear_suspension_assembly_.display_3d()
+    front_suspension_assembly_ = make_front_suspension_assembly()
+    front_suspension_assembly_.display_3d()
+
+    # rear_suspension_assembly_ = make_rear_suspension_assembly()
+    # rear_suspension_assembly_.display_3d()
 
     # wheel_assembly = make_wheel_assembly()
     # wheel_assembly.display_3d()
