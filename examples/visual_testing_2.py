@@ -84,7 +84,7 @@ def main():
         frame.p.display_vector(gp_Vec(*a.anchors[k]["direction"]),
                                    gp_Pnt(*a.anchors[k]["position"]))
 
-    frame.p.display_shape(a.node_shape.node_shape)
+    frame.p.display_shape(a.node_shape.shape)
 
     app.SetTopWindow(frame)
     app.MainLoop()

@@ -450,6 +450,34 @@ class Assembly(nx.DiGraph, GeometryNode):
 
         cd.start()
 
+    def display_3d_alternative(self):
+        from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
+        import wx
+        from random import randint
+
+        self.build()
+
+        class MyFrame(wx.Frame):
+            r"""Frame for testing"""
+
+            def __init__(self):
+                wx.Frame.__init__(self, None, -1)
+                self.p = Wx3dViewer(self)
+                self.Show()
+
+        app = wx.App()
+        frame = MyFrame()
+        for node in self.nodes():
+            for k, v in node.anchors.items():
+                frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
+                                       gp_Pnt(*node.anchors[k]["position"]))
+            frame.p.display_shape(node.node_shape.shape,
+                                  color=colour_wx_to_occ((randint(0, 255), randint(0, 255), randint(0, 255))),
+                                  transparency=0.)
+
+        app.SetTopWindow(frame)
+        app.MainLoop()
+
     @overrides
     def place(self,
               self_anchor,

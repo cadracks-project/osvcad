@@ -89,7 +89,8 @@ def make_front_suspension_assembly():
     p4 = GeometryNode.from_stepzip("shelf/suspension/av/P4.stepzip")
     p5 = GeometryNode.from_stepzip("shelf/suspension/av/P5.stepzip")
     p6 = GeometryNode.from_stepzip("shelf/suspension/common/P6.stepzip")
-    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip", instance_id="P7_Front")
+    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip",
+                                   instance_id="P7_Front")
     p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
     p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
     p10 = GeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
@@ -262,7 +263,8 @@ def make_rear_suspension_assembly():
 
 def make_wheel_assembly():
     r"""Wheel assembly creation"""
-    rim = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/rim.stepzip", instance_id="rim")
+    rim = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/rim.stepzip",
+                                    instance_id="rim")
     tyre = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/tyre.stepzip")
 
     wheel_assembly = Assembly(root=rim)
@@ -274,40 +276,3 @@ def make_wheel_assembly():
         angle=0))
 
     return wheel_assembly
-
-
-if __name__ == "__main__":
-    # Workaround badly formatted log messages
-    # Probably originating from aocutils (likely cause: call to logger.* before
-    # call to basicConfig)
-    root = logging.getLogger()
-    if root.handlers:
-        [root.removeHandler(handler) for handler in root.handlers]
-
-    logging.basicConfig(level=logging.INFO,
-                        format='%(relativeCreated)6d :: %(levelname)6s :: '
-                               '%(module)20s :: %(lineno)3d :: %(message)s')
-
-    # chassis_assembly_ = make_chassis_assembly()
-    # for k, v in chassis_assembly_.anchors.items():
-    #     print("%s : %s" % (k, v))
-
-    # chassis_assembly_.display_3d()
-
-    # front_suspension_assembly_ = make_front_suspension_assembly()
-    # front_suspension_assembly_.display_3d()
-
-    rear_suspension_assembly_ = make_rear_suspension_assembly()
-    rear_suspension_assembly_.display_3d()
-
-    wheel_assembly = make_wheel_assembly()
-
-    rear_suspension_and_wheel_assembly = Assembly(root=rear_suspension_assembly_)
-
-    rear_suspension_and_wheel_assembly.add_edge(rear_suspension_assembly_, wheel_assembly, object=ConstraintAnchor(
-        anchor_name_master="P7_Rear/outside",
-        anchor_name_slave="rim/axle",
-        distance=0,
-        angle=0))
-    # rear_suspension_and_wheel_assembly.build()
-    rear_suspension_and_wheel_assembly.display_3d()

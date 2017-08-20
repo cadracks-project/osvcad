@@ -41,6 +41,12 @@ shape returned by an assembly? -> ccad Solid(compound)
 
 is it useful to keep the initial placement of nodes?
 
-separate examples for assemblies of each part of the car, and for assemblies of assemblies
+******** separate examples for assemblies of each part of the car, and for assemblies of assemblies
 
 ******** move _transform_anchors from nodes to geometry
+
+wx viewer should be part of osvcad (coming from aocutils)
+
+nicer graph presentation
+
+really hlobal assembly of Tabby
