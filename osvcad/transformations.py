@@ -1450,7 +1450,7 @@ def random_quaternion(rand=None):
     >>> numpy.allclose(1, vector_norm(q))
     True
     >>> q = random_quaternion(numpy.random.random(3))
-    >>> len(q.shape), q.shape[0]==4
+    >>> len(q.node_shape), q.node_shape[0]==4
     (1, True)
 
     """

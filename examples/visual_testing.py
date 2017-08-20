@@ -130,19 +130,19 @@ def main():
         # Node 1 : RED
         frame.p.display_vector(gp_Vec(*n1.anchors["only_anchor"]["direction"]),
                                gp_Pnt(*n1.anchors["only_anchor"]["position"]))
-        frame.p.display_shape(n1.shape.shape,
+        frame.p.display_shape(n1.node_shape.node_shape,
                               color=colour_wx_to_occ((255, 0, 0)),
                               transparency=0.5)
 
         # Node 2 : GREY
         frame.p.display_vector(gp_Vec(*n2.anchors["only_anchor"]["direction"]),
                                gp_Pnt(*n2.anchors["only_anchor"]["position"]))
-        frame.p.display_shape(n2.shape.shape,
+        frame.p.display_shape(n2.node_shape.node_shape,
                               color=colour_wx_to_occ((64, 64, 64)),
                               transparency=0.2)
 
         # Node 3 : BLUE
-        frame.p.display_shape(n3.shape.shape,
+        frame.p.display_shape(n3.node_shape.node_shape,
                               color=colour_wx_to_occ((0, 0, 255)),
                               transparency=0.8)
 

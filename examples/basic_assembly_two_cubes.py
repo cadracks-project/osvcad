@@ -54,21 +54,21 @@ def main():
     app = wx.App()
     frame = MyFrame()
     # RED
-    frame.p.display_shape(node_1.shape.shape,
+    frame.p.display_shape(node_1.node_shape.node_shape,
                           color=colour_wx_to_occ((255, 0, 0)),
                           transparency=0.5)
 
     # frame.p.display_shape(gp_Pnt(px1, py1, pz1))
     frame.p.display_vector(gp_Vec(dx1, dy1, dz1), gp_Pnt(px1, py1, pz1))
     # GREEN
-    frame.p.display_shape(node_2.shape.shape,
+    frame.p.display_shape(node_2.node_shape.node_shape,
                           color=colour_wx_to_occ((0, 255, 0)),
                           transparency=0.2)
 
     # frame.p.display_shape(gp_Pnt(px2, py2, pz2))
     frame.p.display_vector(gp_Vec(dx2, dy2, dz2), gp_Pnt(px2, py2, pz2))
     # BLUE
-    frame.p.display_shape(node_3.shape.shape,
+    frame.p.display_shape(node_3.node_shape.node_shape,
                           color=colour_wx_to_occ((0, 0, 255)),
                           transparency=0.8)
     frame.p.display_shape(gp_Pnt(px3, py3, pz3))

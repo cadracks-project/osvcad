@@ -27,3 +27,20 @@ Show car graph from BU's reverse engineering
 New anchors concept (normal + tangent)
 
 Class diagram
+
+Naming of assemblies and nodes that are translatable in various languages
+
+Avoid duplication of STEP/STEPZIP loading
+
+
+-----
+
+
+rename shape on nodes to node_shape for clarity
+shape returned by an assembly? -> ccad Solid(compound)
+
+is it useful to keep the initial placement of nodes?
+
+separate examples for assemblies of each part of the car, and for assemblies of assemblies
+
+move _transform_anchors from nodes to geometry

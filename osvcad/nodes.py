@@ -35,15 +35,23 @@ class GeometryNode(object):
     r"""Geometry node class
     
     A geometry node is a shape with ist accompanying anchors
+    
+    Parameters
+    ----------
+    shape : 
+    anchors : dict
+    instance_id : str, optional (default is None)
+        An identifier for the GeometryNode
 
     """
-    def __init__(self, shape, anchors):
+    def __init__(self, node_shape, anchors, instance_id=None):
         logger.debug("Direct instantiation of GeometryNode %s" % self)
-        self._shape = shape
+        self._node_shape = node_shape
         self._anchors = anchors
+        self._instance_id = instance_id
 
     @classmethod
-    def from_library_part(cls, library_file_path, part_id):
+    def from_library_part(cls, library_file_path, part_id, instance_id=None):
         r"""Create the GeometryNode from a library part"""
         logger.info("Creating GeometryNode from library (%s) part (id: %s)" % (library_file_path, part_id))
         generate(library_file_path)
@@ -54,17 +62,17 @@ class GeometryNode(object):
 
         if not hasattr(module_, 'part'):
             raise ValueError("The Python module should have a 'part' variable")
-        return cls(module_.part, module_.anchors)
+        return cls(module_.part, module_.anchors, instance_id)
 
     @classmethod
-    def from_step(cls, step_file_path, anchors=None):
+    def from_step(cls, step_file_path, anchors=None, instance_id=None):
         r"""Create the GeometryNode from a step file and anchors definition"""
         logger.info("Creating GeometryNode from step file %s" % basename(step_file_path))
         assert exists(step_file_path)
-        return cls(from_step(step_file_path), anchors)
+        return cls(from_step(step_file_path), anchors, instance_id)
 
     @classmethod
-    def from_stepzip(cls, stepzip_file):
+    def from_stepzip(cls, stepzip_file, instance_id=None):
         r"""Alternative constructor from a STEP + anchors zip file"""
         logger.info("Creating GeometryNode from stepzip file %s" % basename(stepzip_file))
         anchors = dict()
@@ -82,10 +90,10 @@ class GeometryNode(object):
                     direction = (data[3], data[4], data[5])
                     anchors[key] = {"position": position,
                                     "direction": direction}
-        return cls.from_step(stepfile_path, anchors)
+        return cls.from_step(stepfile_path, anchors, instance_id)
 
     @classmethod
-    def from_py_script(cls, py_script_path):
+    def from_py_script(cls, py_script_path, instance_id=None):
         r"""Create the GeometryNode from a python script (module) that has a
         part and an anchors attributes"""
         logger.info("Creating GeometryNode from py script %s" % basename(py_script_path))
@@ -95,16 +103,21 @@ class GeometryNode(object):
         name, ext = splitext(basename(py_script_path))
         module_ = imp.load_source(name, py_script_path)
 
-        return cls(module_.part, module_.anchors)
+        return cls(module_.part, module_.anchors, instance_id)
 
     @property
-    def shape(self):
-        r"""Shape getter"""
-        return self._shape
+    def instance_id(self):
+        r"""Instance id getter"""
+        return self._instance_id
 
-    @shape.setter
-    def shape(self, value):
-        self._shape = value
+    @property
+    def node_shape(self):
+        r"""Shape getter"""
+        return self._node_shape
+
+    @node_shape.setter
+    def node_shape(self, value):
+        self._node_shape = value
 
     @property
     def anchors(self):
@@ -153,7 +166,7 @@ class GeometryNode(object):
             return other.transform(transformation_mat_)
         else:
             modified = other.transform(transformation_mat_)
-            other.shape = modified.shape
+            other.node_shape = modified.node_shape
             other.anchors = modified.anchors
 
         # print("Anchors of %s: %s" % (other, other.anchors))
@@ -172,7 +185,7 @@ class GeometryNode(object):
         """
         # logger.debug("transform()")
         # logger.debug("transformation matrix : %s" % transformation_matrix)
-        new_shape = transformed(self.shape, transformation_matrix)
+        new_shape = transformed(self.node_shape, transformation_matrix)
         new_anchors = dict()
 
         for anchor_name, anchor_dict in self.anchors.items():
@@ -238,7 +251,7 @@ class GeometryNode(object):
         for k, _ in self.anchors.items():
             viewer.display_vector(gp_Vec(*self.anchors[k]["direction"]),
                                   gp_Pnt(*self.anchors[k]["position"]))
-        viewer.display_shape(self.shape.shape,
+        viewer.display_shape(self.node_shape.node_shape,
                              color=colour_wx_to_occ(color_255),
                              transparency=transparency)
 
@@ -252,7 +265,7 @@ class GeometryNode(object):
         r"""Long description"""
         l = list()
         l.append("GeometryNode")
-        l.append("\tShape : %s" % str(self.shape))
+        l.append("\tShape : %s" % str(self.node_shape))
         l.append("\tAnchors :")
         if self.anchors is not None:
             for anchor_name, anchor_dict in self.anchors.items():
@@ -298,13 +311,23 @@ class Assembly(nx.DiGraph, GeometryNode):
 
     The Assembly is an nx.DiGraph with serialization, deserialization and
     3D viewing methods
+    
+    Parameters
+    ----------
+    root : GeometryNode 
+        The node of the assembly on which other nodes are positioned
+        (aka the node that does not move)
 
     """
 
-    def __init__(self, root):
+    def __init__(self, root, instance_id=None):
         super(Assembly, self).__init__()
+        self._node_shape = None
+        self._anchors = None
+        self._instance_id = instance_id
         self.add_node(root)
         self.root = root
+        # self._instance_id = instance_id
 
         self.built = False
 
@@ -322,14 +345,14 @@ class Assembly(nx.DiGraph, GeometryNode):
 
         """
         # Do it in place
-        for node in self.nodes():
-            node._shape = transformed(node.shape, transformation_matrix)
-            new_anchors = dict()
+        # for node in self.nodes():
+        self._node_shape = transformed(self.node_shape, transformation_matrix)
+        new_anchors = dict()
 
-            for anchor_name, anchor_dict in node.anchors.items():
-                new_anchors[anchor_name] = _transform_anchor(anchor_dict,
-                                                            transformation_matrix)
-            node._anchors = new_anchors
+        for anchor_name, anchor_dict in self.anchors.items():
+            new_anchors[anchor_name] = _transform_anchor(anchor_dict,
+                                                        transformation_matrix)
+        self._anchors = new_anchors
 
     def build(self):
         r"""Build the assembly using the graph used to represent it"""
@@ -352,6 +375,36 @@ class Assembly(nx.DiGraph, GeometryNode):
                 except nx.exception.NetworkXError:
                     msg = "NetworkX error"
                     logger.warning(msg)
+
+            # node shape
+            shapes = list()
+            logger.debug("%i nodes in %s" % (len(self.nodes()), id(self)))
+            for node in self.nodes():
+                logger.debug("Adding shape of node %s" % node)
+                try:
+                    node.build()
+                except:
+                    pass
+                shapes.append(node._node_shape)
+            # s = shapes[0]
+            # for shape in shapes[1:]:
+            #     s += shape
+
+            self._node_shape = self.compound(shapes)
+
+            # anchors
+
+            a = dict()
+            for node in self.nodes():
+                for anchor_name, anchor_value in node._anchors.items():
+                    if node.instance_id is not None:
+                        a[node.instance_id + "/" + str(
+                            anchor_name)] = anchor_value
+                    else:
+                        a[str(hash(node)) + "/" + str(
+                            anchor_name)] = anchor_value
+            self._anchors = a
+
             self.built = True
 
     # def write_yaml(self, yaml_file_name):
@@ -417,9 +470,13 @@ class Assembly(nx.DiGraph, GeometryNode):
         self.build()
 
         for node in self.nodes():
-            v.display(node.shape,
+            v.display(node._node_shape,
                       color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
                       transparency=0.)
+        # v.display(self._node_shape,
+        #           color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
+        #           transparency=0.)
+
         cd.start()
 
     @overrides
@@ -461,26 +518,38 @@ class Assembly(nx.DiGraph, GeometryNode):
         other.transform(transformation_mat_)
 
     @property
-    def shape(self):
+    def node_shape(self):
         r"""Abstract property implementation"""
-        logger.debug("Accessing shapes of assembly %s" % self)
+        logger.debug("Accessing shapes of assembly %s" % id(self))
         self.build()
-        shapes = list()
-        for node in self.nodes():
-            shapes.append(node.shape)
-        s = shapes[0]
-        for shape in shapes[1:]:
-            s += shape
-        return s
+        return self._node_shape
+
+    # TODO : separate function (it is static)
+    def compound(self, topo):
+        r"""Accumulate a bunch of TopoDS_* in list `topo` to a OCC.TopoDS.TopoDS_Compound
+
+        Parameters
+        ----------
+        topo : list[TopoDS_*]
+
+        Returns
+        -------
+        OCC.TopoDS.TopoDS_Compound
+
+        """
+        import OCC.TopoDS
+        from ccad.model import Solid
+        bd = OCC.TopoDS.TopoDS_Builder()
+        comp = OCC.TopoDS.TopoDS_Compound()
+        bd.MakeCompound(comp)
+        for i in topo:
+            bd.Add(comp, i.shape)
+
+        return Solid(comp)
 
     @property
     def anchors(self):
         r"""Abstract property implementation"""
         logger.debug("Accessing anchors of assembly %s" % self)
         self.build()
-        a = dict()
-        for node in self.nodes():
-            for anchor_name, anchor_value in node.anchors.items():
-                a[str(hash(node)) + "/" + str(anchor_name)] = anchor_value
-
-        return a
+        return self._anchors

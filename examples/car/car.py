@@ -89,7 +89,7 @@ def make_front_suspension_assembly():
     p4 = GeometryNode.from_stepzip("shelf/suspension/av/P4.stepzip")
     p5 = GeometryNode.from_stepzip("shelf/suspension/av/P5.stepzip")
     p6 = GeometryNode.from_stepzip("shelf/suspension/common/P6.stepzip")
-    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip")
+    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip", instance_id="P7_Front")
     p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
     p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
     p10 = GeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
@@ -182,6 +182,7 @@ def make_rear_suspension_assembly():
     p1 = [GeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(4)]
     p2 = GeometryNode.from_stepzip("shelf/suspension/arr/P2.stepzip")
     p5 = GeometryNode.from_stepzip("shelf/suspension/arr/P5.stepzip")
+    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip", instance_id="P7_Rear")
     p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
     p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
     p10 = GeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
@@ -220,6 +221,12 @@ def make_rear_suspension_assembly():
         distance=0,
         angle=0))
 
+    rear_suspension_assembly.add_edge(p5, p7, object=ConstraintAnchor(
+        anchor_name_master="wheel_axis",
+        anchor_name_slave="inside",
+        distance=62,
+        angle=0))
+
     rear_suspension_assembly.add_edge(p5, p8, object=ConstraintAnchor(
         anchor_name_master="side1_top",
         anchor_name_slave="side1_top",
@@ -255,7 +262,7 @@ def make_rear_suspension_assembly():
 
 def make_wheel_assembly():
     r"""Wheel assembly creation"""
-    rim = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/rim.stepzip")
+    rim = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/rim.stepzip", instance_id="rim")
     tyre = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/tyre.stepzip")
 
     wheel_assembly = Assembly(root=rim)
@@ -277,19 +284,30 @@ if __name__ == "__main__":
     if root.handlers:
         [root.removeHandler(handler) for handler in root.handlers]
 
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format='%(relativeCreated)6d :: %(levelname)6s :: '
                                '%(module)20s :: %(lineno)3d :: %(message)s')
 
     # chassis_assembly_ = make_chassis_assembly()
+    # for k, v in chassis_assembly_.anchors.items():
+    #     print("%s : %s" % (k, v))
+
     # chassis_assembly_.display_3d()
 
-    front_suspension_assembly_ = make_front_suspension_assembly()
-    front_suspension_assembly_.display_3d()
+    # front_suspension_assembly_ = make_front_suspension_assembly()
+    # front_suspension_assembly_.display_3d()
 
-    # rear_suspension_assembly_ = make_rear_suspension_assembly()
-    # rear_suspension_assembly_.display_3d()
+    rear_suspension_assembly_ = make_rear_suspension_assembly()
+    rear_suspension_assembly_.display_3d()
 
-    # wheel_assembly = make_wheel_assembly()
-    # wheel_assembly.display_3d()
-    # wheel_assembly.show_plot()
+    wheel_assembly = make_wheel_assembly()
+
+    rear_suspension_and_wheel_assembly = Assembly(root=rear_suspension_assembly_)
+
+    rear_suspension_and_wheel_assembly.add_edge(rear_suspension_assembly_, wheel_assembly, object=ConstraintAnchor(
+        anchor_name_master="P7_Rear/outside",
+        anchor_name_slave="rim/axle",
+        distance=0,
+        angle=0))
+    # rear_suspension_and_wheel_assembly.build()
+    rear_suspension_and_wheel_assembly.display_3d()

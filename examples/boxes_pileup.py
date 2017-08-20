@@ -59,13 +59,13 @@ def main():
 
     app = wx.App()
     frame = MyFrame()
-    frame.p.display_shape(cubes[0].shape.shape,
+    frame.p.display_shape(cubes[0].node_shape.node_shape,
                           color=colour_wx_to_occ((255, 255, 255)),
                           transparency=0.)
 
     # Initial cubes in orange
     for c in cubes[1:]:
-        frame.p.display_shape(c.shape.shape,
+        frame.p.display_shape(c.node_shape.node_shape,
                               color=colour_wx_to_occ((255, 136, 64)),
                               transparency=0.)
 
@@ -79,7 +79,7 @@ def main():
                 color = colors[0]
             else:
                 color = colors[1]
-        frame.p.display_shape(new_cube.shape.shape,
+        frame.p.display_shape(new_cube.node_shape.node_shape,
                               color=colour_wx_to_occ(color),
                               transparency=0.)
 
