@@ -36,8 +36,8 @@ Avoid duplication of STEP/STEPZIP loading
 -----
 
 
-rename shape on nodes to node_shape for clarity
-shape returned by an assembly? -> ccad Solid(compound)
+******** rename shape on nodes to node_shape for clarity
+******** shape returned by an assembly? -> ccad Solid(compound)
 
 is it useful to keep the initial placement of nodes?
 
@@ -49,4 +49,4 @@ wx viewer should be part of osvcad (coming from aocutils)
 
 nicer graph presentation
 
-really hlobal assembly of Tabby
+really global assembly of Tabby as an example

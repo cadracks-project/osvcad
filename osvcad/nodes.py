@@ -38,12 +38,16 @@ class GeometryNode(object):
     
     Parameters
     ----------
-    shape : 
+    node_shape : ccad Solid
     anchors : dict
     instance_id : str, optional (default is None)
         An identifier for the GeometryNode
 
     """
+
+    # loaded CAD files cache
+    loaded = dict()
+
     def __init__(self, node_shape, anchors, instance_id=None):
         logger.debug("Direct instantiation of GeometryNode %s" % self)
         self._node_shape = node_shape
@@ -69,7 +73,16 @@ class GeometryNode(object):
         r"""Create the GeometryNode from a step file and anchors definition"""
         logger.info("Creating GeometryNode from step file %s" % basename(step_file_path))
         assert exists(step_file_path)
-        return cls(from_step(step_file_path), anchors, instance_id)
+
+        if step_file_path in cls.loaded.keys():
+            s = cls.loaded[step_file_path]
+        else:
+            logger.debug("Using cache to load %s" % step_file_path)
+            s = from_step(step_file_path)
+            # Store the shape in STEP at the class level if not loaded
+            cls.loaded[step_file_path] = s
+
+        return cls(s, anchors, instance_id)
 
     @classmethod
     def from_stepzip(cls, stepzip_file, instance_id=None):
