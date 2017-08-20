@@ -22,7 +22,7 @@ import ccad.display as cd
 
 from party.library_use import generate
 
-from osvcad.geometry import transformation_from_2_anchors
+from osvcad.geometry import transformation_from_2_anchors, transform_anchor
 from osvcad.transformations import translation_matrix, rotation_matrix
 from osvcad.stepzip import extract_stepzip
 from osvcad.coding import overrides
@@ -189,8 +189,8 @@ class GeometryNode(object):
         new_anchors = dict()
 
         for anchor_name, anchor_dict in self.anchors.items():
-            new_anchors[anchor_name] = _transform_anchor(anchor_dict,
-                                                         transformation_matrix)
+            new_anchors[anchor_name] = transform_anchor(anchor_dict,
+                                                        transformation_matrix)
         return GeometryNode(new_shape, new_anchors)
 
     def translate(self, vector):
@@ -277,35 +277,6 @@ class GeometryNode(object):
         return "\n".join(l)
 
 
-def _transform_anchor(anchor, transformation_matrix):
-    r"""Transform an anchor using a transformation matrix
-    
-    Parameters
-    ----------
-    anchor : dict
-        A dict with a least the position and direction keys
-    transformation_matrix : np.ndarray
-        4 x 3 matrix"""
-
-    logger.debug("_transform_anchor()")
-    # logger.debug("Transformation matrix : %s" % transformation_matrix)
-
-    translation_vec = transformation_matrix.T[-1:, :3][0]
-    matrix_3x3 = transformation_matrix[:3, :3]
-
-    px, py, pz = anchor["position"]
-    dx, dy, dz = anchor["direction"]
-
-    new_px, new_py, new_pz = np.dot(np.array([px, py, pz]),
-                                    matrix_3x3.T) + translation_vec
-
-    new_dx, new_dy, new_dz = np.dot(np.array([dx, dy, dz]),
-                                    matrix_3x3.T)
-
-    return {"position": (new_px, new_py, new_pz),
-            "direction": (new_dx, new_dy, new_dz)}
-
-
 class Assembly(nx.DiGraph, GeometryNode):
     r"""Acyclic directed graph modelling of a assembly
 
@@ -350,7 +321,7 @@ class Assembly(nx.DiGraph, GeometryNode):
         new_anchors = dict()
 
         for anchor_name, anchor_dict in self.anchors.items():
-            new_anchors[anchor_name] = _transform_anchor(anchor_dict,
+            new_anchors[anchor_name] = transform_anchor(anchor_dict,
                                                         transformation_matrix)
         self._anchors = new_anchors
 

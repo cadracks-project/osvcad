@@ -5,7 +5,7 @@ r"""Anchor transformation tests"""
 
 import numpy as np
 
-from osvcad.nodes import _transform_anchor
+from osvcad.nodes import transform_anchor
 
 # TODO : add more tests
 
@@ -20,7 +20,7 @@ def test_anchor_translation():
                                       [0, 1, 0, 1],
                                       [0, 0, 1, 1]])
 
-    anchor_1 = _transform_anchor(anchor, transformation_matrix)
+    anchor_1 = transform_anchor(anchor, transformation_matrix)
 
     assert anchor_1["position"] == (1, 1, 1)
     assert anchor_1["direction"] == (1, 0, 0)
@@ -37,7 +37,7 @@ def test_anchor_combined_translation_rotation():
                                       [1, 0, 0, 1],
                                       [0, 0, 1, 1]])
 
-    anchor_1 = _transform_anchor(anchor, transformation_matrix)
+    anchor_1 = transform_anchor(anchor, transformation_matrix)
 
     assert anchor_1["position"] == (1, 1, 1)
     assert anchor_1["direction"] == (0, 1, 0)

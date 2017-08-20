@@ -43,4 +43,4 @@ is it useful to keep the initial placement of nodes?
 
 separate examples for assemblies of each part of the car, and for assemblies of assemblies
 
-move _transform_anchors from nodes to geometry
+******** move _transform_anchors from nodes to geometry

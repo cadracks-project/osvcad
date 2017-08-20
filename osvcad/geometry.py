@@ -132,3 +132,32 @@ def transformation_from_2_anchors(anchor_master,
     # logger.debug("Transformation matrix from 2 anchors : %s" % transformation_mat)
     logger.debug("... Done computing transformation from 2 anchors")
     return transformation_mat
+
+
+def transform_anchor(anchor, transformation_matrix):
+    r"""Transform an anchor using a transformation matrix
+
+    Parameters
+    ----------
+    anchor : dict
+        A dict with a least the position and direction keys
+    transformation_matrix : np.ndarray
+        4 x 3 matrix"""
+
+    logger.debug("_transform_anchor()")
+    # logger.debug("Transformation matrix : %s" % transformation_matrix)
+
+    translation_vec = transformation_matrix.T[-1:, :3][0]
+    matrix_3x3 = transformation_matrix[:3, :3]
+
+    px, py, pz = anchor["position"]
+    dx, dy, dz = anchor["direction"]
+
+    new_px, new_py, new_pz = np.dot(np.array([px, py, pz]),
+                                    matrix_3x3.T) + translation_vec
+
+    new_dx, new_dy, new_dz = np.dot(np.array([dx, dy, dz]),
+                                    matrix_3x3.T)
+
+    return {"position": (new_px, new_py, new_pz),
+            "direction": (new_dx, new_dy, new_dz)}
