@@ -46,10 +46,15 @@ is it useful to keep the initial placement of nodes?
 ******** move _transform_anchors from nodes to geometry
 
 ******** wx viewer should be part of osvcad (coming from aocutils)
+  AUI or split window for UI (shelf + 3d + graph)
   integrate the graph viewer
   callbacks for selections in the ui
-  MVC pattern using Atom
+  MVC pattern using Atom + move away from calling the UI in nodes or assemblies
+  Anchors display (and selectable)
+    How to display a relationship that is not made of 2 vectors ??
 
 nicer graph presentation
 
 really global assembly of Tabby as an example
+
+include some parts (motor) in the car example that are created from python scripts

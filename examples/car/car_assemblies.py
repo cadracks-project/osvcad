@@ -84,10 +84,10 @@ def make_chassis_assembly():
 def make_front_suspension_assembly():
     r"""Front suspension assembly creation"""
     p1 = [GeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(2)]
-    p2 = GeometryNode.from_stepzip("shelf/suspension/av/P2.stepzip")
-    p3 = GeometryNode.from_stepzip("shelf/suspension/av/P3.stepzip")
-    p4 = GeometryNode.from_stepzip("shelf/suspension/av/P4.stepzip")
-    p5 = GeometryNode.from_stepzip("shelf/suspension/av/P5.stepzip")
+    p2 = GeometryNode.from_stepzip("shelf/suspension/front/P2.stepzip")
+    p3 = GeometryNode.from_stepzip("shelf/suspension/front/P3.stepzip")
+    p4 = GeometryNode.from_stepzip("shelf/suspension/front/P4.stepzip")
+    p5 = GeometryNode.from_stepzip("shelf/suspension/front/P5.stepzip")
     p6 = GeometryNode.from_stepzip("shelf/suspension/common/P6.stepzip")
     p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip",
                                    instance_id="P7_Front")
@@ -181,8 +181,8 @@ def make_front_suspension_assembly():
 def make_rear_suspension_assembly():
     r"""Rear suspension assembly creation"""
     p1 = [GeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(4)]
-    p2 = GeometryNode.from_stepzip("shelf/suspension/arr/P2.stepzip")
-    p5 = GeometryNode.from_stepzip("shelf/suspension/arr/P5.stepzip")
+    p2 = GeometryNode.from_stepzip("shelf/suspension/rear/P2.stepzip")
+    p5 = GeometryNode.from_stepzip("shelf/suspension/rear/P5.stepzip")
     p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip", instance_id="P7_Rear")
     p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
     p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
