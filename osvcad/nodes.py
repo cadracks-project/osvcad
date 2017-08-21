@@ -447,8 +447,8 @@ class Assembly(nx.DiGraph, GeometryNode):
         nx.draw_networkx_edge_labels(self, pos)
         plt.show()
 
-    def display_3d(self):
-        r"""Display the Assembly in a 3D viewer (currently ccad viewer)"""
+    def display_3d_ccad(self):
+        r"""Display the Assembly in a the ccad 3D viewer"""
         v = cd.view()
 
         self.build()
@@ -463,8 +463,9 @@ class Assembly(nx.DiGraph, GeometryNode):
 
         cd.start()
 
-    def display_3d_alternative(self):
-        from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
+    def display_3d(self):
+        r"""Display using osvcad's integrated wx viewer"""
+        from osvcad.ui.wx_viewer import Wx3dViewer, colour_wx_to_occ
         import wx
         from random import randint
 
@@ -485,7 +486,9 @@ class Assembly(nx.DiGraph, GeometryNode):
                 frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
                                        gp_Pnt(*node.anchors[k]["position"]))
             frame.p.display_shape(node.node_shape.shape,
-                                  color=colour_wx_to_occ((randint(0, 255), randint(0, 255), randint(0, 255))),
+                                  color=colour_wx_to_occ((randint(0, 255),
+                                                          randint(0, 255),
+                                                          randint(0, 255))),
                                   transparency=0.)
 
         app.SetTopWindow(frame)

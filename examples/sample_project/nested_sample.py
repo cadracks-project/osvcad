@@ -40,6 +40,6 @@ for i in range(4):
 
 # project.write_json("project.json")
 
-project.display_3d()
+project.display_3d_ccad()
 
 project.show_plot()

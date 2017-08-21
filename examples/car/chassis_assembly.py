@@ -23,5 +23,5 @@ if __name__ == "__main__":
         print("%s : %s" % (k, v))
 
     # chassis_assembly_.display_3d()
-    chassis_assembly_.display_3d_alternative()
+    chassis_assembly_.display_3d()
     chassis_assembly_.show_plot()

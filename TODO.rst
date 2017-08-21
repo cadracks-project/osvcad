@@ -30,7 +30,7 @@ Class diagram
 
 Naming of assemblies and nodes that are translatable in various languages
 
-Avoid duplication of STEP/STEPZIP loading
+******** Avoid duplication of STEP/STEPZIP loading
 
 
 -----
@@ -45,7 +45,10 @@ is it useful to keep the initial placement of nodes?
 
 ******** move _transform_anchors from nodes to geometry
 
-wx viewer should be part of osvcad (coming from aocutils)
+******** wx viewer should be part of osvcad (coming from aocutils)
+  integrate the graph viewer
+  callbacks for selections in the ui
+  MVC pattern using Atom
 
 nicer graph presentation
 

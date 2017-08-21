@@ -20,5 +20,5 @@ if __name__ == "__main__":
 
     rear_suspension_assembly_ = make_rear_suspension_assembly()
     # rear_suspension_assembly_.display_3d()
-    rear_suspension_assembly_.display_3d_alternative()
+    rear_suspension_assembly_.display_3d()
     rear_suspension_assembly_.show_plot()

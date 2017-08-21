@@ -43,6 +43,6 @@ print(A.number_of_edges())
 
 # A.write_json("sample.json")
 
-A.display_3d()
+A.display_3d_ccad()
 
 A.show_plot()

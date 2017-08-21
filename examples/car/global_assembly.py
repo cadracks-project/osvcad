@@ -35,5 +35,5 @@ if __name__ == "__main__":
         angle=0))
 
     # rear_suspension_and_wheel_assembly.display_3d()
-    rear_suspension_and_wheel_assembly.display_3d_alternative()
+    rear_suspension_and_wheel_assembly.display_3d()
     rear_suspension_and_wheel_assembly.show_plot()
