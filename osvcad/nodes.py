@@ -482,9 +482,9 @@ class Assembly(nx.DiGraph, GeometryNode):
         app = wx.App()
         frame = MyFrame()
         for node in self.nodes():
-            for k, v in node.anchors.items():
-                frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
-                                       gp_Pnt(*node.anchors[k]["position"]))
+            # for k, v in node.anchors.items():
+            #     frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
+            #                            gp_Pnt(*node.anchors[k]["position"]))
             frame.p.display_shape(node.node_shape.shape,
                                   color=colour_wx_to_occ((randint(0, 255),
                                                           randint(0, 255),

@@ -46,12 +46,15 @@ is it useful to keep the initial placement of nodes?
 ******** move _transform_anchors from nodes to geometry
 
 ******** wx viewer should be part of osvcad (coming from aocutils)
-  AUI or split window for UI (shelf + 3d + graph)
+  ******** AUI or split window for UI (shelf + 3d + graph)
+  Remove dependency of osvcad.ui.topology on aocutils
   integrate the graph viewer
+  Set the assembly in the model to do the first tests
   callbacks for selections in the ui
-  MVC pattern using Atom + move away from calling the UI in nodes or assemblies
+  * MVC pattern using Atom + move away from calling the UI in nodes or assemblies
   Anchors display (and selectable)
     How to display a relationship that is not made of 2 vectors ??
+  Live part coding (editor and viewer side by side)
 
 nicer graph presentation
 
