@@ -27,12 +27,12 @@ Geometry : Parts and Assemblies
 
 The geometry of a product in **Osvcad** is handled by 2 classes: *PartGeometryNode* and *AssemblyGeometryNode* (see `nodes.py <https://github.com/osv-team/osvcad/blob/master/osvcad/nodes.py>`_).
 
-Both *PartGeometryNode* and *AssemblyGeometryNode* inherit from *GeometryNode* which is an abstract class used to define a common interface. In addition,
- *AssemblyGeometryNode* inherits from *networkx.DiGraph*. The consequence is that *AssemblyGeometryNode* can contain a graph and be a node of a graph of *GeometryNode(s)*
+Both *PartGeometryNode* and *AssemblyGeometryNode* inherit from *GeometryNode* which is an abstract class used to define a common interface. In addition, *AssemblyGeometryNode*
+inherits from *networkx.DiGraph*. The consequence is that *AssemblyGeometryNode* can contain a graph and be a node of a graph of *GeometryNode(s)*
 at the same time.
 
 .. figure:: img/class_structure_nodes.png
-   :scale: 50 %
+   :scale: 30 %
    :alt: Nodes class structure
 
    *Class diagram for geometry nodes*
@@ -62,7 +62,7 @@ implements the *ConstraintAnchor* constraint that positions 2 anchors opposite t
 now colinear anchors. It is planned to implement more types of constraints.
 
 .. figure:: img/class_structure_edges.png
-   :scale: 50 %
+   :scale: 30 %
    :alt: Edges/constraints class structure
 
    *Class diagram for graph edges/constraints*
@@ -71,7 +71,7 @@ As an illustration of how the ConstraintAnchor works, here is a very simple exam
 of positioning the green cube on the red cube using their anchors:
 
 .. figure:: img/basic_assembly.png
-   :scale: 50 %
+   :scale: 30 %
    :alt: Basic positioning of 2 cubes using anchors
 
 
