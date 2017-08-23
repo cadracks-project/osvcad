@@ -1,5 +1,5 @@
 Osvcad
-======
+******
 
 .. figure:: img/chassis_assembly.png
    :scale: 100 %
@@ -11,7 +11,7 @@ Warning : work in progress. Early stage of development
 
 
 Installing
-----------
+==========
 
 .. code-block:: shell
    :caption: Installing from the git repo:
@@ -23,7 +23,7 @@ Installing
 
 
 Geometry : Parts and Assemblies
--------------------------------
+===============================
 
 The geometry of a product in **Osvcad** is handled by 2 classes: *PartGeometryNode* and *AssemblyGeometryNode* (see `nodes.py <https://github.com/osv-team/osvcad/blob/master/osvcad/nodes.py>`_).
 
@@ -32,16 +32,17 @@ inherits from *networkx.DiGraph*. The consequence is that *AssemblyGeometryNode*
 at the same time.
 
 .. figure:: img/class_structure_nodes.png
+   :align: center
    :scale: 30 %
    :alt: Nodes class structure
 
-   *Class diagram for geometry nodes*
+   *Fig. 1 : Class diagram for geometry nodes*
 
 A *PartGeometryNode* can be created from a variety of sources (a STEP file, a STEPZIP file, a specifically formatted Python script/module or a Library part). An *AssemblyGeometryNode* is created
 by defining the *PartGeometryNode(s)* that compose it and the positioning relationships between the *PartGeometryNode(s)*.
 
 stepzips
-~~~~~~~~
+--------
 
 *stepzip* files are zip files containing a STEP file and a *.anchors file. The *.anchors file specifies where the anchors are on the STEP file. It is a convenient way
 to store and use a STEP file with its logical anchors in a single file that can be used to create a PartGeometryNode. Any unzipping utility can be used to view its content.
@@ -49,7 +50,7 @@ In **Osvcad**, the *stepzip* files are handled by the `stepzip.py <https://githu
 
 
 Positioning parts in an assembly
---------------------------------
+================================
 
 A single part is normally designed in its own frame of reference, usually near the origin where x, y and z are 0. To define an assembly, we need a way to express that
 "part A's bottom goes on top of part B". This is why **Oscad** uses a system of anchors. An anchor is made of a point and a direction (i.e. an attached vector); the anchors
@@ -62,20 +63,22 @@ implements the *ConstraintAnchor* constraint that positions 2 anchors opposite t
 now colinear anchors. It is planned to implement more types of constraints.
 
 .. figure:: img/class_structure_edges.png
+   :align: center
    :scale: 30 %
    :alt: Edges/constraints class structure
 
-   *Class diagram for graph edges/constraints*
+   *Fig. 2 : Class diagram for graph edges/constraints*
 
 As an illustration of how the ConstraintAnchor works, here is a very simple example. 2 cubes (red and green) each define 1 anchor (the yellow arrows). The blue cube is a result
 of positioning the green cube on the red cube using their anchors:
 
 .. figure:: img/basic_assembly.png
+   :align: center
    :scale: 30 %
    :alt: Basic positioning of 2 cubes using anchors
 
 
 A 10 minutes example
---------------------
+====================
 
 To be completed
