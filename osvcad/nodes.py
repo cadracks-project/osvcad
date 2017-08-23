@@ -5,12 +5,13 @@ r"""Graph nodes"""
 import logging
 from math import radians
 import re
+from abc import abstractmethod, abstractproperty, ABCMeta
 
 from os.path import basename, splitext, exists, join, dirname
 
 import imp
 import networkx as nx
-import jsonpickle
+# import jsonpickle
 import matplotlib.pyplot as plt
 import numpy as np
 from random import uniform
@@ -22,7 +23,8 @@ import ccad.display as cd
 
 from party.library_use import generate
 
-from osvcad.geometry import transformation_from_2_anchors, transform_anchor
+from osvcad.geometry import transformation_from_2_anchors, transform_anchor, \
+    compound
 from osvcad.transformations import translation_matrix, rotation_matrix
 from osvcad.stepzip import extract_stepzip
 from osvcad.coding import overrides
@@ -32,6 +34,85 @@ logger = logging.getLogger(__name__)
 
 
 class GeometryNode(object):
+    r"""Abstract base class for all object representing geometry in Osvcad"""
+    __metaclass__ = ABCMeta
+
+    @abstractproperty
+    def node_shape(self):
+        r"""The geometrical shape of the node
+        
+        Returns
+        -------
+        ccad.Solid
+
+        """
+        raise NotImplementedError
+
+    @abstractproperty
+    def anchors(self):
+        r"""The anchors of the node
+        
+        Returns
+        -------
+        dict[dict]"""
+        raise NotImplementedError
+
+    @abstractproperty
+    def instance_id(self):
+        r"""A human readable identification of the node
+        
+        Returns
+        -------
+        str
+        
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def transform(self, transformation_matrix):
+        r"""Transform the node using a transformation matrix
+        
+        Parameters
+        ----------
+        transformation_matrix : np.ndarray
+            4X3 transformation matrix
+        
+        Returns
+        -------
+        GeometryNode
+
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def place(self, self_anchor, other, other_anchor, angle=0., distance=0.,
+              inplace=True):
+        r"""
+        
+        Parameters
+        ----------
+        self_anchor : str
+            Anchor key on the object
+        other : GeometryNode
+            The GeometryNode to be placed on self
+        other_anchor : str
+            Anchor key of the other GeometryNode
+        angle : float, optional (default is 0.)
+            Post anchor placement rotation angle (degrees)
+        distance : float, optional (default is 0.)
+            Post anchor placement translation distance
+        inplace : bool, optional (default is True)
+            Should place modify self or return a new GeometryNode
+
+        Returns
+        -------
+        None or GeometryNode, depending on the value of inplace
+
+        """
+        raise NotImplementedError
+
+
+class PartGeometryNode(GeometryNode):
     r"""Geometry node class
     
     A geometry node is a shape with ist accompanying anchors
@@ -155,7 +236,7 @@ class GeometryNode(object):
         ----------
         self_anchor : str
             Anchor identifier
-        other : GeometryNode or subclass
+        other : PartGeometryNode or subclass
         other_anchor : str
             Anchor identifier on the 'other' node
         angle : float
@@ -193,7 +274,7 @@ class GeometryNode(object):
         
         Returns
         -------
-        GeometryNode
+        PartGeometryNode
 
         """
         # logger.debug("transform()")
@@ -204,7 +285,7 @@ class GeometryNode(object):
         for anchor_name, anchor_dict in self.anchors.items():
             new_anchors[anchor_name] = transform_anchor(anchor_dict,
                                                         transformation_matrix)
-        return GeometryNode(new_shape, new_anchors)
+        return PartGeometryNode(new_shape, new_anchors)
 
     def translate(self, vector):
         r"""Translate the node
@@ -216,7 +297,7 @@ class GeometryNode(object):
 
         Returns
         -------
-        GeometryNode
+        PartGeometryNode
 
         """
         # logger.debug("translate()")
@@ -290,7 +371,7 @@ class GeometryNode(object):
         return "\n".join(l)
 
 
-class Assembly(nx.DiGraph, GeometryNode):
+class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
     r"""Acyclic directed graph modelling of a assembly
 
     The Assembly is an nx.DiGraph with serialization, deserialization and
@@ -298,14 +379,14 @@ class Assembly(nx.DiGraph, GeometryNode):
     
     Parameters
     ----------
-    root : GeometryNode 
+    root : PartGeometryNode 
         The node of the assembly on which other nodes are positioned
         (aka the node that does not move)
 
     """
 
     def __init__(self, root, instance_id=None):
-        super(Assembly, self).__init__()
+        super(AssemblyGeometryNode, self).__init__()
         self._node_shape = None
         self._anchors = None
         self._instance_id = instance_id
@@ -314,6 +395,11 @@ class Assembly(nx.DiGraph, GeometryNode):
         # self._instance_id = instance_id
 
         self.built = False
+
+    @property
+    def instance_id(self):
+        r"""Instance id getter"""
+        return self._instance_id
 
     @overrides
     def transform(self, transformation_matrix):
@@ -325,7 +411,7 @@ class Assembly(nx.DiGraph, GeometryNode):
 
         Returns
         -------
-        GeometryNode
+        PartGeometryNode
 
         """
         # Do it in place
@@ -374,16 +460,18 @@ class Assembly(nx.DiGraph, GeometryNode):
             # for shape in shapes[1:]:
             #     s += shape
 
-            self._node_shape = self.compound(shapes)
+            self._node_shape = compound(shapes)
 
             # anchors
 
             a = dict()
             for node in self.nodes():
                 for anchor_name, anchor_value in node._anchors.items():
-                    if node.instance_id is not None:
-                        a[node.instance_id + "/" + str(
-                            anchor_name)] = anchor_value
+                    # if node.instance_id is not None:
+                    if hasattr(node, 'instance_id'):
+                        if node.instance_id is not None:
+                            a[node.instance_id + "/" + str(
+                                anchor_name)] = anchor_value
                     else:
                         a[str(hash(node)) + "/" + str(
                             anchor_name)] = anchor_value
@@ -402,28 +490,28 @@ class Assembly(nx.DiGraph, GeometryNode):
     #     """
     #     nx.write_yaml(self, yaml_file_name)
 
-    def write_json(self, json_file_name):
-        r"""Export to JSON format
+    # def write_json(self, json_file_name):
+    #     r"""Export to JSON format
+    #
+    #     Parameters
+    #     ----------
+    #     json_file_name : str
+    #         Path to the JSON file
+    #
+    #     """
+    #     jsonpickle.load_backend('json')
+    #     jsonpickle.set_encoder_options('json', sort_keys=False, indent=4)
+    #
+    #     with open(json_file_name, "w") as f:
+    #         f.write(jsonpickle.encode(self))
 
-        Parameters
-        ----------
-        json_file_name : str
-            Path to the JSON file
-
-        """
-        jsonpickle.load_backend('json')
-        jsonpickle.set_encoder_options('json', sort_keys=False, indent=4)
-
-        with open(json_file_name, "w") as f:
-            f.write(jsonpickle.encode(self))
-
-    @classmethod
-    def read_json(cls, json_file_name):
-        r"""Construct the assembly from a JSON file"""
-        j_ = ""
-        with open(json_file_name) as f:
-            j_ = f.read()
-        return jsonpickle.decode(j_)
+    # @classmethod
+    # def read_json(cls, json_file_name):
+    #     r"""Construct the assembly from a JSON file"""
+    #     j_ = ""
+    #     with open(json_file_name) as f:
+    #         j_ = f.read()
+    #     return jsonpickle.decode(j_)
 
     def show_plot(self):
         r"""Create a Matplotlib graph of the plot"""
@@ -509,7 +597,7 @@ class Assembly(nx.DiGraph, GeometryNode):
         ----------
         self_anchor : str
             Anchor identifier
-        other : GeometryNode or subclass
+        other : PartGeometryNode or subclass
         other_anchor : str
             Anchor identifier on the 'other' node
         angle : float
@@ -538,29 +626,6 @@ class Assembly(nx.DiGraph, GeometryNode):
         logger.debug("Accessing shapes of assembly %s" % id(self))
         self.build()
         return self._node_shape
-
-    # TODO : separate function (it is static)
-    def compound(self, topo):
-        r"""Accumulate a bunch of TopoDS_* in list `topo` to a OCC.TopoDS.TopoDS_Compound
-
-        Parameters
-        ----------
-        topo : list[TopoDS_*]
-
-        Returns
-        -------
-        OCC.TopoDS.TopoDS_Compound
-
-        """
-        import OCC.TopoDS
-        from ccad.model import Solid
-        bd = OCC.TopoDS.TopoDS_Builder()
-        comp = OCC.TopoDS.TopoDS_Compound()
-        bd.MakeCompound(comp)
-        for i in topo:
-            bd.Add(comp, i.shape)
-
-        return Solid(comp)
 
     @property
     def anchors(self):

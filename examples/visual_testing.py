@@ -12,7 +12,7 @@ from __future__ import division
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
 from OCC.gp import gp_Pnt, gp_Vec
 import wx
-from osvcad.nodes import GeometryNode
+from osvcad.nodes import PartGeometryNode
 from ccad.model import box, translated
 
 
@@ -51,14 +51,14 @@ def make_case(case_offset,
     iox, ioy, ioz = internal_offset
     total_offset = cox + iox, coy + ioy, coz + ioz
 
-    node_1 = GeometryNode(translated(box(*cube_1_dimensions),
-                                     case_offset),
-                          anchors={"only_anchor": _compute_anchor_position(case_offset, cube_1_dimensions, anchor_1)})
+    node_1 = PartGeometryNode(translated(box(*cube_1_dimensions),
+                                         case_offset),
+                              anchors={"only_anchor": _compute_anchor_position(case_offset, cube_1_dimensions, anchor_1)})
 
-    node_2 = GeometryNode(translated(translated(box(*cube_2_dimensions),
-                                                internal_offset),
-                                     case_offset),
-                          anchors={"only_anchor": _compute_anchor_position(total_offset, cube_2_dimensions, anchor_2)})
+    node_2 = PartGeometryNode(translated(translated(box(*cube_2_dimensions),
+                                                    internal_offset),
+                                         case_offset),
+                              anchors={"only_anchor": _compute_anchor_position(total_offset, cube_2_dimensions, anchor_2)})
 
     node_3 = node_1.place(self_anchor="only_anchor",
                           other=node_2,

@@ -2,23 +2,23 @@
 
 r"""Example of direct construction"""
 
-from osvcad.nodes import GeometryNode, Assembly
+from osvcad.nodes import PartGeometryNode, AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor
 
-plate_gn = GeometryNode.from_py_script(py_script_path="py_scripts/plate_with_holes.py")
+plate_gn = PartGeometryNode.from_py_script(py_script_path="py_scripts/plate_with_holes.py")
 
 print("Plate gn : %s" % plate_gn)
 
-screws = [GeometryNode.from_library_part(
+screws = [PartGeometryNode.from_library_part(
     library_file_path="libraries/ISO4014_library.json",
     part_id="ISO4014_M2_grade_Bx21") for _ in range(4)]
 
-nuts = [GeometryNode.from_library_part(
+nuts = [PartGeometryNode.from_library_part(
     library_file_path="libraries/ISO4032_library.json",
     part_id="ISO4032_Nut_M2.0") for _ in range(4)]
 
 
-A = Assembly(root=plate_gn)
+A = AssemblyGeometryNode(root=plate_gn)
 
 for i, screw in enumerate(screws, 1):
     A.add_edge(plate_gn,

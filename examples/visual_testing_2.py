@@ -7,7 +7,7 @@ import logging
 
 import wx
 #
-from osvcad.nodes import GeometryNode, Assembly
+from osvcad.nodes import PartGeometryNode, AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor
 from ccad.model import cylinder, box
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
@@ -19,24 +19,24 @@ logger = logging.getLogger(__name__)
 def main():
     r"""Main function of the example"""
     logger.debug("**** Creating cube GeometryNode ****")
-    cube_node = GeometryNode(box(10, 10, 10), anchors={
+    cube_node = PartGeometryNode(box(10, 10, 10), anchors={
         "midface": {"position": (5, 10, 5), "direction": (0, 1, 0)}})
 
     logger.debug("**** Creating cylinder GeometryNode ****")
-    n1 = GeometryNode(cylinder(10, 50), anchors={
+    n1 = PartGeometryNode(cylinder(10, 50), anchors={
         "bottom": {"position": (0, 0, 0), "direction": (0, 0, -1)},
         "top": {"position": (0, 0, 50), "direction": (0, 0, 1)},
         "side": {"position": (0, -10, 0), "direction": (0, -1, 0)}
     })
 
-    n2 = GeometryNode(cylinder(10, 50), anchors={
+    n2 = PartGeometryNode(cylinder(10, 50), anchors={
         "bottom": {"position": (0, 0, 0), "direction": (0, 0, -1)},
         "top": {"position": (0, 0, 50), "direction": (0, 0, 1)},
         "side": {"position": (0, -10, 0), "direction": (0, -1, 0)}
     })
 
     logger.debug("**** Creating Assembly ****")
-    a = Assembly(root=cube_node)
+    a = AssemblyGeometryNode(root=cube_node)
 
     logger.debug("**** Adding edge to assembly****")
     a.add_edge(cube_node, n1, object=ConstraintAnchor(

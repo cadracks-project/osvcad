@@ -4,25 +4,25 @@ r"""Example of a car model"""
 
 import logging
 
-from osvcad.nodes import GeometryNode, Assembly
+from osvcad.nodes import PartGeometryNode, AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor
 
 
 def make_chassis_assembly():
     r"""Chassis assembly creation"""
 
-    p1_base = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P1-Base.stepzip")
-    p2_l = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P2-L.stepzip")
-    p2_r = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P2-R.stepzip")
-    p4 = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P4.stepzip")
-    p5 = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P5.stepzip")
-    p6 = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P6.stepzip")
-    p7_l = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P7-L.stepzip")
-    p7_r = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P7-R.stepzip")
-    p8 = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P8.stepzip")
-    p9 = GeometryNode.from_stepzip(stepzip_file="shelf/chassis/P9.stepzip")
+    p1_base = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P1-Base.stepzip")
+    p2_l = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P2-L.stepzip")
+    p2_r = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P2-R.stepzip")
+    p4 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P4.stepzip")
+    p5 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P5.stepzip")
+    p6 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P6.stepzip")
+    p7_l = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P7-L.stepzip")
+    p7_r = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P7-R.stepzip")
+    p8 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P8.stepzip")
+    p9 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P9.stepzip")
 
-    chassis_assembly = Assembly(root=p1_base)
+    chassis_assembly = AssemblyGeometryNode(root=p1_base)
 
     chassis_assembly.add_edge(p1_base, p2_l, object=ConstraintAnchor(
         anchor_name_master="A2-L",
@@ -83,21 +83,21 @@ def make_chassis_assembly():
 
 def make_front_suspension_assembly():
     r"""Front suspension assembly creation"""
-    p1 = [GeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(2)]
-    p2 = GeometryNode.from_stepzip("shelf/suspension/front/P2.stepzip")
-    p3 = GeometryNode.from_stepzip("shelf/suspension/front/P3.stepzip")
-    p4 = GeometryNode.from_stepzip("shelf/suspension/front/P4.stepzip")
-    p5 = GeometryNode.from_stepzip("shelf/suspension/front/P5.stepzip")
-    p6 = GeometryNode.from_stepzip("shelf/suspension/common/P6.stepzip")
-    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip",
-                                   instance_id="P7_Front")
-    p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
-    p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
-    p10 = GeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
-    p11 = GeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
-    p12 = GeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
+    p1 = [PartGeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(2)]
+    p2 = PartGeometryNode.from_stepzip("shelf/suspension/front/P2.stepzip")
+    p3 = PartGeometryNode.from_stepzip("shelf/suspension/front/P3.stepzip")
+    p4 = PartGeometryNode.from_stepzip("shelf/suspension/front/P4.stepzip")
+    p5 = PartGeometryNode.from_stepzip("shelf/suspension/front/P5.stepzip")
+    p6 = PartGeometryNode.from_stepzip("shelf/suspension/common/P6.stepzip")
+    p7 = PartGeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip",
+                                       instance_id="P7_Front")
+    p8 = PartGeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
+    p9 = PartGeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
+    p10 = PartGeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
+    p11 = PartGeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
+    p12 = PartGeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
 
-    front_suspension_assembly = Assembly(root=p2)
+    front_suspension_assembly = AssemblyGeometryNode(root=p2)
 
     front_suspension_assembly.add_edge(p2, p1[0], object=ConstraintAnchor(
         anchor_name_master="out1",
@@ -180,17 +180,17 @@ def make_front_suspension_assembly():
 
 def make_rear_suspension_assembly():
     r"""Rear suspension assembly creation"""
-    p1 = [GeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(4)]
-    p2 = GeometryNode.from_stepzip("shelf/suspension/rear/P2.stepzip")
-    p5 = GeometryNode.from_stepzip("shelf/suspension/rear/P5.stepzip")
-    p7 = GeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip", instance_id="P7_Rear")
-    p8 = GeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
-    p9 = GeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
-    p10 = GeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
-    p11 = GeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
-    p12 = GeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
+    p1 = [PartGeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(4)]
+    p2 = PartGeometryNode.from_stepzip("shelf/suspension/rear/P2.stepzip")
+    p5 = PartGeometryNode.from_stepzip("shelf/suspension/rear/P5.stepzip")
+    p7 = PartGeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip", instance_id="P7_Rear")
+    p8 = PartGeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
+    p9 = PartGeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
+    p10 = PartGeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
+    p11 = PartGeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
+    p12 = PartGeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
 
-    rear_suspension_assembly = Assembly(root=p2)
+    rear_suspension_assembly = AssemblyGeometryNode(root=p2)
 
     rear_suspension_assembly.add_edge(p2, p1[0], object=ConstraintAnchor(
         anchor_name_master="out1",
@@ -263,11 +263,11 @@ def make_rear_suspension_assembly():
 
 def make_wheel_assembly():
     r"""Wheel assembly creation"""
-    rim = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/rim.stepzip",
-                                    instance_id="rim")
-    tyre = GeometryNode.from_stepzip(stepzip_file="shelf/wheel/tyre.stepzip")
+    rim = PartGeometryNode.from_stepzip(stepzip_file="shelf/wheel/rim.stepzip",
+                                        instance_id="rim")
+    tyre = PartGeometryNode.from_stepzip(stepzip_file="shelf/wheel/tyre.stepzip")
 
-    wheel_assembly = Assembly(root=rim)
+    wheel_assembly = AssemblyGeometryNode(root=rim)
 
     wheel_assembly.add_edge(rim, tyre, object=ConstraintAnchor(
         anchor_name_master="tyre",

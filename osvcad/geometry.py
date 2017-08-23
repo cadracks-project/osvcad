@@ -6,6 +6,9 @@ import logging
 
 import numpy as np
 
+import OCC.TopoDS
+from ccad.model import Solid
+
 from osvcad.transformations import translation_matrix, rotation_matrix,\
     angle_between_vectors, vector_product
 
@@ -161,3 +164,24 @@ def transform_anchor(anchor, transformation_matrix):
 
     return {"position": (new_px, new_py, new_pz),
             "direction": (new_dx, new_dy, new_dz)}
+
+
+def compound(topo):
+    r"""Accumulate a bunch of TopoDS_* in list `topo` to a OCC.TopoDS.TopoDS_Compound
+
+    Parameters
+    ----------
+    topo : list[TopoDS_*]
+
+    Returns
+    -------
+    OCC.TopoDS.TopoDS_Compound
+
+    """
+    bd = OCC.TopoDS.TopoDS_Builder()
+    comp = OCC.TopoDS.TopoDS_Compound()
+    bd.MakeCompound(comp)
+    for i in topo:
+        bd.Add(comp, i.shape)
+
+    return Solid(comp)

@@ -2,9 +2,9 @@
 
 r"""Create the assembly from serialized json file"""
 
-from osvcad.nodes import Assembly
+from osvcad.nodes import AssemblyGeometryNode
 
-A = Assembly.read_json("sample.json")
+A = AssemblyGeometryNode.read_json("sample.json")
 print(type(A))
 
 print(A.number_of_nodes())

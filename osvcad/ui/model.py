@@ -5,8 +5,8 @@ from atom.scalars import Str, Bool, Float, Range
 from atom.tuple import Tuple
 from atom.typed import Typed
 
-from osvcad.nodes import Assembly
+from osvcad.nodes import AssemblyGeometryNode
 
 
 class Model(Atom):
-    assembly = Typed(Assembly)
+    assembly = Typed(AssemblyGeometryNode)
