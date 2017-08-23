@@ -42,7 +42,7 @@ by defining the *PartGeometryNode(s)* that compose it and the positioning relati
 stepzips
 --------
 
-*stepzip* files are zip files containing a STEP file and a *.anchors file. The *.anchors file specifies where the anchors are on the STEP file. It is a convenient way
+*stepzip* files are zip files containing a STEP file and a \*.anchors file. The \*.anchors file specifies where the anchors are on the STEP file. It is a convenient way
 to store and use a STEP file with its logical anchors in a single file that can be used to create a PartGeometryNode. Any unzipping utility can be used to view its content.
 In **Osvcad**, the *stepzip* files are handled by the `stepzip.py <https://github.com/osv-team/osvcad/blob/master/osvcad/stepzip.py>`_ module.
 
