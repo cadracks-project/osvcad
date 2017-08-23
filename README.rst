@@ -14,8 +14,6 @@ Installing
 ==========
 
 .. code-block:: shell
-   :caption: Installing from the git repo:
-   :name: installation
 
    git clone https://github.com/osv-team/osvcad
    cd osvcad
