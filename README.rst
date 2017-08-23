@@ -56,7 +56,7 @@ on parts are chosen to be functionally meaningful (e.g. the exit of a hole in a 
 By expressing how 2 anchors on different parts should be positioned relative to each other, it is possible to position the parts in an assembly.
 
 The relative positioning of 2 parts in an assembly is the object contained by an edge of the graph representing the assembly. This object is a *Constraint* (see `edges.py <https://github.com/osv-team/osvcad/blob/master/osvcad/edges.py>`_).
-*Constraint* is an abstract class that defines the minimum set of methods that all constraints should implement (actually, a single *transform(*args) method). **Osvcad** currently
+*Constraint* is an abstract class that defines the minimum set of methods that all constraints should implement (actually, a single *transform()* method). **Osvcad** currently
 implements the *ConstraintAnchor* constraint that positions 2 anchors opposite to each other while allowing a rotation and a translation aound/on the axis defined by the
 now colinear anchors. It is planned to implement more types of constraints.
 
