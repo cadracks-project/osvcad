@@ -1,6 +1,18 @@
 # coding: utf-8
 
-r"""Graph nodes"""
+r"""Graph nodes
+
+The nodes represent geometry, either in the form of a part (GeometryNodePart) or
+in the form of an assembly (GeometryNodeAssembly) of parts.
+
+GeometryNodePart and GeometryNodeAssembly share a common interface that is 
+defined in the GeometryNode ABC (Abstract Base Class)
+
+The definition of GeometryNodeAssembly uses multiple inheritance so that a 
+GeometryNodeAssembly can be a GeometryNode and a networkx DiGraph 
+(directed graph of GeometryNode(s) and Constraint(s)) at the same time.
+
+"""
 
 import logging
 from math import radians
@@ -10,14 +22,16 @@ from abc import abstractmethod, abstractproperty, ABCMeta
 from os.path import basename, splitext, exists, join, dirname
 
 import imp
+
 import networkx as nx
-# import jsonpickle
 import matplotlib.pyplot as plt
 import numpy as np
-from random import uniform
+from random import uniform, randint
 from OCC.gp import gp_Pnt, gp_Vec
 from aocutils.display.wx_viewer import colour_wx_to_occ
 from ccad.model import transformed, from_step
+
+import wx
 
 import ccad.display as cd
 
@@ -28,6 +42,7 @@ from osvcad.geometry import transformation_from_2_anchors, transform_anchor, \
 from osvcad.transformations import translation_matrix, rotation_matrix
 from osvcad.stepzip import extract_stepzip
 from osvcad.coding import overrides
+from osvcad.ui.wx_viewer import Wx3dViewer, colour_wx_to_occ
 
 
 logger = logging.getLogger(__name__)
@@ -122,7 +137,7 @@ class PartGeometryNode(GeometryNode):
     node_shape : ccad Solid
     anchors : dict
     instance_id : str, optional (default is None)
-        An identifier for the GeometryNode
+        An identifier for the PartGeometryNode
 
     """
 
@@ -130,7 +145,6 @@ class PartGeometryNode(GeometryNode):
     loaded = dict()
 
     def __init__(self, node_shape, anchors, instance_id=None):
-        logger.debug("Direct instantiation of GeometryNode %s" % self)
         self._node_shape = node_shape
         self._anchors = anchors
         self._instance_id = instance_id
@@ -138,7 +152,8 @@ class PartGeometryNode(GeometryNode):
     @classmethod
     def from_library_part(cls, library_file_path, part_id, instance_id=None):
         r"""Create the GeometryNode from a library part"""
-        logger.info("Creating GeometryNode from library (%s) part (id: %s)" % (library_file_path, part_id))
+        logger.info("Creating GeometryNode from library (%s) part (id: %s)" %
+                    (library_file_path, part_id))
         generate(library_file_path)
         scripts_folder = join(dirname(library_file_path), "scripts")
         module_path = join(scripts_folder, "%s.py" % part_id)
@@ -152,13 +167,14 @@ class PartGeometryNode(GeometryNode):
     @classmethod
     def from_step(cls, step_file_path, anchors=None, instance_id=None):
         r"""Create the GeometryNode from a step file and anchors definition"""
-        logger.info("Creating GeometryNode from step file %s" % basename(step_file_path))
+        logger.info("Creating GeometryNode from step file %s" %
+                    basename(step_file_path))
         assert exists(step_file_path)
 
         if step_file_path in cls.loaded.keys():
             s = cls.loaded[step_file_path]
         else:
-            logger.debug("Using cache to load %s" % step_file_path)
+            logger.info("Using cache to load %s" % step_file_path)
             s = from_step(step_file_path)
             # Store the shape in STEP at the class level if not loaded
             cls.loaded[step_file_path] = s
@@ -167,17 +183,17 @@ class PartGeometryNode(GeometryNode):
 
     @classmethod
     def from_stepzip(cls, stepzip_file, instance_id=None):
-        r"""Alternative constructor from a STEP + anchors zip file"""
-        logger.info("Creating GeometryNode from stepzip file %s" % basename(stepzip_file))
+        r"""Alternative constructor from a 'STEP + anchors' zip file. Such a 
+        file is called a 'stepzip' file in the context of Osvcad"""
+        logger.info("Creating GeometryNode from stepzip file %s" %
+                    basename(stepzip_file))
         anchors = dict()
         stepfile_path, anchorsfile_path = extract_stepzip(stepzip_file)
         with open(anchorsfile_path) as f:
             lines = f.readlines()
             for line in lines:
-                # print(line)
                 if line != "\n" and not line.startswith("#"):
                     items = re.findall(r'\S+', line)
-                    # print(items)
                     key = items[0]
                     data = [float(v) for v in items[1].split(",")]
                     position = (data[0], data[1], data[2])
@@ -189,8 +205,9 @@ class PartGeometryNode(GeometryNode):
     @classmethod
     def from_py_script(cls, py_script_path, instance_id=None):
         r"""Create the GeometryNode from a python script (module) that has a
-        part and an anchors attributes"""
-        logger.info("Creating GeometryNode from py script %s" % basename(py_script_path))
+        'part and an 'anchors' attributes"""
+        logger.info("Creating GeometryNode from py script %s" %
+                    basename(py_script_path))
         # TODO : use Part.from_py of ccad
         # cm.Part.from_py("sphere_r_2.py").geometry
 
@@ -230,7 +247,10 @@ class PartGeometryNode(GeometryNode):
               distance=0.,
               inplace=False):
         r"""Place other node so that its anchor origin is on self anchor
-        origin and its direction is opposite to the 'self' anchor direction
+        origin and its direction is opposite to the 'self' anchor direction.
+        Then, move the other part by rotating it by 'angle' degrees around the 
+        axis defined by the now co-linear anchors and translate it by 'distance'
+        along the now co-linear anchors.
         
         Parameters
         ----------
@@ -250,7 +270,14 @@ class PartGeometryNode(GeometryNode):
         GeometryNode if inplace is False, None if inplace is True
 
         """
-        logger.info("GeometryNode.Place() %s/%s on %s/%s witk angle:%f -distance%f :inplace=%s" % (other, other_anchor, self, self_anchor, angle, distance, inplace))
+        logger.debug("GeometryNode.Place() %s/%s on %s/%s with angle:%f "
+                     "distance%f inplace:%s" % (other,
+                                                other_anchor,
+                                                self,
+                                                self_anchor,
+                                                angle,
+                                                distance,
+                                                inplace))
         transformation_mat_ = transformation_from_2_anchors(
             self.anchors[self_anchor], other.anchors[other_anchor],
             angle=angle,
@@ -262,8 +289,6 @@ class PartGeometryNode(GeometryNode):
             modified = other.transform(transformation_mat_)
             other.node_shape = modified.node_shape
             other.anchors = modified.anchors
-
-        # print("Anchors of %s: %s" % (other, other.anchors))
 
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
@@ -277,8 +302,6 @@ class PartGeometryNode(GeometryNode):
         PartGeometryNode
 
         """
-        # logger.debug("transform()")
-        # logger.debug("transformation matrix : %s" % transformation_matrix)
         new_shape = transformed(self.node_shape, transformation_matrix)
         new_anchors = dict()
 
@@ -300,7 +323,6 @@ class PartGeometryNode(GeometryNode):
         PartGeometryNode
 
         """
-        # logger.debug("translate()")
         return self.transform(translation_matrix(vector))
 
     def rotate(self, rotation_angle, rotation_axis, axis_point):
@@ -318,16 +340,15 @@ class PartGeometryNode(GeometryNode):
 
         Returns
         -------
+        PartGeometryNode
 
         """
-        # logger.debug("rotate() with angle:%f, axis: %s, point: %s" %
-        #              (rotation_angle, str(rotation_axis), str(axis_point)))
         return self.transform(rotation_matrix(radians(rotation_angle),
                                               rotation_axis,
                                               axis_point))
 
     def display(self, viewer, color_255, transparency=0.):
-        r"""Display the node in a 
+        r"""Display the node in a 3D viewer
         
         Parameters
         ----------
@@ -337,9 +358,6 @@ class PartGeometryNode(GeometryNode):
             8-bit (0 - 255) color tuple
         transparency : float
             From 0. (not transparent) to 1 (fully transparent)
-
-        Returns
-        -------
 
         """
         for k, _ in self.anchors.items():
@@ -363,9 +381,10 @@ class PartGeometryNode(GeometryNode):
         l.append("\tAnchors :")
         if self.anchors is not None:
             for anchor_name, anchor_dict in self.anchors.items():
-                l.append("\t\t%s : <dir>:%s@<pos>:%s" % (anchor_name,
-                                                         str(anchor_dict["direction"]),
-                                                         str(anchor_dict["position"])))
+                l.append("\t\t%s : <dir>:%s@<pos>:%s" %
+                         (anchor_name,
+                          str(anchor_dict["direction"]),
+                          str(anchor_dict["position"])))
             else:
                 l.append("\t\tNo anchor")
         return "\n".join(l)
@@ -374,26 +393,36 @@ class PartGeometryNode(GeometryNode):
 class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
     r"""Acyclic directed graph modelling of a assembly
 
-    The Assembly is an nx.DiGraph with serialization, deserialization and
-    3D viewing methods
+    The Assembly is a GeometryNode and a nx.DiGraph with additional methods
+    (3D viewing, serialization (WIP), deserialization (WIP))
     
     Parameters
     ----------
     root : PartGeometryNode 
         The node of the assembly on which other nodes are positioned
         (aka the node that does not move)
+    instance_id : str, optional (default is None)
+        An identifier for the AssemblyGeometryNode
 
     """
 
     def __init__(self, root, instance_id=None):
         super(AssemblyGeometryNode, self).__init__()
+        # check parameters
+        if root is None:
+            raise ValueError("the 'root' parameter of GeometryNodeAssembly "
+                             "cannot be None")
+
         self._node_shape = None
         self._anchors = None
         self._instance_id = instance_id
         self.add_node(root)
         self.root = root
-        # self._instance_id = instance_id
 
+        # flag that stores the building status of the GeometryNodeAssembly
+        # False : the GeometryNodeAssembly has not been built by its build()
+        #         method
+        # True  : the GeometryNodeAssembly has been built by its build() method
         self.built = False
 
     @property
@@ -414,8 +443,6 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
         PartGeometryNode
 
         """
-        # Do it in place
-        # for node in self.nodes():
         self._node_shape = transformed(self.node_shape, transformation_matrix)
         new_anchors = dict()
 
@@ -428,20 +455,23 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
         r"""Build the assembly using the graph used to represent it"""
         if self.built is False:
             logger.debug("Building assembly %s" % self)
-            assert self.root in self.nodes()
+            if self.root not in self.nodes():
+                raise ValueError("'root' must be present in the assembly nodes")
 
             # for edge in nx.bfs_edges(self, self.root):
             for edge in nx.bfs_edges(self, self.root):
                 edge_origin = edge[0]
                 edge_target = edge[1]
-                edge_constraint = self.get_edge_data(edge_origin, edge_target)["object"]
+                edge_constraint = self.get_edge_data(edge_origin,
+                                                     edge_target)["object"]
                 try:
-                    edge_origin.place(self_anchor=edge_constraint.anchor_name_master,
-                                      other=edge_target,
-                                      other_anchor=edge_constraint.anchor_name_slave,
-                                      angle=edge_constraint.angle,
-                                      distance=edge_constraint.distance,
-                                      inplace=True)
+                    edge_origin.place(
+                        self_anchor=edge_constraint.anchor_name_master,
+                        other=edge_target,
+                        other_anchor=edge_constraint.anchor_name_slave,
+                        angle=edge_constraint.angle,
+                        distance=edge_constraint.distance,
+                        inplace=True)
                 except nx.exception.NetworkXError:
                     msg = "NetworkX error"
                     logger.warning(msg)
@@ -453,12 +483,10 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
                 logger.debug("Adding shape of node %s" % node)
                 try:
                     node.build()
-                except:
-                    pass
+                except AttributeError:
+                    logger.debug("Trying to build a node without a build() "
+                                 "method (expected and normal)")
                 shapes.append(node._node_shape)
-            # s = shapes[0]
-            # for shape in shapes[1:]:
-            #     s += shape
 
             self._node_shape = compound(shapes)
 
@@ -478,40 +506,6 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
             self._anchors = a
 
             self.built = True
-
-    # def write_yaml(self, yaml_file_name):
-    #     r"""Export to YAML format
-    #
-    #     Parameters
-    #     ----------
-    #     yaml_file_name : str
-    #         Path to the YAML file
-    #
-    #     """
-    #     nx.write_yaml(self, yaml_file_name)
-
-    # def write_json(self, json_file_name):
-    #     r"""Export to JSON format
-    #
-    #     Parameters
-    #     ----------
-    #     json_file_name : str
-    #         Path to the JSON file
-    #
-    #     """
-    #     jsonpickle.load_backend('json')
-    #     jsonpickle.set_encoder_options('json', sort_keys=False, indent=4)
-    #
-    #     with open(json_file_name, "w") as f:
-    #         f.write(jsonpickle.encode(self))
-
-    # @classmethod
-    # def read_json(cls, json_file_name):
-    #     r"""Construct the assembly from a JSON file"""
-    #     j_ = ""
-    #     with open(json_file_name) as f:
-    #         j_ = f.read()
-    #     return jsonpickle.decode(j_)
 
     def show_plot(self):
         r"""Create a Matplotlib graph of the plot"""
@@ -553,10 +547,6 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
 
     def display_3d(self):
         r"""Display using osvcad's integrated wx viewer"""
-        from osvcad.ui.wx_viewer import Wx3dViewer, colour_wx_to_occ
-        import wx
-        from random import randint
-
         self.build()
 
         class MyFrame(wx.Frame):
@@ -604,17 +594,27 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
             The rotation angle around the anchor
         distance : float
             The distance between the anchor origin
+        inplace : bool, optional (default is True)
+            The value is not used, only present for abstract base class
+            interface fulfilment
 
         Returns
         -------
         GeometryNode if inplace is False, None if inplace is True
 
         """
-        logger.info(
-            "Assembly.Place() %s/%s on %s/%s witk angle:%f -distance%f :inplace=%s" % (
-            other, other_anchor, self, self_anchor, angle, distance, inplace))
+        # logger.info(
+        #     "Assembly.Place() %s/%s on %s/%s with angle:%f distance:%f "
+        #     "inplace:%s" % (other,
+        #                     other_anchor,
+        #                     self,
+        #                     self_anchor,
+        #                     angle,
+        #                     distance,
+        #                     inplace))
         transformation_mat_ = transformation_from_2_anchors(
-            self.anchors[self_anchor], other.anchors[other_anchor],
+            self.anchors[self_anchor],
+            other.anchors[other_anchor],
             angle=angle,
             distance=distance)
 
@@ -622,14 +622,26 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
 
     @property
     def node_shape(self):
-        r"""Abstract property implementation"""
-        logger.debug("Accessing shapes of assembly %s" % id(self))
+        r"""node_shape abstract property implementation.
+        
+        The node_shape property is read-only for GeometryNodeAssembly, since it
+        is computed from the node_shape properties of the GeometryNodePart(s) 
+        that compose the assembly.
+
+        """
+        # logger.debug("Accessing shapes of assembly %s" % id(self))
         self.build()
         return self._node_shape
 
     @property
     def anchors(self):
-        r"""Abstract property implementation"""
-        logger.debug("Accessing anchors of assembly %s" % self)
+        r"""anchors abstract property implementation.
+        
+        The anchors property is read-only for GeometryNodeAssembly, since it
+        is computed from the anchors properties of the GeometryNodePart(s) 
+        that compose the assembly.
+        
+        """
+        # logger.debug("Accessing anchors of assembly %s" % self)
         self.build()
         return self._anchors
