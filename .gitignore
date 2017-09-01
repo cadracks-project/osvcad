@@ -3,6 +3,8 @@
 *.3dm.rhl
 *.3dm
 
+.~lock*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

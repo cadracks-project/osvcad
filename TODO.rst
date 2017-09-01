@@ -28,7 +28,7 @@ New anchors concept (normal + tangent)
 
 Class diagram
 
-Naming of assemblies and nodes that are translatable in various languages
+---- >  Naming of assemblies and nodes that are translatable in various languages
 
 ******** Avoid duplication of STEP/STEPZIP loading
 
@@ -56,8 +56,20 @@ is it useful to keep the initial placement of nodes?
     How to display a relationship that is not made of 2 vectors ??
   Live part coding (editor and viewer side by side)
 
-nicer graph presentation
+---- >  nicer graph presentation
 
 really global assembly of Tabby as an example
 
 include some parts (motor) in the car example that are created from python scripts
+
+
+-------
+
+Documentation
+Packaging
+Matrice Business plan
+
+**** Nomenclature pieces
+Appliquer nomenclature pieces et ancres aux exemples
+
+Code review
