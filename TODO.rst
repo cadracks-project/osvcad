@@ -72,4 +72,10 @@ Matrice Business plan
 **** Nomenclature pieces
 Appliquer nomenclature pieces et ancres aux exemples
 
-Code review
+******** Code review
+
+Notion of Assembly in ccad should disappear?
+
+Not a priority
+--------------
+transformations.py cleanup

@@ -1,13 +1,22 @@
 # coding: utf-8
 
-r"""Geometry computations"""
+r"""Geometry computations
+
+The highlight of this module is the computation of the transformation matrix
+from 2 anchors.
+
+The module also features a function that transforms an anchor using a 4x3
+transformation matrix and a function that builds a ccad.model.Solid 
+(of compound type) from a list of OCC shapes
+
+"""
 
 import logging
 
 import numpy as np
 
 import OCC.TopoDS
-from ccad.model import Solid
+from ccad.model import Solid, Shape
 
 from osvcad.transformations import translation_matrix, rotation_matrix,\
     angle_between_vectors, vector_product
@@ -42,15 +51,11 @@ def transformation_from_2_anchors(anchor_master,
     np.ndarray : 4 x 3 transformation matrix
 
     """
-    # TODO : some operations could be simplified by passing a point to the
-    # transformations.rotation_matrix(angle, dir, point=None) function
-
-    # logger.debug("Master direction : %s" % str(anchor_master["direction"]))
-    # logger.debug("Slave direction  : %s" % str(anchor_slave["direction"]))
-
     logger.debug("Computing transformation from 2 anchors")
-    logger.debug(("Master | pos : %s | dir : %s" % (anchor_master["position"], anchor_master["direction"])))
-    logger.debug(("Slave  | pos : %s | dir : %s" % (anchor_slave["position"], anchor_slave["direction"])))
+    logger.debug(("Master | pos : %s | dir : %s" % (anchor_master["position"],
+                                                    anchor_master["direction"])))
+    logger.debug(("Slave  | pos : %s | dir : %s" % (anchor_slave["position"],
+                                                    anchor_slave["direction"])))
     logger.debug("Distance : %f" % distance)
     logger.debug("Angle : %f" % angle)
 
@@ -65,15 +70,11 @@ def transformation_from_2_anchors(anchor_master,
 
     logger.debug("Angle between anchors : %f deg" % math.degrees(angle_anchors))
 
-    # logger.debug("Angle between anchors : %f" % angle_anchors)
-
     if math.isnan(angle_anchors):
         logger.critical("Angle between anchors is NAN")
 
     axis_dir = vector_product(anchor_master["direction"],
                               anchor_slave["direction"])
-
-    # logger.debug("Axis dir : %s" % axis_dir)
 
     angle_correction = 0.  # correction for special cases
 
@@ -121,18 +122,17 @@ def transformation_from_2_anchors(anchor_master,
     unit_anchor_direction = [c / np.linalg.norm(anchor_master["direction"])
                              for c in anchor_master["direction"]]
 
-    # logger.debug("Unit anchor direction: %s" % unit_anchor_direction)
-
     assert 1 - 1e-6 <= np.linalg.norm(unit_anchor_direction) <= 1. + 1e-6
 
     transformation_mat_near_anchor = \
-        np.dot(translation_matrix(np.array(anchor_master["position"]) + np.array(unit_anchor_direction) * distance),
+        np.dot(translation_matrix(np.array(anchor_master["position"]) +
+                                  np.array(unit_anchor_direction) * distance),
                np.dot(rot_matrix_around_anchor,
                       translation_matrix(trans_master_to_orig)))[:3]
 
     transformation_mat = np.dot(transformation_mat_near_anchor,
                                 transformation_mat_anchors_opposition)[:3]
-    # logger.debug("Transformation matrix from 2 anchors : %s" % transformation_mat)
+
     logger.debug("... Done computing transformation from 2 anchors")
     return transformation_mat
 
@@ -145,10 +145,9 @@ def transform_anchor(anchor, transformation_matrix):
     anchor : dict
         A dict with a least the position and direction keys
     transformation_matrix : np.ndarray
-        4 x 3 matrix"""
-
-    logger.debug("_transform_anchor()")
-    # logger.debug("Transformation matrix : %s" % transformation_matrix)
+        4 x 3 matrix
+    
+    """
 
     translation_vec = transformation_matrix.T[-1:, :3][0]
     matrix_3x3 = transformation_matrix[:3, :3]
@@ -166,22 +165,27 @@ def transform_anchor(anchor, transformation_matrix):
             "direction": (new_dx, new_dy, new_dz)}
 
 
-def compound(topo):
-    r"""Accumulate a bunch of TopoDS_* in list `topo` to a OCC.TopoDS.TopoDS_Compound
+def compound(shapes):
+    r"""Accumulate a bunch of ccad.model.Solid in list `topo` 
+    to a OCC.TopoDS.TopoDS_Compound used to build a ccad.model.Solid
 
     Parameters
     ----------
-    topo : list[TopoDS_*]
+    shapes : list[TopoDS_*]
 
     Returns
     -------
-    OCC.TopoDS.TopoDS_Compound
+    ccad.model.Solid
 
     """
+    for shape in shapes:
+        if not isinstance(shape, Shape):
+            raise ValueError("The shapes list "
+                             "should only contains ccad.model.Shape(s)")
     bd = OCC.TopoDS.TopoDS_Builder()
     comp = OCC.TopoDS.TopoDS_Compound()
     bd.MakeCompound(comp)
-    for i in topo:
-        bd.Add(comp, i.shape)
+    for shape in shapes:
+        bd.Add(comp, shape.shape)
 
     return Solid(comp)
