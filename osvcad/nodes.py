@@ -115,7 +115,7 @@ class GeometryNode(object):
 class PartGeometryNode(GeometryNode):
     r"""Geometry node class
     
-    A geometry node is a shape with ist accompanying anchors
+    A geometry node is a shape with its accompanying anchors
     
     Parameters
     ----------
