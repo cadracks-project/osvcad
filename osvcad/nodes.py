@@ -14,36 +14,30 @@ GeometryNodeAssembly can be a GeometryNode and a networkx DiGraph
 
 """
 
+import imp
 import logging
-from math import radians
 import re
 from abc import abstractmethod, abstractproperty, ABCMeta
-
+from math import radians
 from os.path import basename, splitext, exists, join, dirname
-
-import imp
-
-import networkx as nx
-import matplotlib.pyplot as plt
-import numpy as np
 from random import uniform, randint
+
+import ccad.display as cd
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+import wx
 from OCC.gp import gp_Pnt, gp_Vec
 from aocutils.display.wx_viewer import colour_wx_to_occ
 from ccad.model import transformed, from_step
-
-import wx
-
-import ccad.display as cd
-
 from party.library_use import generate
 
 from osvcad.geometry import transformation_from_2_anchors, transform_anchor, \
     compound
-from osvcad.transformations import translation_matrix, rotation_matrix
 from osvcad.stepzip import extract_stepzip
-from osvcad.coding import overrides
+from osvcad.transformations import translation_matrix, rotation_matrix
 from osvcad.ui.wx_viewer import Wx3dViewer, colour_wx_to_occ
-
+from osvcad.utils.coding import overrides
 
 logger = logging.getLogger(__name__)
 
