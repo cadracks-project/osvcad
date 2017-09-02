@@ -1,8 +1,8 @@
-ccad
-numpy
-networkx
-matplotlib
-wx
-aocutils
-party
-OCC
+ccad==0.1.1
+numpy==1.11.3
+networkx==1.11
+matplotlib==2.0.0
+wx==3.0.0.0
+aocutils==0.4.3
+party==0.1.0
+OCC==0.18
