@@ -9,8 +9,8 @@ from __future__ import unicode_literals
 __name__ = "osvcad"
 __description__ = "Complex product modelling using acyclic directed graph"
 
-__version__ = "0.1"
-__release__ = "0.1.0"
+__version__ = "0.2"
+__release__ = "0.2.0"
 __author__ = "Guillaume Florent, Thomas Paviot, Bernard Uguen"
 __author_email__ = "florentsailing@gmail.com"
 __license__ = 'GPL v3'

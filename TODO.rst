@@ -67,7 +67,7 @@ include some parts (motor) in the car example that are created from python scrip
 **** Nomenclature pieces
   Ajouter la version de la nomenclature dans la nomenclature?
   Distinguer la nomenclature du plan de celle de l'instance
-  Possibilité de mettre des dimensions fonctionnelles dans le champ 3
+  Possibilité de mettre des dimensions fonctionnelles dans le champ 3 (d, r, l)
   Add a field called "Subsystem" after sectorial to determine where the part is intended to be used.
 
 Appliquer nomenclature pieces et ancres aux exemples

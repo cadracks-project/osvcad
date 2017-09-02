@@ -2,7 +2,7 @@ ccad
 numpy
 networkx
 matplotlib
-jsonpickle
 wx
 aocutils
 party
+OCC
