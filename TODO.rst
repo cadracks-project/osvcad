@@ -65,16 +65,16 @@ include some parts (motor) in the car example that are created from python scrip
 
 -------
 **** Nomenclature pieces
-  Ajouter la version de la nomenclature dans la nomenclature?
-  Distinguer la nomenclature du plan de celle de l'instance
-  Possibilité de mettre des dimensions fonctionnelles dans le champ 3 (d, r, l)
-  Add a field called "Subsystem" after sectorial to determine where the part is intended to be used.
+  ******** Ajouter la version de la nomenclature dans la nomenclature? -> Non, un peu lourd
+  ******** Distinguer la nomenclature du plan de celle de l'instance
+  ******** Possibilité de mettre des dimensions fonctionelles dans le champ 4 (d, r, l)
+  ******** Add a field called "Subsystem" after sectorial to determine where the part is intended to be used.
 
 Appliquer nomenclature pieces et ancres aux exemples
   Prioritaire car impacte la documentation
 
 Packaging
-  First, remove any dependency on aocutils
+  First, remove any dependency on aocutils or clean aocutils
 
 Documentation
   10 minutes example
