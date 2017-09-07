@@ -3,6 +3,18 @@
 *.3dm.rhl
 *.3dm
 
+/examples/car/shelf/suspension/common/*.stp
+/examples/car/shelf/suspension/common/*.step
+/examples/car/shelf/suspension/common/*.anchors
+
+/examples/car/shelf/suspension/front/*.stp
+/examples/car/shelf/suspension/front/*.step
+/examples/car/shelf/suspension/front/*.anchors
+
+/examples/car/shelf/suspension/rear/*.stp
+/examples/car/shelf/suspension/rear/*.step
+/examples/car/shelf/suspension/rear/*.anchors
+
 .~lock*
 
 # Byte-compiled / optimized / DLL files
@@ -109,3 +121,4 @@ ENV/
 /examples/sample_project/libraries/scripts/
 /examples/car/0_tabby2.step
 /examples/car/0_tabby2.3dm
+

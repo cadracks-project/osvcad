@@ -83,19 +83,45 @@ def make_chassis_assembly():
 
 def make_front_suspension_assembly():
     r"""Front suspension assembly creation"""
-    p1 = [PartGeometryNode.from_stepzip("shelf/suspension/common/CAR_BEARING_l54.7#d37#mm_____.stepzip") for _ in range(2)]
-    p2 = PartGeometryNode.from_stepzip("shelf/suspension/front/P2.stepzip")
-    p3 = PartGeometryNode.from_stepzip("shelf/suspension/front/P3.stepzip")
-    p4 = PartGeometryNode.from_stepzip("shelf/suspension/front/P4.stepzip")
-    p5 = PartGeometryNode.from_stepzip("shelf/suspension/front/P5.stepzip")
-    p6 = PartGeometryNode.from_stepzip("shelf/suspension/common/CAR_DISCSUPPORT_117#117#70#mm_____.stepzip")
-    p7 = PartGeometryNode.from_stepzip("shelf/suspension/common/CAR_DISC_d227#h46#mm__STEEL____.stepzip",
-                                       instance_id="P7_Front")
-    p8 = PartGeometryNode.from_stepzip("shelf/suspension/common/CAR_SUSPENSIONCYLINDER_l320#d42_____.stepzip")
-    p9 = PartGeometryNode.from_stepzip("shelf/suspension/common/CAR_SUSPENSIONPISTON_l381#d33#d16__STEEL___.stepzip")
-    p10 = PartGeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
-    p11 = PartGeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
-    p12 = PartGeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
+    p1 = [PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_BEARING_l54.7#d37#mm___.stepzip") for _ in range(2)]
+
+    p2 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/front/"
+        "CAR_SUSPENSION_FORK_320#44#270#mm___.stepzip")
+    p3 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/front/"
+        "CAR_SUSPENSION_LINK_28#23#124#mm___.stepzip")
+    p4 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/front/"
+        "CAR_DIRECTION_BALLHEAD_D23#d10#l70#mm___.stepzip")
+    p5 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/front/"
+        "CAR_SUSPENSION_HUB_107#212#84#mm___.stepzip")
+
+    p6 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_DISCSUPPORT_117#117#70#mm___.stepzip")
+    p7 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_AXLE_DISC_d227#h46#mm_STEEL__.stepzip",
+        instance_id="P7_Front")
+    p8 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_CYLINDER_l320#d42___.stepzip")
+    p9 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_PISTON_l381#d33#d16_STEEL__.stepzip")
+    p10 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_HAT_102#40#70#mm___.stepzip")
+    p11 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_HEAD_60#48#67#mm___.stepzip")
+    p12 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_NECK_d28#l51#mm___.stepzip")
 
     front_suspension_assembly = AssemblyGeometryNode(root=p2)
 
