@@ -11,16 +11,36 @@ from osvcad.edges import ConstraintAnchor
 def make_chassis_assembly():
     r"""Chassis assembly creation"""
 
-    p1_base = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P1-Base.stepzip")
-    p2_l = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P2-L.stepzip")
-    p2_r = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P2-R.stepzip")
-    p4 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P4.stepzip")
-    p5 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P5.stepzip")
-    p6 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P6.stepzip")
-    p7_l = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P7-L.stepzip")
-    p7_r = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P7-R.stepzip")
-    p8 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P8.stepzip")
-    p9 = PartGeometryNode.from_stepzip(stepzip_file="shelf/chassis/P9.stepzip")
+    p1_base = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_BASE_2.38#0.179#1.18_STEEL__.stepzip")
+    p2_l = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_ARCHLEFT_705#515#184#mm_STEEL__.stepzip")
+    p2_r = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_ARCHRIGHT_705#515#184#mm_STEEL__.stepzip")
+    p4 = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_ARCHSTRUT_127#126#796#mm_STEEL__.stepzip")
+    p5 = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_SEATSSUPPORT_410#151#1174#mm_STEEL__.stepzip")
+    p6 = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_DASHBOARDSUPPORT_107#535#1184#mm_STEEL__.stepzip")
+    p7_l = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_SUSPENSION_ARCHLEFT_526#535#284#mm_STEEL__.stepzip")
+    p7_r = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_SUSPENSION_ARCHRIGHT_526#535#284#mm_STEEL__.stepzip")
+    p8 = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_ARCHSTRUT_111#130#746#mm_STEEL__.stepzip")
+    p9 = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/chassis/"
+                     "CAR_CHASSIS_DASHBOARDSUPPORTREINFORCEMENT_205#525#75#mm_STEEL__.stepzip")
 
     chassis_assembly = AssemblyGeometryNode(root=p1_base)
 
