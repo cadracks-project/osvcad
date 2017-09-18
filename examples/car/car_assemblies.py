@@ -206,15 +206,34 @@ def make_front_suspension_assembly():
 
 def make_rear_suspension_assembly():
     r"""Rear suspension assembly creation"""
-    p1 = [PartGeometryNode.from_stepzip("shelf/suspension/common/P1.stepzip") for _ in range(4)]
-    p2 = PartGeometryNode.from_stepzip("shelf/suspension/rear/P2.stepzip")
-    p5 = PartGeometryNode.from_stepzip("shelf/suspension/rear/P5.stepzip")
-    p7 = PartGeometryNode.from_stepzip("shelf/suspension/common/P7.stepzip", instance_id="P7_Rear")
-    p8 = PartGeometryNode.from_stepzip("shelf/suspension/common/P8.stepzip")
-    p9 = PartGeometryNode.from_stepzip("shelf/suspension/common/P9.stepzip")
-    p10 = PartGeometryNode.from_stepzip("shelf/suspension/common/P10.stepzip")
-    p11 = PartGeometryNode.from_stepzip("shelf/suspension/common/P11.stepzip")
-    p12 = PartGeometryNode.from_stepzip("shelf/suspension/common/P12.stepzip")
+    p1 = [PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_BEARING_l54.7#d37#mm___.stepzip") for _ in range(4)]
+    p2 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/rear/"
+        "CAR_SUSPENSION_FRAME_320#49#327#mm___.stepzip")
+    p5 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/rear/"
+        "CAR_SUSPENSION_HUB_200#240#82#mm___.stepzip")
+    p7 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_AXLE_DISC_d227#h46#mm_STEEL__.stepzip",
+        instance_id="P7_Rear")
+    p8 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_CYLINDER_l320#d42___.stepzip")
+    p9 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_PISTON_l381#d33#d16_STEEL__.stepzip")
+    p10 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_HAT_102#40#70#mm___.stepzip")
+    p11 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_HEAD_60#48#67#mm___.stepzip")
+    p12 = PartGeometryNode.from_stepzip(
+        "shelf/suspension/common/"
+        "CAR_SUSPENSION_NECK_d28#l51#mm___.stepzip")
 
     rear_suspension_assembly = AssemblyGeometryNode(root=p2)
 
