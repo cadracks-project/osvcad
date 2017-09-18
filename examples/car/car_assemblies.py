@@ -338,8 +338,8 @@ def make_wheel_assembly():
     wheel_assembly = AssemblyGeometryNode(root=rim)
 
     wheel_assembly.add_edge(rim, tyre, object=ConstraintAnchor(
-        anchor_name_master="tyre",
-        anchor_name_slave="side",
+        anchor_name_master="AXIS_TYRE_d412#mm_",
+            anchor_name_slave="AXIS_SIDE_d383#mm_",
         distance=0,
         angle=0))
 
