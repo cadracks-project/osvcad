@@ -328,9 +328,12 @@ def make_rear_suspension_assembly():
 
 def make_wheel_assembly():
     r"""Wheel assembly creation"""
-    rim = PartGeometryNode.from_stepzip(stepzip_file="shelf/wheel/rim.stepzip",
-                                        instance_id="rim")
-    tyre = PartGeometryNode.from_stepzip(stepzip_file="shelf/wheel/tyre.stepzip")
+    rim = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/wheel/"
+                     "CAR_WHEEL_RIM_D416#l174#mm___.stepzip",
+        instance_id="rim")
+    tyre = PartGeometryNode.from_stepzip(
+        stepzip_file="shelf/wheel/CAR_WHEEL_TYRE_D575#l178#mm_RUBBER__.stepzip")
 
     wheel_assembly = AssemblyGeometryNode(root=rim)
 
