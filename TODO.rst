@@ -73,13 +73,20 @@ include some parts (motor) in the car example that are created from python scrip
 Appliquer nomenclature pieces et ancres aux exemples
   Prioritaire car impacte la documentation
 
+  ******** Nomenclature pièces supensions
+  Nomenclature ancres suspensions
+  ******** Nomenclatures pièces chassis
+  Nomenclature ancres chassis
+  ******** Nomenclature pièces roue
+  ******** Nomenclature ancres roue
+
 Packaging
   First, remove any dependency on aocutils or clean aocutils
 
 Documentation
   10 minutes example
 
-Matrice Business plan
+******** Matrice Business plan
 
 ******** Code review
 
