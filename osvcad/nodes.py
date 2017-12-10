@@ -550,6 +550,20 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
                 wx.Frame.__init__(self, None, -1)
                 self.p = Wx3dViewer(self)
                 self.Show()
+                wx.SafeYield()
+                # TODO : check if running on Linux
+                if wx.version().startswith("3.") or wx.version().startswith("4."):
+                    # issue with GetHandle on Linux for wx versions
+                    # >3 or 4. Window must be displayed before GetHandle is
+                    # called. For that, just wait for a few milliseconds/seconds
+                    # before calling InitDriver
+                    # a solution is given here
+                    # see https://github.com/cztomczak/cefpython/issues/349
+                    # but raises an issue with wxPython 4.x
+                    # finally, it seems that the sleep function does the job
+                    from time import sleep
+                    sleep(2)
+                    wx.SafeYield()
 
         app = wx.App()
         frame = MyFrame()
