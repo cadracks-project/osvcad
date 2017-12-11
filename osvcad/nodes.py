@@ -548,7 +548,6 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
 
             def __init__(self):
                 wx.Frame.__init__(self, None, -1)
-                self.p = Wx3dViewer(self)
                 self.Show()
                 wx.SafeYield()
                 # TODO : check if running on Linux
@@ -564,6 +563,7 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
                     from time import sleep
                     sleep(2)
                     wx.SafeYield()
+                self.p = Wx3dViewer(self)
 
         app = wx.App()
         frame = MyFrame()

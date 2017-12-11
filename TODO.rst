@@ -1,5 +1,7 @@
 -> lire transformations.py + doctests vers pytests
 
+Apply correction for GetHandle() returns 0 on Linux to examples not using the display_3d() function of AssemblyGeometryNode (nodes.py)
+
 ********* comment utiliser la matrice sur des shapes ccad?
   ******** _gp.gp_Trsf()
     ******** cf. _translate() for example
