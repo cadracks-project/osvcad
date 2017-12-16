@@ -5,11 +5,11 @@ r"""Graph nodes
 The nodes represent geometry, either in the form of a part (GeometryNodePart) or
 in the form of an assembly (GeometryNodeAssembly) of parts.
 
-GeometryNodePart and GeometryNodeAssembly share a common interface that is 
+GeometryNodePart and GeometryNodeAssembly share a common interface that is
 defined in the GeometryNode ABC (Abstract Base Class)
 
-The definition of GeometryNodeAssembly uses multiple inheritance so that a 
-GeometryNodeAssembly can be a GeometryNode and a networkx DiGraph 
+The definition of GeometryNodeAssembly uses multiple inheritance so that a
+GeometryNodeAssembly can be a GeometryNode and a networkx DiGraph
 (directed graph of GeometryNode(s) and Constraint(s)) at the same time.
 
 """
@@ -49,7 +49,7 @@ class GeometryNode(object):
     @abstractproperty
     def node_shape(self):
         r"""The geometrical shape of the node
-        
+
         Returns
         -------
         ccad.Solid
@@ -60,7 +60,7 @@ class GeometryNode(object):
     @abstractproperty
     def anchors(self):
         r"""The anchors of the node
-        
+
         Returns
         -------
         dict[dict]"""
@@ -69,23 +69,23 @@ class GeometryNode(object):
     @abstractproperty
     def instance_id(self):
         r"""A human readable identification of the node
-        
+
         Returns
         -------
         str
-        
+
         """
         raise NotImplementedError
 
     @abstractmethod
     def transform(self, transformation_matrix):
         r"""Transform the node using a transformation matrix
-        
+
         Parameters
         ----------
         transformation_matrix : np.ndarray
             4X3 transformation matrix
-        
+
         Returns
         -------
         GeometryNode
@@ -97,7 +97,7 @@ class GeometryNode(object):
     def place(self, self_anchor, other, other_anchor, angle=0., distance=0.,
               inplace=True):
         r"""
-        
+
         Parameters
         ----------
         self_anchor : str
@@ -123,9 +123,9 @@ class GeometryNode(object):
 
 class PartGeometryNode(GeometryNode):
     r"""Geometry node class
-    
+
     A geometry node is a shape with its accompanying anchors
-    
+
     Parameters
     ----------
     node_shape : ccad Solid
@@ -177,7 +177,7 @@ class PartGeometryNode(GeometryNode):
 
     @classmethod
     def from_stepzip(cls, stepzip_file, instance_id=None):
-        r"""Alternative constructor from a 'STEP + anchors' zip file. Such a 
+        r"""Alternative constructor from a 'STEP + anchors' zip file. Such a
         file is called a 'stepzip' file in the context of Osvcad"""
         logger.info("Creating GeometryNode from stepzip file %s" %
                     basename(stepzip_file))
@@ -242,10 +242,10 @@ class PartGeometryNode(GeometryNode):
               inplace=False):
         r"""Place other node so that its anchor origin is on self anchor
         origin and its direction is opposite to the 'self' anchor direction.
-        Then, move the other part by rotating it by 'angle' degrees around the 
+        Then, move the other part by rotating it by 'angle' degrees around the
         axis defined by the now co-linear anchors and translate it by 'distance'
         along the now co-linear anchors.
-        
+
         Parameters
         ----------
         self_anchor : str
@@ -286,11 +286,11 @@ class PartGeometryNode(GeometryNode):
 
     def transform(self, transformation_matrix):
         r"""Transform the node with a 4x3 transformation matrix
-        
+
         Parameters
         ----------
         transformation_matrix : np.ndarray
-        
+
         Returns
         -------
         PartGeometryNode
@@ -306,7 +306,7 @@ class PartGeometryNode(GeometryNode):
 
     def translate(self, vector):
         r"""Translate the node
-        
+
         Parameters
         ----------
         vector : Tuple[float, float, float]
@@ -321,7 +321,7 @@ class PartGeometryNode(GeometryNode):
 
     def rotate(self, rotation_angle, rotation_axis, axis_point):
         r"""Rotate the node
-        
+
         Parameters
         ----------
         rotation_angle : float
@@ -343,7 +343,7 @@ class PartGeometryNode(GeometryNode):
 
     def display(self, viewer, color_255, transparency=0.):
         r"""Display the node in a 3D viewer
-        
+
         Parameters
         ----------
         viewer : aocutils.display.wx_viewer.Wx3dViewer
@@ -389,10 +389,10 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
 
     The Assembly is a GeometryNode and a nx.DiGraph with additional methods
     (3D viewing, serialization (WIP), deserialization (WIP))
-    
+
     Parameters
     ----------
-    root : PartGeometryNode 
+    root : PartGeometryNode
         The node of the assembly on which other nodes are positioned
         (aka the node that does not move)
     instance_id : str, optional (default is None)
@@ -631,9 +631,9 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
     @property
     def node_shape(self):
         r"""node_shape abstract property implementation.
-        
+
         The node_shape property is read-only for GeometryNodeAssembly, since it
-        is computed from the node_shape properties of the GeometryNodePart(s) 
+        is computed from the node_shape properties of the GeometryNodePart(s)
         that compose the assembly.
 
         """
@@ -644,11 +644,11 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
     @property
     def anchors(self):
         r"""anchors abstract property implementation.
-        
+
         The anchors property is read-only for GeometryNodeAssembly, since it
-        is computed from the anchors properties of the GeometryNodePart(s) 
+        is computed from the anchors properties of the GeometryNodePart(s)
         that compose the assembly.
-        
+
         """
         # logger.debug("Accessing anchors of assembly %s" % self)
         self.build()

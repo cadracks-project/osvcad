@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def create_stepzip(step_file, anchors_file):
     r"""Procedure to create a zip file from a STEP file and an anchors file
-    
+
     Parameters
     ----------
     step_file : str
@@ -32,12 +32,12 @@ def create_stepzip(step_file, anchors_file):
 
 def extract_stepzip(stepzip):
     r"""Extract the contents of a STEP + anchors zip file
-    
+
     Parameters
     ----------
     stepzip : str
         Path to the STEP + anchors zip file
-    
+
     Returns
     -------
     Tuple[str, str] : path to the STEP file, path to the anchors file

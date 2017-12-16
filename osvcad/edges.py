@@ -20,7 +20,7 @@ class ConstraintAnchor(Constraint):
     constraint to be satisfied, the 2 anchors have to:
     - be of opposite directions
     - have their positions separated by distance
-    
+
     Parameters
     ----------
     anchor_name_master : str
@@ -47,19 +47,19 @@ class ConstraintAnchor(Constraint):
     def transform(self, geometry_node_master, geometry_node_slave):
         r"""Transform a slave GeometryNode that is the target of an edge coming
         from a master GeometryNode
-        
+
         Parameters
         ----------
         geometry_node_master : GeometryNode
             The master GeometryNode (i.e. the node that does not move)
         geometry_node_slave : GeometryNode
-            The slave GeometryNode (i.e. the node that moves to satisfy the 
+            The slave GeometryNode (i.e. the node that moves to satisfy the
             anchor constraint)
-            
+
         Returns
         -------
         GeometryNode
-        
+
         """
         return geometry_node_master.place(self_anchor=self.anchor_name_master,
                                           other=geometry_node_slave,
