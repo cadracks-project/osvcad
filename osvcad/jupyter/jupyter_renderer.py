@@ -26,7 +26,7 @@ class JupyterRendererV(JupyterRenderer):
         xo, yo, zo = origin
         xd, yd, zd = direction
 
-        norm = (xd**2 + yd**2 + zd**2)**0.5
+        norm = (xd**2 + yd**2 + zd**2)**0.5 * multiplier
 
         # create a cylinder
         cy = cylinder(rad=norm / 20, height=norm * 2 / 3)
