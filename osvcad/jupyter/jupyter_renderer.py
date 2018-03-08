@@ -38,7 +38,7 @@ class JupyterRendererV(JupyterRenderer):
         # cy.translate(origin)
         # co.translate(origin)
 
-        tr = transformation_from_2_anchors({"position": (xo, yo, zo), "direction": (xd, yd, zd)},
+        tr = transformation_from_2_anchors({"position": (xo, yo, zo), "direction": (-xd, -yd, -zd)},
                                            {"position": (0, 0, 0), "direction": (0, 0, 1)})
 
         cy.transform(tr)
