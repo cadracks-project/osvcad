@@ -12,8 +12,7 @@ def make_chassis_assembly():
     r"""Chassis assembly creation"""
 
     p1_base = PartGeometryNode.from_stepzip(
-        stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_BASE_2.38#0.179#1.18_STEEL__.stepzip")
+        stepzip_file="shelf/chassis/CAR_CHASSIS_BASE_2.38#0.179#1.18_STEEL__.stepzip")
     p2_l = PartGeometryNode.from_stepzip(
         stepzip_file="shelf/chassis/"
                      "CAR_CHASSIS_ARCHLEFT_705#515#184#mm_STEEL__.stepzip")
