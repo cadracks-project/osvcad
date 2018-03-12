@@ -64,6 +64,7 @@ class GeometryNode(object):
         Returns
         -------
         dict[dict]"""
+
         raise NotImplementedError
 
     @abstractproperty
@@ -128,6 +129,7 @@ class PartGeometryNode(GeometryNode):
 
     Parameters
     ----------
+
     node_shape : ccad Solid
     anchors : dict
     instance_id : str, optional (default is None)
