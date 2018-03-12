@@ -188,7 +188,7 @@ class PartGeometryNode(GeometryNode):
         with open(anchorsfile_path) as f:
             lines = f.readlines()
             for line in lines:
-                if line != "\n" and not line.startswith("#"):
+                if line not in ["\n", "\r\n"] and not line.startswith("#"):
                     items = re.findall(r'\S+', line)
                     key = items[0]
                     data = [float(v) for v in items[1].split(",")]
