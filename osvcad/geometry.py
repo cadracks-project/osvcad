@@ -151,7 +151,7 @@ def transform_anchor(anchor, transformation_matrix):
         A dict with a least the position and direction keys
     transformation_matrix : np.ndarray
         4 x 3 matrix
-    
+
     """
 
     translation_vec = transformation_matrix.T[-1:, :3][0]

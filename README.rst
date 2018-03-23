@@ -1,6 +1,8 @@
 Osvcad
 ******
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f25419927a794242a4837ce27ae4e7ab)](https://www.codacy.com/app/guillaume-florent/osvcad?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=osv-team/osvcad&amp;utm_campaign=Badge_Grade)
+
 .. figure:: img/chassis_assembly.png
    :scale: 100 %
    :alt: Current state

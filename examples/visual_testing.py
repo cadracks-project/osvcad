@@ -70,7 +70,7 @@ def make_case(case_offset,
 def _compute_anchor_position(offset, cube_dimensions, anchor_pos):
     r"""Position and direction of a cube anchor depending on the cube
     position and dimensions
-    
+
     Parameters
     ----------
     offset : Tuple[float, float, float]
