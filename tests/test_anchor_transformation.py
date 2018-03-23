@@ -27,7 +27,7 @@ def test_anchor_translation():
 
 
 def test_anchor_combined_translation_rotation():
-    r"""Test a transformation combining a translation 
+    r"""Test a transformation combining a translation
     and a rotation on an anchor"""
     # anchor at origin, pointing in X+ direction
     anchor = {"position": [0, 0, 0], "direction": [1, 0, 0]}

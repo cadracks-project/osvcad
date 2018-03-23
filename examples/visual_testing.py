@@ -23,14 +23,14 @@ def make_case(case_offset,
               anchor_1,
               anchor_2):
     r"""Create a visual test case
-    
+
     Parameters
     ----------
     case_offset : Tuple[float, float, float]
-        Case offset so that all cases can be visualized 
+        Case offset so that all cases can be visualized
         without overlapping each other
     internal_offset : Tuple[float, float, float]
-        Offset of the 2nd cube that will be positioned relative 
+        Offset of the 2nd cube that will be positioned relative
         to the first cube
     cube_1_dimensions : Tuple[float, float, float]
     cube_2_dimensions : Tuple[float, float, float]
@@ -40,7 +40,7 @@ def make_case(case_offset,
     anchor_2 : str
         Anchor position on second cube
         Must be in 'top', 'bottom', 'north', 'east', 'south', 'west'
-        
+
     Returns
     -------
     Tuple[GeometryNode, GeometryNode, GeometryNode]

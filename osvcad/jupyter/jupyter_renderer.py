@@ -16,12 +16,21 @@ from osvcad.geometry import transformation_from_2_anchors
 
 
 class JupyterRendererV(JupyterRenderer):
+    r"""Inherits JupyterRenderer to add vector display"""
     def __init__(self):
         super(JupyterRendererV, self).__init__()
 
     def DisplayVector(self, origin, direction, multiplier=1):
-        assert len(origin) == 3
-        assert len(direction) == 3
+        r"""Display a vector in the JupyterRenderer"""
+        # assert len(origin) == 3
+        if len(origin) != 3:
+            msg = "Parameter origin should be an iterable of length 3"
+            raise ValueError(msg)
+
+        # assert len(direction) == 3
+        if len(direction) != 3:
+            msg = "Parameter direction should be an iterable of length 3"
+            raise ValueError(msg)
 
         xo, yo, zo = origin
         xd, yd, zd = direction
@@ -38,8 +47,10 @@ class JupyterRendererV(JupyterRenderer):
         # cy.translate(origin)
         # co.translate(origin)
 
-        tr = transformation_from_2_anchors({"position": (xo, yo, zo), "direction": (-xd, -yd, -zd)},
-                                           {"position": (0, 0, 0), "direction": (0, 0, 1)})
+        tr = transformation_from_2_anchors({"position": (xo, yo, zo),
+                                            "direction": (-xd, -yd, -zd)},
+                                           {"position": (0, 0, 0),
+                                            "direction": (0, 0, 1)})
 
         cy.transform(tr)
         co.transform(tr)

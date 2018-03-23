@@ -6,11 +6,12 @@ r"""Visual testing for a situation similar to the car suspension issue"""
 import logging
 
 import wx
-#
+
 from osvcad.nodes import PartGeometryNode, AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor
 from ccad.model import cylinder, box
-from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
+from aocutils.display.wx_viewer import Wx3dViewer
+# from aocutils.display.wx_viewer import colour_wx_to_occ
 from OCC.gp import gp_Vec, gp_Pnt
 
 logger = logging.getLogger(__name__)
@@ -97,7 +98,7 @@ if __name__ == "__main__":
     # call to basicConfig)
     root = logging.getLogger()
     if root.handlers:
-        [root.removeHandler(handler) for handler in root.handlers]
+        _ = [root.removeHandler(handler) for handler in root.handlers]
 
     logging.basicConfig(level=logging.DEBUG,
                         format='%(relativeCreated)s :: %(levelname)6s :: '

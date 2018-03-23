@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""Homogeneous Transformation Matrices and Quaternions.
@@ -1457,7 +1458,10 @@ def random_quaternion(rand=None):
     if rand is None:
         rand = numpy.random.rand(3)
     else:
-        assert len(rand) == 3
+        # assert len(rand) == 3
+        if len(rand) != 3:
+            msg = "Parameter rand should be a iterable of length 3 or None"
+            raise ValueError(msg)
     r1 = numpy.sqrt(1.0 - rand[0])
     r2 = numpy.sqrt(rand[0])
     pi2 = math.pi * 2.0

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""Assembly graph display"""
@@ -29,7 +29,8 @@ class GraphPanel(wx.Panel):
         sizer.Add(self.canvas, 1, wx.EXPAND)
         self.toolbar = NavigationToolbar(self.canvas)
 
-        # Show the toolbar at the bottom of the graphs, so that it is possible to use the standard toolbar
+        # Show the toolbar at the bottom of the graphs, so that it is
+        # possible to use the standard toolbar
         # functionalities and to export the graph
         # self.toolbar.Hide()
         sizer.Add(self.toolbar)
@@ -37,7 +38,13 @@ class GraphPanel(wx.Panel):
 
         self.SetSizer(sizer)
 
-    def plot(self, xs, y_series, color_series, name_series, x_label="x", y_label="y"):
+    def plot(self,
+             xs,
+             y_series,
+             color_series,
+             name_series,
+             x_label="x",
+             y_label="y"):
         r"""Plot values with an associated color and an associated name
 
         Parameters
@@ -47,10 +54,12 @@ class GraphPanel(wx.Panel):
         y_series : list of list of y values
             List of list of measured values (e.g. tm, trm, Cp)
         color_series : list of colors
-            List of colors in the same order a y_series, i.e. the first list of y_series is plotted with the first
+            List of colors in the same order a y_series,
+            i.e. the first list of y_series is plotted with the first
             color of color_series
         name_series : list of names
-            List of names in the same order a y_series, i.e. the first list of y_series is plotted with the first
+            List of names in the same order a y_series,
+            i.e. the first list of y_series is plotted with the first
             name of name_series
         x_label : str
         y_label : str
@@ -73,7 +82,13 @@ class GraphPanel(wx.Panel):
 
         self.canvas.draw()
 
-    def plot_curve_of_areas(self, x_series, areas_series, color_series, linestyle_series, name_series, x_label="x",
+    def plot_curve_of_areas(self,
+                            x_series,
+                            areas_series,
+                            color_series,
+                            linestyle_series,
+                            name_series,
+                            x_label="x",
                             y_label="area"):
         r"""Plot the curves of areas"""
         self.figure.clear()
@@ -81,9 +96,17 @@ class GraphPanel(wx.Panel):
         ax.set_xlabel(x_label)
         ax.set_ylabel(y_label)
 
-        for x_serie, area_serie, color, linestyle, name in zip(x_series, areas_series, color_series,  linestyle_series,
+        for x_serie, area_serie, color, linestyle, name in zip(x_series,
+                                                               areas_series,
+                                                               color_series,
+                                                               linestyle_series,
                                                                name_series):
-            ax.plot(x_serie, area_serie, marker="+", color=color, linestyle=linestyle, label=name)
+            ax.plot(x_serie,
+                    area_serie,
+                    marker="+",
+                    color=color,
+                    linestyle=linestyle,
+                    label=name)
         legend = ax.legend(loc='upper right', shadow=True)
 
         if legend is not None:

@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-# coding: utf-8**
+# coding: utf-8
 
 """setuptools based setup module"""
 
-from setuptools import setup, find_packages
+from setuptools import setup
+# from setuptools import find_packages
 # To use a consistent encoding
-from codecs import open
+import codecs
 from os import path
 
 import osvcad
@@ -13,7 +14,7 @@ import osvcad
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README_SHORT file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 

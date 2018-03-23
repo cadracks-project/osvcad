@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""topology oriented display functions"""
@@ -175,8 +175,8 @@ def wires(display,
 
     Notes
     -----
-    Wires may overlap or a wire may cover another because one or more wires 
-    use the same edge. This causes the display of wires to be confusing. 
+    Wires may overlap or a wire may cover another because one or more wires
+    use the same edge. This causes the display of wires to be confusing.
     This is the reason why this function displays each wire in turn.
 
     """
@@ -188,7 +188,7 @@ def wires(display,
     display.DisplayShape(shape)
     display.FitAll()
 
-    for n in range(repeat):
+    for _ in range(repeat):
         for i, wire in enumerate(the_wires):
             display.EraseAll()
             ais_edge = OCC.AIS.AIS_Shape(wire)

@@ -6,7 +6,7 @@ The highlight of this module is the computation of the transformation matrix
 from 2 anchors.
 
 The module also features a function that transforms an anchor using a 4x3
-transformation matrix and a function that builds a ccad.model.Solid 
+transformation matrix and a function that builds a ccad.model.Solid
 (of compound type) from a list of OCC shapes
 
 """
@@ -29,11 +29,11 @@ def transformation_from_2_anchors(anchor_master,
                                   anchor_slave,
                                   angle=0.,
                                   distance=0.):
-    r"""Compute the transformation to bring vector_b's origin 
+    r"""Compute the transformation to bring vector_b's origin
     to vector_a's origin and to align vector_b with vector_a
-    
+
     vector_a does not move.
-    
+
     Parameters
     ----------
     anchor_master : dict
@@ -122,7 +122,12 @@ def transformation_from_2_anchors(anchor_master,
     unit_anchor_direction = [c / np.linalg.norm(anchor_master["direction"])
                              for c in anchor_master["direction"]]
 
-    assert 1 - 1e-6 <= np.linalg.norm(unit_anchor_direction) <= 1. + 1e-6
+    # assert 1 - 1e-6 <= np.linalg.norm(unit_anchor_direction) <= 1. + 1e-6
+
+    if not (1 - 1e-6 <= np.linalg.norm(unit_anchor_direction) <= 1. + 1e-6):
+        msg = "Unit anchor direction norm should be 1 +- tolerance"
+        logger.error(msg)
+        raise AssertionError(msg)
 
     transformation_mat_near_anchor = \
         np.dot(translation_matrix(np.array(anchor_master["position"]) +
@@ -166,7 +171,7 @@ def transform_anchor(anchor, transformation_matrix):
 
 
 def compound(shapes):
-    r"""Accumulate a bunch of ccad.model.Solid in list `topo` 
+    r"""Accumulate a bunch of ccad.model.Solid in list `topo`
     to a OCC.TopoDS.TopoDS_Compound used to build a ccad.model.Solid
 
     Parameters

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # call to basicConfig)
     root = logging.getLogger()
     if root.handlers:
-        [root.removeHandler(handler) for handler in root.handlers]
+        _ = [root.removeHandler(handler) for handler in root.handlers]
 
     logging.basicConfig(level=logging.INFO,
                         format='%(relativeCreated)6d :: %(levelname)6s :: '

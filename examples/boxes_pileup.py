@@ -13,7 +13,8 @@ from random import randint
 import wx
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
 from osvcad.nodes import PartGeometryNode
-from ccad.model import box, translated
+from ccad.model import box
+# from ccad.model import translated
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,8 @@ def main():
 
     new_cubes.append(cubes[0])
 
-    for i, cube in enumerate(cubes[:-1]):
+    # for i, cube in enumerate(cubes[:-1]):
+    for i, _ in enumerate(cubes[:-1]):
         logger.debug("CUBE %i" % i)
         new_cubes.append(new_cubes[i].place(self_anchor="top",
                                             other=cubes[i + 1],

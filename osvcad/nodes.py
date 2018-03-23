@@ -25,10 +25,10 @@ from random import uniform, randint
 import ccad.display as cd
 import matplotlib.pyplot as plt
 import networkx as nx
-import numpy as np
+# import numpy as np
 import wx
 from OCC.gp import gp_Pnt, gp_Vec
-from aocutils.display.wx_viewer import colour_wx_to_occ
+# from aocutils.display.wx_viewer import colour_wx_to_occ
 from ccad.model import transformed, from_step
 from party.library_use import generate
 
@@ -165,7 +165,11 @@ class PartGeometryNode(GeometryNode):
         r"""Create the GeometryNode from a step file and anchors definition"""
         logger.info("Creating GeometryNode from step file %s" %
                     basename(step_file_path))
-        assert exists(step_file_path)
+        # assert exists(step_file_path)
+        if not exists(step_file_path):
+            msg = "STEP file (%s) does not exist" % step_file_path
+            logger.error(msg)
+            raise IOError(msg)
 
         if step_file_path in cls.loaded.keys():
             s = cls.loaded[step_file_path]
@@ -207,7 +211,8 @@ class PartGeometryNode(GeometryNode):
         # TODO : use Part.from_py of ccad
         # cm.Part.from_py("sphere_r_2.py").geometry
 
-        name, ext = splitext(basename(py_script_path))
+        # name, ext = splitext(basename(py_script_path))
+        name, _ = splitext(basename(py_script_path))
         module_ = imp.load_source(name, py_script_path)
 
         return cls(module_.part, module_.anchors, instance_id)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""3D viewer as a wx Panel"""
@@ -435,7 +435,7 @@ class Wx3dViewer(wx.Panel):
     def on_topology_wires(self, event):
         r"""Display another viewer with wires topology
 
-        This one is trickier because of the way wires 
+        This one is trickier because of the way wires
         are displayed (alternating display)
         Cannot show modal
 
@@ -454,7 +454,7 @@ class Wx3dViewer(wx.Panel):
 
 
 def colour_wx_to_occ(wx_colour):
-    r"""Convert a wx colour coded on ints from 0 to 255 to an 
+    r"""Convert a wx colour coded on ints from 0 to 255 to an
     OCC color coded on floats from 0 to 1
 
     Parameters

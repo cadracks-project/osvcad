@@ -51,7 +51,8 @@ def extract_stepzip(stepzip):
         raise ValueError(msg)
 
     for name in zip_ref.namelist():
-        bname, ext = splitext(name)
+        # bname, ext = splitext(name)
+        _, ext = splitext(name)
         if ext in [".stp", ".step", ".STP", ".STEP"]:
             step_file_path = join(dirname(stepzip), name)
         else:

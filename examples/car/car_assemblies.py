@@ -2,7 +2,7 @@
 
 r"""Example of a car model"""
 
-import logging
+# import logging
 
 from osvcad.nodes import PartGeometryNode, AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor

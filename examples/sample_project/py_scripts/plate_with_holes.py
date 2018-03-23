@@ -4,7 +4,8 @@ r"""Flat plate with holes Python creation script"""
 
 from __future__ import division
 
-from ccad.model import prism, filling, ngon, cylinder, translated, box
+from ccad.model import cylinder, translated, box
+# from ccad.model import prism, filling, ngon
 
 units = 'mm'
 
@@ -30,9 +31,9 @@ part = plate
 anchors = dict()
 for i, (x, y) in enumerate(hole_positions, 1):
     anchors[str(i)] = {"position": (x, y, e),
-                  "direction": (0., 0., -1.),
-                  "dimension": hole_d,
-                  "description": "%s mm hole" % hole_d}
+                       "direction": (0., 0., -1.),
+                       "dimension": hole_d,
+                       "description": "%s mm hole" % hole_d}
 
 if __name__ == '__main__':
     # part.to_step("plate_with_holes.step", precision_mode=0, assembly=0,
