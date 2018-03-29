@@ -84,8 +84,8 @@ RUN conda install -y networkx
 
 WORKDIR /opt/build
 # corelib (used by aocutils)
-ADD https://api.github.com/repos/fullmar/corelib/git/refs/heads/master version.json
-RUN git clone --depth=1 https://github.com/fullmar/corelib && \
+ADD https://api.github.com/repos/guillaume-florent/corelib/git/refs/heads/master version.json
+RUN git clone --depth=1 https://github.com/guillaume-florent/corelib && \
     cp -r /opt/build/corelib/corelib /opt/conda/lib/python3.6/site-packages
 
 # aocutils
