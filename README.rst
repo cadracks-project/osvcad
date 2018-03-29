@@ -18,11 +18,7 @@ Warning : work in progress. Early stage of development
 Installing
 ==========
 
-.. code-block:: shell
-
-   git clone https://github.com/osv-team/osvcad
-   cd osvcad
-   python setup.py install
+The recommended way to install **osvcad** uses Docker and is explained in `INSTALL.rst <./INSTALL.rst>`_
 
 
 Geometry : Parts and Assemblies

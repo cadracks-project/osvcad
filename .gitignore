@@ -122,3 +122,4 @@ ENV/
 /examples/car/0_tabby2.step
 /examples/car/0_tabby2.3dm
 
+/.pytest_cache/

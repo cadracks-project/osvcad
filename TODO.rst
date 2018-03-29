@@ -1,3 +1,5 @@
+Separer visu du code 'core' dans nodes.py. nodes.py ne devrait pas utiliser wx
+
 -> lire transformations.py + doctests vers pytests
 
 Apply correction for GetHandle() returns 0 on Linux to examples not using the display_3d() function of AssemblyGeometryNode (nodes.py)
