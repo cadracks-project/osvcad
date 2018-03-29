@@ -27,8 +27,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 # import numpy as np
 import wx
-print("ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù")
-print(wx.__file__)
 from OCC.gp import gp_Pnt, gp_Vec
 # from aocutils.display.wx_viewer import colour_wx_to_occ
 from ccad.model import transformed, from_step
