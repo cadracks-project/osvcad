@@ -16,12 +16,12 @@ RUN conda install -y -c gflorent corelib aocxchange aocutils
 WORKDIR /opt
 ADD https://api.github.com/repos/osv-team/ccad/git/refs/heads/master version.json
 RUN git clone --depth=1 https://github.com/osv-team/ccad
-RUN cp -r /opt/build/ccad/ccad /opt/conda/lib/python3.6/site-packages
+RUN cp -r /opt/ccad/ccad /opt/conda/lib/python3.6/site-packages
 
 # party
 ADD https://api.github.com/repos/osv-team/party/git/refs/heads/master version.json
 RUN git clone --depth=1 https://github.com/osv-team/party
-RUN cp -r /opt/build/party/party /opt/conda/lib/python3.6/site-packages
+RUN cp -r /opt/party/party /opt/conda/lib/python3.6/site-packages
 
 # osvcad
 ADD https://api.github.com/repos/osv-team/osvcad/git/refs/heads/master version.json
