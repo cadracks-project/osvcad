@@ -39,10 +39,14 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
     keywords=['OpenCascade', 'PythonOCC', 'ccad', 'CAD', 'parts', 'json'],
-    packages=['osvcad','osvcad/ui','osvcad/utils' ],
-    install_requires=['jsonpickle', 'networkx', 'ccad'],
+    packages=['osvcad',
+              'osvcad.jupyter',
+              'osvcad.ui',
+              'osvcad.utils'],
+    install_requires=[],
     # OCC, scipy and wx cannot be installed via pip
-    extras_require={'dev': [], 'test': ['pytest', 'coverage'],},
+    extras_require={'dev': [],
+                    'test': ['pytest', 'coverage'], },
     package_data={},
     data_files=[],
     entry_points={}

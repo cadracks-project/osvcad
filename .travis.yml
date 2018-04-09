@@ -1,0 +1,16 @@
+sudo: required
+
+git:
+  depth: 3
+
+services:
+  - docker
+
+install:
+  - docker build --tag guillaume-florent/osvcad:latest .
+
+script:
+  - docker run --name osvcad guillaume-florent/osvcad:latest /bin/bash -c "cd /opt/osvcad;pytest tests/"
+
+after_script:
+  - docker images
