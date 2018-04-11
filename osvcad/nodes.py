@@ -17,7 +17,7 @@ GeometryNodeAssembly can be a GeometryNode and a networkx DiGraph
 import imp
 import logging
 import re
-from abc import abstractmethod, ABCMeta
+import abc
 from math import radians
 from os.path import basename, splitext, exists, join, dirname
 
@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 class GeometryNode(object):
     r"""Abstract base class for all object representing geometry in Osvcad"""
-    __metaclass__ = ABCMeta
+    __metaclass__ = abc.ABCMeta
 
     @property
     @abc.abstractmethod
@@ -76,7 +76,7 @@ class GeometryNode(object):
         """
         raise NotImplementedError
 
-    @abstractmethod
+    @abc.abstractmethod
     def transform(self, transformation_matrix):
         r"""Transform the node using a transformation matrix
 
@@ -92,7 +92,7 @@ class GeometryNode(object):
         """
         raise NotImplementedError
 
-    @abstractmethod
+    @abc.abstractmethod
     def place(self, self_anchor, other, other_anchor, angle=0., distance=0.,
               inplace=True):
         r"""

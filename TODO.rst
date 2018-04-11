@@ -1,4 +1,5 @@
-Separer visu du code 'core' dans nodes.py. nodes.py ne devrait pas utiliser wx
+****** Separer visu du code 'core' dans nodes.py. nodes.py ne devrait pas utiliser wx
+MAJ examples
 
 -> lire transformations.py + doctests vers pytests
 
