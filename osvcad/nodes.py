@@ -17,7 +17,7 @@ GeometryNodeAssembly can be a GeometryNode and a networkx DiGraph
 import imp
 import logging
 import re
-from abc import abstractmethod, abstractproperty, ABCMeta
+from abc import abstractmethod, ABCMeta
 from math import radians
 from os.path import basename, splitext, exists, join, dirname
 
@@ -41,7 +41,8 @@ class GeometryNode(object):
     r"""Abstract base class for all object representing geometry in Osvcad"""
     __metaclass__ = ABCMeta
 
-    @abstractproperty
+    @property
+    @abc.abstractmethod
     def node_shape(self):
         r"""The geometrical shape of the node
 
@@ -52,7 +53,8 @@ class GeometryNode(object):
         """
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abc.abstractmethod
     def anchors(self):
         r"""The anchors of the node
 
@@ -62,7 +64,8 @@ class GeometryNode(object):
 
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abc.abstractmethod
     def instance_id(self):
         r"""A human readable identification of the node
 
