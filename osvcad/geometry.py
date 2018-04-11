@@ -15,7 +15,7 @@ import logging
 
 import numpy as np
 
-import OCC.TopoDS
+from OCC.Core.TopoDS import TopoDS_Builder, TopoDS_Compound
 from ccad.model import Solid, Shape
 
 from osvcad.transformations import translation_matrix, rotation_matrix,\
@@ -172,7 +172,7 @@ def transform_anchor(anchor, transformation_matrix):
 
 def compound(shapes):
     r"""Accumulate a bunch of ccad.model.Solid in list `topo`
-    to a OCC.TopoDS.TopoDS_Compound used to build a ccad.model.Solid
+    to a TopoDS_Compound used to build a ccad.model.Solid
 
     Parameters
     ----------
@@ -187,8 +187,8 @@ def compound(shapes):
         if not isinstance(shape, Shape):
             raise ValueError("The shapes list "
                              "should only contains ccad.model.Shape(s)")
-    bd = OCC.TopoDS.TopoDS_Builder()
-    comp = OCC.TopoDS.TopoDS_Compound()
+    bd = TopoDS_Builder()
+    comp = TopoDS_Compound()
     bd.MakeCompound(comp)
     for shape in shapes:
         bd.Add(comp, shape.shape)

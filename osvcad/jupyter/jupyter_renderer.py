@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding: utf-8
 
 r"""OCC.Display.WebGl.jupyter_renderer's JupyterRenderer enhancement
@@ -58,5 +57,3 @@ class JupyterRendererV(JupyterRenderer):
         # display them
         self.DisplayShape(cy.shape, shape_color="yellow")
         self.DisplayShape(co.shape, shape_color="yellow")
-
-

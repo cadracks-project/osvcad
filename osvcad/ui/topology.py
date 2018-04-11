@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # coding: utf-8
 
 r"""topology oriented display functions"""
@@ -6,8 +5,8 @@ r"""topology oriented display functions"""
 import logging
 import time
 
-import OCC.Display.SimpleGui
-import OCC.AIS
+# import OCC.Display.SimpleGui
+from OCC.AIS import AIS_Shape
 
 import aocutils.display.defaults
 import aocutils.display.color
@@ -39,7 +38,7 @@ def solids(display,
     ais_context = display.GetContext().GetObject()
 
     for i, solid in enumerate(the_solids):
-        ais_face = OCC.AIS.AIS_Shape(solid)
+        ais_face = AIS_Shape(solid)
         ais_face.SetColor(color_sequence[i % len(color_sequence)])
         ais_face.SetTransparency(transparency)
         ais_context.Display(ais_face.GetHandle())
@@ -65,7 +64,7 @@ def shells(display,
     ais_context = display.GetContext().GetObject()
 
     for i, shell in enumerate(the_shells):
-        ais_face = OCC.AIS.AIS_Shape(shell)
+        ais_face = AIS_Shape(shell)
         ais_face.SetColor(color_sequence[i % len(color_sequence)])
         ais_face.SetTransparency(transparency)
         ais_context.Display(ais_face.GetHandle())
@@ -97,7 +96,7 @@ def faces(display,
     ais_context = display.GetContext().GetObject()
 
     for i, face in enumerate(the_faces):
-        ais_face = OCC.AIS.AIS_Shape(face)
+        ais_face = AIS_Shape(face)
         ais_face.SetColor(color_sequence[i % len(color_sequence)])
         ais_face.SetTransparency(transparency)
         if show_numbers:
@@ -135,7 +134,7 @@ def edges(display,
     ais_context = display.GetContext().GetObject()
 
     for i, edge in enumerate(the_edges):
-        ais_edge = OCC.AIS.AIS_Shape(edge)
+        ais_edge = AIS_Shape(edge)
         ais_edge.SetWidth(width)
         ais_edge.SetColor(color_sequence[i % len(color_sequence)])
         if show_numbers:
@@ -191,7 +190,7 @@ def wires(display,
     for _ in range(repeat):
         for i, wire in enumerate(the_wires):
             display.EraseAll()
-            ais_edge = OCC.AIS.AIS_Shape(wire)
+            ais_edge = AIS_Shape(wire)
             ais_edge.SetWidth(width)
             ais_edge.SetColor(color_sequence[i % len(color_sequence)])
             ais_context.Display(ais_edge.GetHandle())

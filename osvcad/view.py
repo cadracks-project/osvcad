@@ -8,7 +8,7 @@ import wx
 import matplotlib.pyplot as plt
 import networkx as nx
 
-from OCC.gp import gp_Pnt, gp_Vec
+from OCC.Core.gp import gp_Pnt, gp_Vec
 import ccad.display as cd
 from osvcad.ui.wx_viewer import Wx3dViewer, colour_wx_to_occ
 
