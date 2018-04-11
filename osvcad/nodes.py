@@ -20,14 +20,10 @@ import re
 from abc import abstractmethod, abstractproperty, ABCMeta
 from math import radians
 from os.path import basename, splitext, exists, join, dirname
-from random import uniform, randint
 
-import ccad.display as cd
-import matplotlib.pyplot as plt
 import networkx as nx
 # import numpy as np
-import wx
-from OCC.gp import gp_Pnt, gp_Vec
+
 # from aocutils.display.wx_viewer import colour_wx_to_occ
 from ccad.model import transformed, from_step
 from party.library_use import generate
@@ -36,7 +32,6 @@ from osvcad.geometry import transformation_from_2_anchors, transform_anchor, \
     compound
 from osvcad.stepzip import extract_stepzip
 from osvcad.transformations import translation_matrix, rotation_matrix
-from osvcad.ui.wx_viewer import Wx3dViewer, colour_wx_to_occ
 from osvcad.utils.coding import overrides
 
 logger = logging.getLogger(__name__)
@@ -348,25 +343,25 @@ class PartGeometryNode(GeometryNode):
                                               rotation_axis,
                                               axis_point))
 
-    def display(self, viewer, color_255, transparency=0.):
-        r"""Display the node in a 3D viewer
-
-        Parameters
-        ----------
-        viewer : aocutils.display.wx_viewer.Wx3dViewer
-            The viewer where the node should be displayed
-        color_255 : Tuple[float, float, float]
-            8-bit (0 - 255) color tuple
-        transparency : float
-            From 0. (not transparent) to 1 (fully transparent)
-
-        """
-        for k, _ in self.anchors.items():
-            viewer.display_vector(gp_Vec(*self.anchors[k]["direction"]),
-                                  gp_Pnt(*self.anchors[k]["position"]))
-        viewer.display_shape(self.node_shape.node_shape,
-                             color=colour_wx_to_occ(color_255),
-                             transparency=transparency)
+    # def display(self, viewer, color_255, transparency=0.):
+    #     r"""Display the node in a 3D viewer
+    #
+    #     Parameters
+    #     ----------
+    #     viewer : aocutils.display.wx_viewer.Wx3dViewer
+    #         The viewer where the node should be displayed
+    #     color_255 : Tuple[float, float, float]
+    #         8-bit (0 - 255) color tuple
+    #     transparency : float
+    #         From 0. (not transparent) to 1 (fully transparent)
+    #
+    #     """
+    #     for k, _ in self.anchors.items():
+    #         viewer.display_vector(gp_Vec(*self.anchors[k]["direction"]),
+    #                               gp_Pnt(*self.anchors[k]["position"]))
+    #     viewer.display_shape(self.node_shape.node_shape,
+    #                          color=colour_wx_to_occ(color_255),
+    #                          transparency=transparency)
 
     def __str__(self):
         return self.__repr__()
@@ -508,84 +503,84 @@ class AssemblyGeometryNode(nx.DiGraph, GeometryNode):
 
             self.built = True
 
-    def show_plot(self):
-        r"""Create a Matplotlib graph of the plot"""
-        val_map = {'A': 1.0,
-                   'D': 0.5714285714285714,
-                   'H': 0.0}
+    # def show_plot(self):
+    #     r"""Create a Matplotlib graph of the plot"""
+    #     val_map = {'A': 1.0,
+    #                'D': 0.5714285714285714,
+    #                'H': 0.0}
+    #
+    #     values = [val_map.get(node, 0.25) for node in self.nodes()]
+    #
+    #     pos = nx.circular_layout(self)
+    #     nx.draw_networkx_nodes(self,
+    #                            pos,
+    #                            cmap=plt.get_cmap('jet'),
+    #                            node_color=values)
+    #     nx.draw_networkx_edges(self,
+    #                            pos,
+    #                            edgelist=self.edges(),
+    #                            edge_color='r',
+    #                            arrows=True)
+    #     nx.draw_networkx_labels(self, pos)
+    #     nx.draw_networkx_edge_labels(self, pos)
+    #     plt.show()
 
-        values = [val_map.get(node, 0.25) for node in self.nodes()]
-
-        pos = nx.circular_layout(self)
-        nx.draw_networkx_nodes(self,
-                               pos,
-                               cmap=plt.get_cmap('jet'),
-                               node_color=values)
-        nx.draw_networkx_edges(self,
-                               pos,
-                               edgelist=self.edges(),
-                               edge_color='r',
-                               arrows=True)
-        nx.draw_networkx_labels(self, pos)
-        nx.draw_networkx_edge_labels(self, pos)
-        plt.show()
-
-    def display_3d_ccad(self):
-        r"""Display the Assembly in a the ccad 3D viewer"""
-        v = cd.view()
-
-        self.build()
-
-        for node in self.nodes():
-            v.display(node._node_shape,
-                      color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
-                      transparency=0.)
-        # v.display(self._node_shape,
-        #           color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
-        #           transparency=0.)
-
-        cd.start()
-
-    def display_3d(self):
-        r"""Display using osvcad's integrated wx viewer"""
-        self.build()
-
-        class MyFrame(wx.Frame):
-            r"""Frame for testing"""
-
-            def __init__(self):
-                wx.Frame.__init__(self, None, -1)
-                self.Show()
-                wx.SafeYield()
-                # TODO : check if running on Linux
-                if wx.version().startswith("3.") or wx.version().startswith("4."):
-                    # issue with GetHandle on Linux for wx versions
-                    # >3 or 4. Window must be displayed before GetHandle is
-                    # called. For that, just wait for a few milliseconds/seconds
-                    # before calling InitDriver
-                    # a solution is given here
-                    # see https://github.com/cztomczak/cefpython/issues/349
-                    # but raises an issue with wxPython 4.x
-                    # finally, it seems that the sleep function does the job
-                    from time import sleep
-                    sleep(2)
-                    wx.SafeYield()
-                self.p = Wx3dViewer(self)
-
-        app = wx.App()
-        frame = MyFrame()
-        for node in self.nodes():
-            # for k, v in node.anchors.items():
-            #     frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
-            #                            gp_Pnt(*node.anchors[k]["position"]))
-            frame.p.display_shape(node.node_shape.shape,
-                                  color=colour_wx_to_occ((randint(0, 255),
-                                                          randint(0, 255),
-                                                          randint(0, 255))),
-                                  transparency=0.)
-
-        app.SetTopWindow(frame)
-        app.MainLoop()
+    # def display_3d_ccad(self):
+    #     r"""Display the Assembly in a the ccad 3D viewer"""
+    #     v = cd.view()
+    #
+    #     self.build()
+    #
+    #     for node in self.nodes():
+    #         v.display(node._node_shape,
+    #                   color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
+    #                   transparency=0.)
+    #     # v.display(self._node_shape,
+    #     #           color=(uniform(0, 1), uniform(0, 1), uniform(0, 1)),
+    #     #           transparency=0.)
+    #
+    #     cd.start()
+    #
+    # def display_3d(self):
+    #     r"""Display using osvcad's integrated wx viewer"""
+    #     self.build()
+    #
+    #     class MyFrame(wx.Frame):
+    #         r"""Frame for testing"""
+    #
+    #         def __init__(self):
+    #             wx.Frame.__init__(self, None, -1)
+    #             self.Show()
+    #             wx.SafeYield()
+    #             # TODO : check if running on Linux
+    #             if wx.version().startswith("3.") or wx.version().startswith("4."):
+    #                 # issue with GetHandle on Linux for wx versions
+    #                 # >3 or 4. Window must be displayed before GetHandle is
+    #                 # called. For that, just wait for a few milliseconds/seconds
+    #                 # before calling InitDriver
+    #                 # a solution is given here
+    #                 # see https://github.com/cztomczak/cefpython/issues/349
+    #                 # but raises an issue with wxPython 4.x
+    #                 # finally, it seems that the sleep function does the job
+    #                 from time import sleep
+    #                 sleep(2)
+    #                 wx.SafeYield()
+    #             self.p = Wx3dViewer(self)
+    #
+    #     app = wx.App()
+    #     frame = MyFrame()
+    #     for node in self.nodes():
+    #         # for k, v in node.anchors.items():
+    #         #     frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
+    #         #                            gp_Pnt(*node.anchors[k]["position"]))
+    #         frame.p.display_shape(node.node_shape.shape,
+    #                               color=colour_wx_to_occ((randint(0, 255),
+    #                                                       randint(0, 255),
+    #                                                       randint(0, 255))),
+    #                               transparency=0.)
+    #
+    #     app.SetTopWindow(frame)
+    #     app.MainLoop()
 
     @overrides
     def place(self,
