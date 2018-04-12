@@ -10,15 +10,15 @@ RUN apt-get update && apt-get install -y libgtk2.0-0 libxxf86vm1 libgl1-mesa-dev
 
 # Other conda packages
 RUN conda install -y numpy matplotlib wxpython pyqt networkx jinja2 pytest
-RUN conda install -y -c gflorent corelib aocxchange aocutils
+RUN conda install -y -c gflorent corelib aocxchange aocutils ccad
 
-# ccad
-WORKDIR /opt
-# ADD https://api.github.com/repos/osv-team/ccad/git/refs/heads/master version.json
-RUN git clone --depth=1 https://github.com/osv-team/ccad
-WORKDIR /opt/ccad
-RUN python setup.py install
-# RUN cp -r /opt/ccad/ccad /opt/conda/lib/python3.6/site-packages
+## ccad
+#WORKDIR /opt
+## ADD https://api.github.com/repos/osv-team/ccad/git/refs/heads/master version.json
+#RUN git clone --depth=1 https://github.com/osv-team/ccad
+#WORKDIR /opt/ccad
+#RUN python setup.py install
+## RUN cp -r /opt/ccad/ccad /opt/conda/lib/python3.6/site-packages
 
 # party
 WORKDIR /opt
