@@ -20,7 +20,7 @@ with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name=osvcad.__name__,
-    version=osvcad.__release__,
+    version=osvcad.__version__,
     description=osvcad.__description__,
     long_description=long_description,
     url=osvcad.__url__,
