@@ -6,7 +6,7 @@ MAINTAINER Guillaume Florent <florentsailing@gmail.com>
 # For wx : libgtk2.0-0 libxxf86vm1
 # Funily, installing libgtk2.0-0 seems to solve the XCB plugin not found issue for Qt !!
 # For pyqt : libgl1-mesa-dev libx11-xcb1
-RUN apt-get update && apt-get install -y libgtk2.0-0 libxxf86vm1 libgl1-mesa-dev libx11-xcb1 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends libgtk2.0-0 libxxf86vm1 libgl1-mesa-dev libx11-xcb1 && rm -rf /var/lib/apt/lists/*
 
 # Other conda packages
 RUN conda install -y numpy matplotlib wxpython pyqt networkx jinja2 pytest

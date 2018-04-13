@@ -384,8 +384,8 @@ class PartGeometryNode(GeometryNode):
                          (anchor_name,
                           str(anchor_dict["direction"]),
                           str(anchor_dict["position"])))
-            else:
-                l.append("\t\tNo anchor")
+        else:
+            l.append("\t\tNo anchor")
         return "\n".join(l)
 
 
