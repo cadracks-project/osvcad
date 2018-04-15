@@ -33,3 +33,5 @@ WORKDIR /opt
 RUN git clone --depth=1 https://github.com/osv-team/osvcad
 WORKDIR /opt/osvcad
 RUN python setup.py install
+
+RUN apt-get update && apt-get install -y gedit && rm -rf /var/lib/apt/lists/*
