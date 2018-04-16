@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgtk2.0-0 lib
 
 # Other conda packages
 RUN conda install -y numpy matplotlib wxpython pyqt networkx jinja2 pytest
-RUN conda install -y -c gflorent corelib aocxchange aocutils ccad party
+RUN conda install -y -c gflorent corelib aocxchange aocutils>=18.2 ccad party
 
 ## ccad
 #WORKDIR /opt

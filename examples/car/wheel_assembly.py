@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     wheel_assembly = make_wheel_assembly()
     # wheel_assembly.display_3d()
-    wheel_assembly.display_3d()
-    wheel_assembly.show_plot()
+    # wheel_assembly.display_3d()
+    # wheel_assembly.show_plot()
     view_assembly(wheel_assembly)
     view_assembly_graph(wheel_assembly)
