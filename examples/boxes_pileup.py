@@ -4,17 +4,14 @@
 r"""Organising (initially) randomly placed cubes using anchors"""
 
 import logging
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s :: %(levelname)8s :: %(module)20s '
-                           ':: %(lineno)3d :: %(message)s')
-
 from random import randint
 import wx
-from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
+
 from osvcad.nodes import PartGeometryNode
 from ccad.model import box
 # from ccad.model import translated
+
+from osvcad.view import OsvCadFrame
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +33,8 @@ def main():
         cubes.append(PartGeometryNode(
             box(30, 20, 10),
             anchors={"top": {"position": (15, 10, 10), "direction": (0, 0, 1)},
-                     "bottom": {"position": (15, 10, 0), "direction": (0, 0, -1)}
+                     "bottom": {"position": (15, 10, 0),
+                                "direction": (0, 0, -1)}
                      }).translate((randx, randy, randz))
                      .rotate(30., (1., 1., 1.), (0., 0., 0.))
                      )
@@ -52,24 +50,13 @@ def main():
                                             angle=11. + 11. * i,
                                             distance=0.))
 
-    class MyFrame(wx.Frame):
-        r"""Frame for testing"""
-        def __init__(self):
-            wx.Frame.__init__(self, None, -1)
-            self.p = Wx3dViewer(self)
-            self.Show()
-
     app = wx.App()
-    frame = MyFrame()
-    frame.p.display_shape(cubes[0].node_shape.shape,
-                          color=colour_wx_to_occ((255, 255, 255)),
-                          transparency=0.)
+    frame = OsvCadFrame()
+    frame.display_part(cubes[0], color_255=(255, 255, 255))
 
     # Initial cubes in orange
     for c in cubes[1:]:
-        frame.p.display_shape(c.node_shape.shape,
-                              color=colour_wx_to_occ((255, 136, 64)),
-                              transparency=0.)
+        frame.display_part(c, color_255=(255, 136, 64))
 
     # New cubes placed using anchors in shades of blue (changing every
     # 10 cubes)
@@ -81,13 +68,14 @@ def main():
                 color = colors[0]
             else:
                 color = colors[1]
-        frame.p.display_shape(new_cube.node_shape.shape,
-                              color=colour_wx_to_occ(color),
-                              transparency=0.)
+        frame.display_part(new_cube, color_255=color)
 
     app.SetTopWindow(frame)
     app.MainLoop()
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s :: %(levelname)8s :: %(module)20s '
+                               ':: %(lineno)3d :: %(message)s')
     main()

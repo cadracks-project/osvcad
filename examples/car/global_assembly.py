@@ -3,26 +3,15 @@
 
 r"""Tabby global assembly of partial assemblies"""
 
-import logging
-
 from osvcad.nodes import AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor
 from car_assemblies import make_wheel_assembly, make_rear_suspension_assembly
 # from car_assemblies import  make_front_suspension_assembly, \
 #                             make_chassis_assembly
 
+from osvcad.view import view_assembly, view_assembly_graph
+
 if __name__ == "__main__":
-    # Workaround badly formatted log messages
-    # Probably originating from aocutils (likely cause: call to logger.* before
-    # call to basicConfig)
-    root = logging.getLogger()
-    if root.handlers:
-        _ = [root.removeHandler(handler) for handler in root.handlers]
-
-    logging.basicConfig(level=logging.INFO,
-                        format='%(relativeCreated)6d :: %(levelname)6s :: '
-                               '%(module)20s :: %(lineno)3d :: %(message)s')
-
     # chassis_assembly_ = make_chassis_assembly()
     # front_suspension_assembly_ = make_front_suspension_assembly()
     rear_suspension_assembly_ = make_rear_suspension_assembly()
@@ -40,6 +29,5 @@ if __name__ == "__main__":
             distance=0,
             angle=0))
 
-    # rear_suspension_and_wheel_assembly.display_3d()
-    rear_suspension_and_wheel_assembly.display_3d()
-    rear_suspension_and_wheel_assembly.show_plot()
+    view_assembly(rear_suspension_and_wheel_assembly)
+    view_assembly_graph(rear_suspension_and_wheel_assembly)

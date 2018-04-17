@@ -9,11 +9,11 @@ The example is designed to test many cases visually
 
 from __future__ import division
 
-from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
-from OCC.gp import gp_Pnt, gp_Vec
 import wx
 from osvcad.nodes import PartGeometryNode
 from ccad.model import box, translated
+
+from osvcad.view import OsvCadFrame
 
 
 def make_case(case_offset,
@@ -51,14 +51,17 @@ def make_case(case_offset,
     iox, ioy, ioz = internal_offset
     total_offset = cox + iox, coy + ioy, coz + ioz
 
-    node_1 = PartGeometryNode(translated(box(*cube_1_dimensions),
-                                         case_offset),
-                              anchors={"only_anchor": _compute_anchor_position(case_offset, cube_1_dimensions, anchor_1)})
+    node_1 = PartGeometryNode(translated(box(*cube_1_dimensions), case_offset),
+                              anchors={"only_anchor": _compute_anchor_position(case_offset,
+                                                                               cube_1_dimensions,
+                                                                               anchor_1)})
 
     node_2 = PartGeometryNode(translated(translated(box(*cube_2_dimensions),
                                                     internal_offset),
                                          case_offset),
-                              anchors={"only_anchor": _compute_anchor_position(total_offset, cube_2_dimensions, anchor_2)})
+                              anchors={"only_anchor": _compute_anchor_position(total_offset,
+                                                                               cube_2_dimensions,
+                                                                               anchor_2)})
 
     node_3 = node_1.place(self_anchor="only_anchor",
                           other=node_2,
@@ -100,15 +103,8 @@ def _compute_anchor_position(offset, cube_dimensions, anchor_pos):
 
 def main():
     r"""Main function of the example"""
-    class MyFrame(wx.Frame):
-        r"""Frame for testing"""
-        def __init__(self):
-            wx.Frame.__init__(self, None, -1)
-            self.p = Wx3dViewer(self)
-            self.Show()
-
     app = wx.App()
-    frame = MyFrame()
+    frame = OsvCadFrame()
 
     cube1_possibilities = ["top", "south"]
     cube2_possibilities = ["top", "bottom", "north", "east", "south", "west"]
@@ -128,23 +124,13 @@ def main():
     for (n1, n2, n3) in cases:
 
         # Node 1 : RED
-        frame.p.display_vector(gp_Vec(*n1.anchors["only_anchor"]["direction"]),
-                               gp_Pnt(*n1.anchors["only_anchor"]["position"]))
-        frame.p.display_shape(n1.node_shape.shape,
-                              color=colour_wx_to_occ((255, 0, 0)),
-                              transparency=0.5)
+        frame.display_part(n1, color_255=(255, 0, 0), transparency=0.5)
 
         # Node 2 : GREY
-        frame.p.display_vector(gp_Vec(*n2.anchors["only_anchor"]["direction"]),
-                               gp_Pnt(*n2.anchors["only_anchor"]["position"]))
-        frame.p.display_shape(n2.node_shape.shape,
-                              color=colour_wx_to_occ((64, 64, 64)),
-                              transparency=0.2)
+        frame.display_part(n2, color_255=(64, 64, 64), transparency=0.2)
 
         # Node 3 : BLUE
-        frame.p.display_shape(n3.node_shape.shape,
-                              color=colour_wx_to_occ((0, 0, 255)),
-                              transparency=0.8)
+        frame.display_part(n3, color_255=(0, 0, 255), transparency=0.8)
 
     app.SetTopWindow(frame)
     app.MainLoop()

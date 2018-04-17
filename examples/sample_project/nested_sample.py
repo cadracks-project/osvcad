@@ -5,6 +5,8 @@ r"""Example of direct construction"""
 from osvcad.nodes import PartGeometryNode, AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor
 
+from osvcad.view import view_part, view_assembly, view_assembly_graph
+
 plate_gn = PartGeometryNode.from_py_script(py_script_path="py_scripts/plate_with_holes.py")
 
 print("Plate gn : %s" % plate_gn)
@@ -30,16 +32,13 @@ for i in range(4):
                                           distance=-5-1.6,
                                           angle=0))
 
-    project.add_edge(A, bolt, object=ConstraintAnchor(anchor_name_master=str(hash(plate_gn)) + "/%i" % (i + 1),
-                                                      anchor_name_slave=str(hash(screws[i])) + "/1",
-                                                      distance=0,
-                                                      angle=0))
+    project.add_edge(A,
+                     bolt,
+                     object=ConstraintAnchor(anchor_name_master=str(hash(plate_gn)) + "/%i" % (i + 1),
+                                             anchor_name_slave=str(hash(screws[i])) + "/1",
+                                             distance=0,
+                                             angle=0))
 
-#
-# A.write_yaml("sample.yaml")
-
-# project.write_json("project.json")
-
-project.display_3d_ccad()
-
-project.show_plot()
+view_assembly(A)
+view_assembly(project)
+view_assembly_graph(project)

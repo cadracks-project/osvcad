@@ -1,5 +1,8 @@
+Display of anchor names
+
+
 ****** Separer visu du code 'core' dans nodes.py. nodes.py ne devrait pas utiliser wx
-MAJ examples
+******* MAJ examples
 
 -> lire transformations.py + doctests vers pytests
 

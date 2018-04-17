@@ -5,6 +5,8 @@ r"""Example of direct construction"""
 from osvcad.nodes import PartGeometryNode, AssemblyGeometryNode
 from osvcad.edges import ConstraintAnchor
 
+from osvcad.view import view_part, view_assembly, view_assembly_graph
+
 plate_gn = PartGeometryNode.from_py_script(py_script_path="py_scripts/plate_with_holes.py")
 
 print("Plate gn : %s" % plate_gn)
@@ -38,11 +40,6 @@ for i, (screw, nut) in enumerate(zip(screws, nuts), 1):
 print(A.number_of_nodes())
 print(A.number_of_edges())
 
-#
-# A.write_yaml("sample.yaml")
-
-# A.write_json("sample.json")
-
-A.display_3d_ccad()
-
-A.show_plot()
+view_part(nuts[0])
+view_assembly(A)
+view_assembly_graph(A)
