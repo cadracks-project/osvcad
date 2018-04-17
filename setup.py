@@ -41,7 +41,6 @@ setup(
     keywords=['OpenCascade', 'PythonOCC', 'ccad', 'CAD', 'parts', 'json'],
     packages=['osvcad',
               'osvcad.jupyter',
-              'osvcad.ui',
               'osvcad.utils'],
     install_requires=[],
     # OCC, scipy and wx cannot be installed via pip
