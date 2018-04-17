@@ -4,7 +4,10 @@ r"""Visualization of Parts and Assemblies"""
 
 from random import uniform, randint
 
+import platform
 import wx
+import wx.aui
+import wx.lib.agw.aui
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -28,22 +31,38 @@ class MyFrame(wx.Frame):
 
     def __init__(self):
         wx.Frame.__init__(self, None, -1)
-        self.Show()
-        wx.SafeYield()
-        # TODO : check if running on Linux
-        if wx.version().startswith("3.") or wx.version().startswith("4."):
-            # issue with GetHandle on Linux for wx versions
-            # >3 or 4. Window must be displayed before GetHandle is
-            # called. For that, just wait for a few milliseconds/seconds
-            # before calling InitDriver
-            # a solution is given here
-            # see https://github.com/cztomczak/cefpython/issues/349
-            # but raises an issue with wxPython 4.x
-            # finally, it seems that the sleep function does the job
-            from time import sleep
-            sleep(2)
-            wx.SafeYield()
-        self.wx_3d_viewer = Wx3dViewer(self)
+        if platform.system() == "Linux":
+            self.Show()
+
+        self._mgr = wx.lib.agw.aui.AuiManager()
+        self._mgr.SetManagedWindow(self)
+
+        # wx.SafeYield()
+        # # TODO : check if running on Linux
+        # if wx.version().startswith("3.") or wx.version().startswith("4."):
+        #     # issue with GetHandle on Linux for wx versions
+        #     # >3 or 4. Window must be displayed before GetHandle is
+        #     # called. For that, just wait for a few milliseconds/seconds
+        #     # before calling InitDriver
+        #     # a solution is given here
+        #     # see https://github.com/cztomczak/cefpython/issues/349
+        #     # but raises an issue with wxPython 4.x
+        #     # finally, it seems that the sleep function does the job
+        #     from time import sleep
+        #     sleep(2)
+        #     wx.SafeYield()
+        self.wx_3d_viewer = Wx3dViewer(self, show_topology_menu=False)
+
+        self._mgr.AddPane(self.wx_3d_viewer,
+                          wx.lib.agw.aui.AuiPaneInfo().CenterPane())
+
+        self._mgr.Update()
+
+        self.wx_3d_viewer.Layout()
+
+        # self.Show(True)
+        # self.CenterOnScreen()
+
 
 # parts
 
@@ -132,6 +151,7 @@ def view_assembly(assembly):
 
     app = wx.App()
     frame = MyFrame()
+
     for node in assembly.nodes():
         # for k, v in node.anchors.items():
         #     frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
@@ -139,6 +159,5 @@ def view_assembly(assembly):
         frame.wx_3d_viewer.display_shape(node.node_shape.shape,
                                          color_=colour_wx_to_occ((randint(0, 255), randint(0, 255), randint(0, 255))),
                                          transparency=0.)
-
     app.SetTopWindow(frame)
     app.MainLoop()
