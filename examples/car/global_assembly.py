@@ -3,7 +3,7 @@
 
 r"""Tabby global assembly of partial assemblies"""
 
-from osvcad.nodes import AssemblyGeometryNode
+from osvcad.nodes import Assembly
 from osvcad.edges import ConstraintAnchor
 from car_assemblies import make_wheel_assembly, make_rear_suspension_assembly
 # from car_assemblies import  make_front_suspension_assembly, \
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     wheel_assembly = make_wheel_assembly()
 
     rear_suspension_and_wheel_assembly = \
-        AssemblyGeometryNode(root=rear_suspension_assembly_)
+        Assembly(root=rear_suspension_assembly_)
 
     rear_suspension_and_wheel_assembly.add_edge(
         rear_suspension_assembly_,

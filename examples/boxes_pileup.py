@@ -7,7 +7,7 @@ import logging
 from random import randint
 import wx
 
-from osvcad.nodes import PartGeometryNode
+from osvcad.nodes import Part
 from ccad.model import box
 # from ccad.model import translated
 
@@ -30,7 +30,7 @@ def main():
         randx = randint(-random_range, random_range)
         randy = randint(-random_range, random_range)
         randz = randint(-random_range, random_range)
-        cubes.append(PartGeometryNode(
+        cubes.append(Part(
             box(30, 20, 10),
             anchors={"top": {"position": (15, 10, 10), "direction": (0, 0, 1)},
                      "bottom": {"position": (15, 10, 0),

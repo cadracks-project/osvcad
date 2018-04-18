@@ -10,7 +10,7 @@ The example is designed to test many cases visually
 from __future__ import division
 
 import wx
-from osvcad.nodes import PartGeometryNode
+from osvcad.nodes import Part
 from ccad.model import box, translated
 
 from osvcad.view import OsvCadFrame
@@ -51,15 +51,15 @@ def make_case(case_offset,
     iox, ioy, ioz = internal_offset
     total_offset = cox + iox, coy + ioy, coz + ioz
 
-    node_1 = PartGeometryNode(translated(box(*cube_1_dimensions), case_offset),
-                              anchors={"only_anchor": _compute_anchor_position(case_offset,
+    node_1 = Part(translated(box(*cube_1_dimensions), case_offset),
+                  anchors={"only_anchor": _compute_anchor_position(case_offset,
                                                                                cube_1_dimensions,
                                                                                anchor_1)})
 
-    node_2 = PartGeometryNode(translated(translated(box(*cube_2_dimensions),
-                                                    internal_offset),
-                                         case_offset),
-                              anchors={"only_anchor": _compute_anchor_position(total_offset,
+    node_2 = Part(translated(translated(box(*cube_2_dimensions),
+                                        internal_offset),
+                             case_offset),
+                  anchors={"only_anchor": _compute_anchor_position(total_offset,
                                                                                cube_2_dimensions,
                                                                                anchor_2)})
 

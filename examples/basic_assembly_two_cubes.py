@@ -6,7 +6,7 @@ r"""Placing a cube over another cube using anchors"""
 import logging
 
 import wx
-from osvcad.nodes import PartGeometryNode
+from osvcad.nodes import Part
 from ccad.model import box, translated
 
 from osvcad.view import OsvCadFrame
@@ -15,13 +15,13 @@ from osvcad.view import OsvCadFrame
 def main():
     r"""Main example function"""
     # Create nodes
-    node_1 = PartGeometryNode(box(10, 10, 10),
-                              anchors={"only_anchor": {"position": (5, 5, 10),
+    node_1 = Part(box(10, 10, 10),
+                  anchors={"only_anchor": {"position": (5, 5, 10),
                                                        "direction": (0, 0, 20)
                                                        }})
 
-    node_2 = PartGeometryNode(translated(box(20, 20, 20), (100, 0, 0)),
-                              anchors={"only_anchor": {"position": (110, 10, 20),
+    node_2 = Part(translated(box(20, 20, 20), (100, 0, 0)),
+                  anchors={"only_anchor": {"position": (110, 10, 20),
                                                        "direction": (0, 0, 20)
                                                        }})
 
