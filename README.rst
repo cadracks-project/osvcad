@@ -7,6 +7,17 @@ Osvcad
 .. image:: https://api.codacy.com/project/badge/Grade/f25419927a794242a4837ce27ae4e7ab
     :target: https://www.codacy.com/app/guillaume-florent/osvcad?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=osv-team/osvcad&amp;utm_campaign=Badge_Grade
 
+.. image:: https://anaconda.org/gflorent/osvcad/badges/version.svg
+    :target: https://anaconda.org/gflorent/osvcad
+
+.. image:: https://anaconda.org/gflorent/osvcad/badges/latest_release_date.svg
+    :target: https://anaconda.org/gflorent/osvcad
+
+.. image:: https://anaconda.org/gflorent/osvcad/badges/platforms.svg
+    :target: https://anaconda.org/gflorent/osvcad
+
+.. image:: https://anaconda.org/gflorent/osvcad/badges/downloads.svg
+    :target: https://anaconda.org/gflorent/osvcad
 
 
 .. figure:: img/chassis_assembly.png
