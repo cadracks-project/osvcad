@@ -1,0 +1,37 @@
+package:
+  name: osvcad
+  version: "0.4.0"
+
+source:
+  path: ../osvcad
+
+build:
+  number: 0
+  noarch: python
+  script: python setup.py install
+  include_recipe: True
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+    - numpy
+    - matplotlib
+    - networkx
+    - corelib
+    - aocutils
+    - aocxchange
+    - ccad
+    - party
+    - wxpython
+    # - pyqt >=5
+    # - pythonocc-core ==0.18.2
+
+about:
+  home: https://github.com/osv-team/osvcad
+  license: GPLv3
+  license_file: LICENSE
+  summary: Modelling of complex objects

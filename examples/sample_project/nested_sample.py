@@ -25,16 +25,16 @@ project = Assembly(root=A)
 
 for i in range(4):
     bolt = Assembly(root=screws[i])
-    bolt.add_edge(screws[i],
-                  nuts[i],
-                  object=ConstraintAnchor(anchor_name_master=1,
+    bolt.link(screws[i],
+              nuts[i],
+              constraint=ConstraintAnchor(anchor_name_master=1,
                                           anchor_name_slave=1,
                                           distance=-5-1.6,
                                           angle=0))
 
-    project.add_edge(A,
-                     bolt,
-                     object=ConstraintAnchor(anchor_name_master=str(hash(plate_gn)) + "/%i" % (i + 1),
+    project.link(A,
+                 bolt,
+                 constraint=ConstraintAnchor(anchor_name_master=str(hash(plate_gn)) + "/%i" % (i + 1),
                                              anchor_name_slave=str(hash(screws[i])) + "/1",
                                              distance=0,
                                              angle=0))

@@ -23,19 +23,20 @@ nuts = [Part.from_library_part(
 A = Assembly(root=plate_gn)
 
 for i, screw in enumerate(screws, 1):
-    A.add_edge(plate_gn,
-               screw,
-               object=ConstraintAnchor(anchor_name_master=str(i),
+    A.link(plate_gn,
+           screw,
+           constraint=ConstraintAnchor(anchor_name_master=str(i),
                                        anchor_name_slave=1,
                                        distance=0,
                                        angle=0))
 
 for i, (screw, nut) in enumerate(zip(screws, nuts), 1):
-    A.add_edge(screw,
-               nut, object=ConstraintAnchor(anchor_name_master=1,
-                                            anchor_name_slave=1,
-                                            distance=-5-1.6,
-                                            angle=0))
+    A.link(screw,
+           nut,
+           constraint=ConstraintAnchor(anchor_name_master=1,
+                                       anchor_name_slave=1,
+                                       distance=-5-1.6,
+                                       angle=0))
 
 print(A.number_of_nodes())
 print(A.number_of_edges())

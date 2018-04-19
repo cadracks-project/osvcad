@@ -43,55 +43,55 @@ def make_chassis_assembly():
 
     chassis_assembly = Assembly(root=p1_base)
 
-    chassis_assembly.add_edge(p1_base, p2_l, object=ConstraintAnchor(
+    chassis_assembly.link(p1_base, p2_l, constraint=ConstraintAnchor(
         anchor_name_master="A2-L",
         anchor_name_slave="D3",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p1_base, p2_r, object=ConstraintAnchor(
+    chassis_assembly.link(p1_base, p2_r, constraint=ConstraintAnchor(
         anchor_name_master="A2-R",
         anchor_name_slave="D3",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p2_r, p4, object=ConstraintAnchor(
+    chassis_assembly.link(p2_r, p4, constraint=ConstraintAnchor(
         anchor_name_master="B2",
         anchor_name_slave="B4",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p1_base, p5, object=ConstraintAnchor(
+    chassis_assembly.link(p1_base, p5, constraint=ConstraintAnchor(
         anchor_name_master="F2-R",
         anchor_name_slave="F1",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p1_base, p6, object=ConstraintAnchor(
+    chassis_assembly.link(p1_base, p6, constraint=ConstraintAnchor(
         anchor_name_master="G3-L",
         anchor_name_slave="A1",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p1_base, p7_l, object=ConstraintAnchor(
+    chassis_assembly.link(p1_base, p7_l, constraint=ConstraintAnchor(
         anchor_name_master="K3-L",
         anchor_name_slave="A4",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p1_base, p7_r, object=ConstraintAnchor(
+    chassis_assembly.link(p1_base, p7_r, constraint=ConstraintAnchor(
         anchor_name_master="K3-R",
         anchor_name_slave="A4",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p7_l, p8, object=ConstraintAnchor(
+    chassis_assembly.link(p7_l, p8, constraint=ConstraintAnchor(
         anchor_name_master="B1",
         anchor_name_slave="A1",
         distance=0,
         angle=0))
 
-    chassis_assembly.add_edge(p1_base, p9, object=ConstraintAnchor(
+    chassis_assembly.link(p1_base, p9, constraint=ConstraintAnchor(
         anchor_name_master="H2",
         anchor_name_slave="A1",
         distance=0,
@@ -144,61 +144,61 @@ def make_front_suspension_assembly():
 
     front_suspension_assembly = Assembly(root=p2)
 
-    front_suspension_assembly.add_edge(p2, p1[0], object=ConstraintAnchor(
+    front_suspension_assembly.link(p2, p1[0], constraint=ConstraintAnchor(
         anchor_name_master="out1",
         anchor_name_slave="wide_out",
         distance=0,
         angle=0))
 
-    front_suspension_assembly.add_edge(p2, p1[1], object=ConstraintAnchor(
+    front_suspension_assembly.link(p2, p1[1], constraint=ConstraintAnchor(
         anchor_name_master="out2",
         anchor_name_slave="wide_out",
         distance=0,
         angle=0))
 
-    front_suspension_assembly.add_edge(p2, p3, object=ConstraintAnchor(
+    front_suspension_assembly.link(p2, p3, constraint=ConstraintAnchor(
         anchor_name_master="in_inside",
         anchor_name_slave="main",
         distance=-71.396,
         angle=0))
 
-    front_suspension_assembly.add_edge(p3, p4, object=ConstraintAnchor(
+    front_suspension_assembly.link(p3, p4, constraint=ConstraintAnchor(
         anchor_name_master="perp",
         anchor_name_slave="cone",
         distance=6.2,
         angle=0))
 
-    front_suspension_assembly.add_edge(p4, p5, object=ConstraintAnchor(
+    front_suspension_assembly.link(p4, p5, constraint=ConstraintAnchor(
         anchor_name_master="ball",
         anchor_name_slave="ball",
         distance=0,
         angle=0))
 
-    front_suspension_assembly.add_edge(p5, p8, object=ConstraintAnchor(
+    front_suspension_assembly.link(p5, p8, constraint=ConstraintAnchor(
         anchor_name_master="side1_top",
         anchor_name_slave="side2_top",
         distance=0,
         angle=-14.566))
 
-    front_suspension_assembly.add_edge(p8, p9, object=ConstraintAnchor(
+    front_suspension_assembly.link(p8, p9, constraint=ConstraintAnchor(
         anchor_name_master="top",
         anchor_name_slave="bottom",
         distance=-216.148,
         angle=0))
 
-    front_suspension_assembly.add_edge(p9, p12, object=ConstraintAnchor(
+    front_suspension_assembly.link(p9, p12, constraint=ConstraintAnchor(
         anchor_name_master="top",
         anchor_name_slave="bottom",
         distance=1.24,
         angle=0))
 
-    front_suspension_assembly.add_edge(p12, p11, object=ConstraintAnchor(
+    front_suspension_assembly.link(p12, p11, constraint=ConstraintAnchor(
         anchor_name_master="bottom",
         anchor_name_slave="bottom",
         distance=0,
         angle=0))
 
-    front_suspension_assembly.add_edge(p11, p10, object=ConstraintAnchor(
+    front_suspension_assembly.link(p11, p10, constraint=ConstraintAnchor(
         anchor_name_master="wide_flat",
         anchor_name_slave="axis_bottom",
         distance=0,
@@ -208,13 +208,13 @@ def make_front_suspension_assembly():
     #        holes are in front of one another without requiring
     #        a 'magic' angle value
 
-    front_suspension_assembly.add_edge(p5, p6, object=ConstraintAnchor(
+    front_suspension_assembly.link(p5, p6, constraint=ConstraintAnchor(
         anchor_name_master="wheel_axis",
         anchor_name_slave="axis_drive",
         distance=0,
         angle=0))
 
-    front_suspension_assembly.add_edge(p6, p7, object=ConstraintAnchor(
+    front_suspension_assembly.link(p6, p7, constraint=ConstraintAnchor(
         anchor_name_master="axis_disc",
         anchor_name_slave="inside",
         distance=0,
@@ -256,67 +256,67 @@ def make_rear_suspension_assembly():
 
     rear_suspension_assembly = Assembly(root=p2)
 
-    rear_suspension_assembly.add_edge(p2, p1[0], object=ConstraintAnchor(
+    rear_suspension_assembly.link(p2, p1[0], constraint=ConstraintAnchor(
         anchor_name_master="out1",
         anchor_name_slave="wide_out",
         distance=0,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p2, p1[1], object=ConstraintAnchor(
+    rear_suspension_assembly.link(p2, p1[1], constraint=ConstraintAnchor(
         anchor_name_master="out2",
         anchor_name_slave="wide_out",
         distance=0,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p2, p1[2], object=ConstraintAnchor(
+    rear_suspension_assembly.link(p2, p1[2], constraint=ConstraintAnchor(
         anchor_name_master="in1",
         anchor_name_slave="wide_out",
         distance=0,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p2, p1[3], object=ConstraintAnchor(
+    rear_suspension_assembly.link(p2, p1[3], constraint=ConstraintAnchor(
         anchor_name_master="in2",
         anchor_name_slave="wide_out",
         distance=0,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p1[3], p5, object=ConstraintAnchor(
+    rear_suspension_assembly.link(p1[3], p5, constraint=ConstraintAnchor(
         anchor_name_master="narrow_out",
         anchor_name_slave="bottom2",
         distance=0,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p5, p7, object=ConstraintAnchor(
+    rear_suspension_assembly.link(p5, p7, constraint=ConstraintAnchor(
         anchor_name_master="wheel_axis",
         anchor_name_slave="inside",
         distance=62,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p5, p8, object=ConstraintAnchor(
+    rear_suspension_assembly.link(p5, p8, constraint=ConstraintAnchor(
         anchor_name_master="side1_top",
         anchor_name_slave="side1_top",
         distance=0,
         angle=14.566))
 
-    rear_suspension_assembly.add_edge(p8, p9, object=ConstraintAnchor(
+    rear_suspension_assembly.link(p8, p9, constraint=ConstraintAnchor(
         anchor_name_master="top",
         anchor_name_slave="bottom",
         distance=-216.148,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p9, p12, object=ConstraintAnchor(
+    rear_suspension_assembly.link(p9, p12, constraint=ConstraintAnchor(
         anchor_name_master="top",
         anchor_name_slave="bottom",
         distance=1.24,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p12, p11, object=ConstraintAnchor(
+    rear_suspension_assembly.link(p12, p11, constraint=ConstraintAnchor(
         anchor_name_master="bottom",
         anchor_name_slave="bottom",
         distance=0,
         angle=0))
 
-    rear_suspension_assembly.add_edge(p11, p10, object=ConstraintAnchor(
+    rear_suspension_assembly.link(p11, p10, constraint=ConstraintAnchor(
         anchor_name_master="wide_flat",
         anchor_name_slave="axis_bottom",
         distance=0,
@@ -336,10 +336,11 @@ def make_wheel_assembly():
 
     wheel_assembly = Assembly(root=rim)
 
-    wheel_assembly.add_edge(rim, tyre, object=ConstraintAnchor(
-        anchor_name_master="AXIS_TYRE_d412#mm_",
-            anchor_name_slave="AXIS_SIDE_d383#mm_",
-        distance=0,
-        angle=0))
+    wheel_assembly.link(rim,
+                        tyre,
+                        constraint=ConstraintAnchor(anchor_name_master="AXIS_TYRE_d412#mm_",
+                                                    anchor_name_slave="AXIS_SIDE_d383#mm_",
+                                                    distance=0,
+                                                    angle=0))
 
     return wheel_assembly

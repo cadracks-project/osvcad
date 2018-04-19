@@ -7,10 +7,12 @@ services:
   - docker
 
 install:
-  - docker build --tag guillaume-florent/osvcad:latest .
+  - docker build --file Dockerfile.py3 --tag guillaume-florent/osvcad-py3:latest .
+  - docker build --file Dockerfile.py2 --tag guillaume-florent/osvcad-py2:latest .
 
 script:
-  - docker run --name osvcad guillaume-florent/osvcad:latest /bin/bash -c "cd /opt/osvcad;pytest tests/"
+  - docker run guillaume-florent/osvcad-py3:latest /bin/bash -c "cd /opt/osvcad;pytest tests/"
+  - docker run guillaume-florent/osvcad-py2:latest /bin/bash -c "cd /opt/osvcad;pytest tests/"
 
 after_script:
   - docker images

@@ -14,9 +14,9 @@ from osvcad.view import OsvCadFrame
 node_1 = Part(translated(box(30, 20, 10),
                          (0, 0, 0)),
               anchors={"a1": {"position": (5, 5, 10),
-                                          "direction": (0, 0, 1)},
-                                   "a2": {"position": (30, 10, 5),
-                                          "direction": (1, 0, 1)}})
+                              "direction": (0, 0, 1)},
+                       "a2": {"position": (30, 10, 5),
+                              "direction": (1, 0, 1)}})
 
 node_2 = node_1.translate((0, 0, 15))
 

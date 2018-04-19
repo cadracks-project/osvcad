@@ -119,6 +119,7 @@ def view_assembly_graph(assembly):
     values = [val_map.get(node, 0.25) for node in assembly.nodes()]
 
     pos = nx.circular_layout(assembly)
+
     nx.draw_networkx_nodes(assembly,
                            pos,
                            cmap=plt.get_cmap('jet'),
@@ -130,6 +131,7 @@ def view_assembly_graph(assembly):
                            arrows=True)
     nx.draw_networkx_labels(assembly, pos)
     nx.draw_networkx_edge_labels(assembly, pos)
+
     plt.show()
 
 

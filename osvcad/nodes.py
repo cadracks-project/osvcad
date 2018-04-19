@@ -33,6 +33,7 @@ from osvcad.geometry import transformation_from_2_anchors, transform_anchor, \
 from osvcad.stepzip import extract_stepzip
 from osvcad.transformations import translation_matrix, rotation_matrix
 from osvcad.utils.coding import overrides
+from osvcad.edges import Constraint
 
 logger = logging.getLogger(__name__)
 
@@ -559,3 +560,28 @@ class Assembly(nx.DiGraph, GeometryNode):
         # logger.debug("Accessing anchors of assembly %s" % self)
         self.build()
         return self._anchors
+
+    def link(self, master, slave, constraint):
+        r"""Link 2 GeometryNodes by a constraint in Assembly
+
+        Parameters
+        ----------
+        master : GeometryNode
+            The GeometryNode that does not move
+        slave : GeometryNode
+            The GeometryNode that moves to satisfy the constraint
+        constraint : Constraint
+            The Constraint that defines the spacial relationship between master
+            and slave
+
+        """
+        if not isinstance(master, GeometryNode):
+            raise ValueError("master should be a subclass of GeometryNode")
+
+        if not isinstance(slave, GeometryNode):
+            raise ValueError("slave should be a subclass of GeometryNode")
+
+        if not isinstance(constraint, Constraint):
+            raise ValueError("constraint should be a subclass of Constraint")
+
+        self.add_edge(master, slave, object=constraint)
