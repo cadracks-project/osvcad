@@ -6,7 +6,7 @@ imageName="guillaume-florent/osvcad:latest"
 containerName="osvcad"
 displayVar="$DISPLAY"
 
-docker build --no-cache --tag ${imageName} .
+docker build --file Dockerfile.py3 --no-cache --tag ${imageName} .
 
 docker run  -it -d --name ${containerName}                  \
     -e DISPLAY=${displayVar}                                \
