@@ -1,3 +1,13 @@
+Todo UI
+-------
+
+Add a tree panel to display the files and folders under the script
+
+Update views upon selection in tree (maybe not automatic)
+
+
+
+
 Display of anchor names
 
 
