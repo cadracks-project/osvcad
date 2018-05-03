@@ -118,7 +118,7 @@ ENV/
 
 # mypy
 .mypy_cache/
-/examples/sample_project/libraries/scripts/
+/sample_projects/test_project/libraries/scripts/
 /examples/car/0_tabby2.step
 /examples/car/0_tabby2.3dm
 

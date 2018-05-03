@@ -53,15 +53,15 @@ def make_case(case_offset,
 
     node_1 = Part(translated(box(*cube_1_dimensions), case_offset),
                   anchors={"only_anchor": _compute_anchor_position(case_offset,
-                                                                               cube_1_dimensions,
-                                                                               anchor_1)})
+                                                                   cube_1_dimensions,
+                                                                   anchor_1)})
 
     node_2 = Part(translated(translated(box(*cube_2_dimensions),
                                         internal_offset),
                              case_offset),
                   anchors={"only_anchor": _compute_anchor_position(total_offset,
-                                                                               cube_2_dimensions,
-                                                                               anchor_2)})
+                                                                   cube_2_dimensions,
+                                                                   anchor_2)})
 
     node_3 = node_1.place(self_anchor="only_anchor",
                           other=node_2,

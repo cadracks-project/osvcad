@@ -22,6 +22,7 @@ from osvcad.ui.model import Model
 from osvcad.ui.three_d import ThreeDPanel
 from osvcad.ui.code import PythonEditor
 from osvcad.ui.graph import GraphPanel
+from osvcad.ui.tree import Tree
 
 logger = logging.getLogger(__name__)
 
@@ -42,9 +43,11 @@ class OsvCadUiFrame(wx.Frame):
     PANE_CODE_NAME = "Code"
     PANE_3D_NAME = "3d"
     PANE_GRAPH_NAME = "Graph"
+    PANE_TREE_NAME = "Tree"
     PANES = [PANE_CODE_NAME,
              PANE_3D_NAME,
-             PANE_GRAPH_NAME]
+             PANE_GRAPH_NAME,
+             PANE_TREE_NAME]
 
     def __init__(self, parent, model, config):
         # logger.debug("Initializing WaterlineUiFrame")
@@ -99,6 +102,7 @@ class OsvCadUiFrame(wx.Frame):
                         text_colour=self.text_colour)
         self.code_panel = PythonEditor(self, self.model)
         self.graph_panel = GraphPanel(self, self.model)
+        self.tree_panel = Tree(self, self.model)
 
         # Menus, status bar ...
         self.init_ui()
@@ -110,16 +114,24 @@ class OsvCadUiFrame(wx.Frame):
         self._mgr.AddPane(self.three_d_panel,
                           wx.lib.agw.aui.AuiPaneInfo().Right().
                           Name(OsvCadUiFrame.PANE_3D_NAME).Caption("3D").
-                          MinSize(wx.Size(400, 200)).MaximizeButton(True))
+                          MinSize(wx.Size(400, 200)).MaximizeButton(True).Resizable(True))
         self._mgr.AddPane(self.graph_panel,
                           wx.lib.agw.aui.AuiPaneInfo().Right().
                           Name(OsvCadUiFrame.PANE_GRAPH_NAME).Caption("Graph").
-                          MinSize(wx.Size(400, 100)).MaximizeButton(True))
+                          MinSize(wx.Size(400, 100)).MaximizeButton(True).Resizable(True))
+        self._mgr.AddPane(self.tree_panel,
+                          wx.lib.agw.aui.AuiPaneInfo().Left().
+                          Name(OsvCadUiFrame.PANE_TREE_NAME).Caption("Tree").
+                          MinSize(wx.Size(400, 100)).MaximizeButton(True).Resizable(True))
         self._mgr.AddPane(self.code_panel,
                           wx.lib.agw.aui.AuiPaneInfo().CenterPane())
 
         # tell the manager to "commit" all the changes just made
+
         self._mgr.Update()
+        self.three_d_panel.Layout()
+
+        # self.three_d_panel.viewer.Layout()
 
         # Show and maximize the frame
         self.Show(True)
@@ -295,6 +307,10 @@ class OsvCadUiFrame(wx.Frame):
             path = dlg.GetPath()
             with open(path) as f:
                 self.model.set_code(f.read())
+                from os.path import dirname
+            self.model.set_root_folder(dirname(path))
+            import sys
+            sys.path.append(dirname(path))
         dlg.Destroy()
 
     def on_quit(self, e):

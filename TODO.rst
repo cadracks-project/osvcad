@@ -1,12 +1,15 @@
 Todo UI
 -------
 
-Add a tree panel to display the files and folders under the script
+******** Add a tree panel to display the files and folders under the script
 
 Update views upon selection in tree (maybe not automatic)
 
+Open a folder, not a script - select something to display
 
+Update code display upon file selection
 
+Adapt display to selected file
 
 Display of anchor names
 
