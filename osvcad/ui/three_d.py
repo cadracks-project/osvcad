@@ -47,23 +47,29 @@ class ThreeDPanel(Wx3dViewer):
                 try:
                     content = f.read()
                     if is_valid_python(content):
-                        module = imp.load_source("selected",
-                                                 self.model.selected)
-                        self.erase_all()
-                        try:
-                            self.display_assembly(module.assembly)
-                        except AttributeError:
+                        with wx.BusyInfo("Loading geometry ...") as _:
+                            module = imp.load_source("selected",
+                                                     self.model.selected)
+                            self.erase_all()
                             try:
-                                self.display_part(module.part)
+                                self.display_assembly(module.assembly)
                             except AttributeError:
-                                self.erase_all()
-                                print("Nothing to display")
+                                try:
+                                    self.display_part(module.part)
+                                except AttributeError:
+                                    self.erase_all()
+                                    print("Nothing to display")
+                                except Exception as e:
+                                    wx.MessageBox(str(e), 'Error',
+                                                  wx.OK | wx.ICON_ERROR)
+                            except Exception as e:
+                                wx.MessageBox(str(e), 'Error',
+                                              wx.OK | wx.ICON_ERROR)
                     else:  # the file is not a valid Python file
                         self.erase_all()
                 except UnicodeDecodeError as e:
                     print("%s" % e)
                     # content = ""
-
 
         else:  # a directory is selected
             self.erase_all()

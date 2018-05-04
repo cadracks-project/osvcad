@@ -6,7 +6,9 @@ import logging
 
 from atom.api import Atom
 from atom.scalars import Str
+
 logger = logging.getLogger(__name__)
+print("model logger name : %s" % __name__)
 
 
 class Model(Atom):

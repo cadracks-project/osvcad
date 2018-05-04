@@ -24,6 +24,7 @@ from osvcad.ui.three_d import ThreeDPanel
 from osvcad.ui.code import PythonEditor
 from osvcad.ui.graph import GraphPanel
 from osvcad.ui.tree import Tree
+from osvcad.ui.log import LogPanel
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +46,12 @@ class OsvCadUiFrame(wx.Frame):
     PANE_3D_NAME = "3d"
     PANE_GRAPH_NAME = "Graph"
     PANE_TREE_NAME = "Tree"
+    PANE_LOG_NAME = "Log"
     PANES = [PANE_CODE_NAME,
              PANE_3D_NAME,
              PANE_GRAPH_NAME,
-             PANE_TREE_NAME]
+             PANE_TREE_NAME,
+             PANE_LOG_NAME]
 
     def __init__(self, parent, model, config):
         # logger.debug("Initializing WaterlineUiFrame")
@@ -94,6 +97,8 @@ class OsvCadUiFrame(wx.Frame):
         self.model = model
 
         # Panels
+        self.log_panel = LogPanel(self)
+        logger.info("Starting Osvcad UI ...")
         self.three_d_panel = \
             ThreeDPanel(self,
                         model,
@@ -104,6 +109,7 @@ class OsvCadUiFrame(wx.Frame):
         self.code_panel = PythonEditor(self, self.model)
         self.graph_panel = GraphPanel(self, self.model)
         self.tree_panel = Tree(self, self.model)
+
 
         # Menus, status bar ...
         self.init_ui()
@@ -124,6 +130,11 @@ class OsvCadUiFrame(wx.Frame):
                           wx.lib.agw.aui.AuiPaneInfo().Left().
                           Name(OsvCadUiFrame.PANE_TREE_NAME).Caption("Tree").
                           MinSize(wx.Size(400, 100)).MaximizeButton(True).Resizable(True))
+        self._mgr.AddPane(self.log_panel,
+                          wx.lib.agw.aui.AuiPaneInfo().Left().
+                          Name(OsvCadUiFrame.PANE_LOG_NAME).Caption("Log").
+                          MinSize(wx.Size(400, 100)).MaximizeButton(
+                              True).Resizable(True))
         self._mgr.AddPane(self.code_panel,
                           wx.lib.agw.aui.AuiPaneInfo().CenterPane())
 
@@ -142,6 +153,8 @@ class OsvCadUiFrame(wx.Frame):
             self.CenterOnScreen()
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
+
+        logger.info("... done")
 
     def OnSize(self, event):
         self._mgr.Update()
@@ -349,9 +362,6 @@ def get_config():
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s :: %(levelname)6s :: %(module)20s '
-                               ':: %(lineno)3d :: %(message)s')
 
     app = wx.App()
     # wx.InitAllImageHandlers()
@@ -369,4 +379,8 @@ def main():
 
 
 if __name__ == '__main__':
+    # logging.basicConfig(stream=sys.stdout,
+    #                     level=logging.DEBUG,
+    #                     format='%(asctime)s :: %(levelname)6s :: '
+    #                            '%(module)20s :: %(lineno)3d :: %(message)s')
     main()

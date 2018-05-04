@@ -8,7 +8,7 @@ Todo UI
 
 ******** Open a folder, not a script - then select something to display
 
-Wait message upon 3d display loading (BusyInfo)
+******** Wait message upon 3d display loading (BusyInfo)
 
 Adapt display to selected file + change Lexer in editor
   CAD (STEP, IGES, STL ...) -> code display when ascii + 3d display
@@ -26,7 +26,7 @@ Make sure view_* functions are under if __main__ for sample projects
 
 Graph display
 
-Redirect output to a window
+******** Redirect output to a window
 
 Launch with command line
 

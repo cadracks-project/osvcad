@@ -19,12 +19,12 @@ from osvcad.ui.utils import get_file_extension
 logger = logging.getLogger()
 
 
-class Directory(object):
-    """Simple class for using as the data object in the CaseTreeCtrl"""
-    __name__ = 'Directory'
-
-    def __init__(self, directory=''):
-        self.directory = directory
+# class Directory(object):
+#     """Simple class for using as the data object in the CaseTreeCtrl"""
+#     __name__ = 'Directory'
+#
+#     def __init__(self, directory=''):
+#         self.directory = directory
 
 
 class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
@@ -303,7 +303,8 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
                 if icon.IsOk():
                     return self.imagelist.AddIcon(icon)
             except Exception as e:
-                logger.warning(e)
+                logger.exception("Error while adding icons")
+                # logger.warning(e)
                 return self.iconentries['default']
         elif ext == '.py':
             return self.iconentries['python']
