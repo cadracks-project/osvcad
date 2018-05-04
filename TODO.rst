@@ -3,10 +3,10 @@ Todo UI
 
 ******** Add a tree panel to display the files and folders under the script
 
--> Automatic update of views upon selection in tree
--> Update code display upon file selection
+******** Automatic update of views upon selection in tree
+******** Update code display upon file selection
 
-Open a folder, not a script - then select something to display
+******** Open a folder, not a script - then select something to display
 
 Wait message upon 3d display loading (BusyInfo)
 
@@ -31,6 +31,8 @@ Redirect output to a window
 Launch with command line
 
 Resizing problems of 3d viewer
+
+Pre-compute simple representations of files that take a long time to load
 
 
 ****** Separer visu du code 'core' dans nodes.py. nodes.py ne devrait pas utiliser wx

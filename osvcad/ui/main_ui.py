@@ -8,6 +8,7 @@ import platform
 import logging
 from os.path import dirname, exists
 import configobj
+import sys
 
 import wx
 import wx.aui
@@ -297,17 +298,23 @@ class OsvCadUiFrame(wx.Frame):
         e : wx.CommandEvent
 
         """
-        dlg = wx.FileDialog(self,
-                            message="Choose a file",
-                            defaultFile="",
-                            defaultDir="",
-                            wildcard="Python files (*.py)|*.py",
-                            style=wx.FD_CHANGE_DIR)
+        # dlg = wx.FileDialog(self,
+        #                     message="Choose a file",
+        #                     defaultFile="",
+        #                     defaultDir="",
+        #                     wildcard="Python files (*.py)|*.py",
+        #                     style=wx.FD_CHANGE_DIR)
+        dlg = wx.DirDialog(self,
+                           message="Choose a project folder",
+                           defaultPath="",
+                           style=wx.DD_CHANGE_DIR)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
-            self.model.set_root_folder(dirname(path))
-            import sys
-            sys.path.append(dirname(path))
+            # self.model.set_root_folder(dirname(path))
+            self.model.set_root_folder(path)
+            # Add the project root to PYTHONPATH
+            # sys.path.append(dirname(path))
+            sys.path.append(path)
         dlg.Destroy()
 
     def on_quit(self, e):
