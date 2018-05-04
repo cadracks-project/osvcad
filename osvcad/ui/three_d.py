@@ -4,9 +4,11 @@ r"""3D visualization of geometry"""
 
 from __future__ import division
 
-import wx
-
+import imp
+from os.path import isdir
 from random import randint
+
+import wx
 
 from corelib.core.python_ import is_valid_python
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
@@ -39,24 +41,32 @@ class ThreeDPanel(Wx3dViewer):
     def on_selected_change(self, change):
         """Callback function for listener"""
         print("Selection changed")
-        from os.path import isdir
-        import imp
+
         if not isdir(self.model.selected):
             with open(self.model.selected) as f:
-                content = f.read()
-                if is_valid_python(content):
-                    module = imp.load_source("selected", self.model.selected)
-                    self.erase_all()
-                    try:
-                        self.display_assembly(module.assembly)
-                    except AttributeError:
+                try:
+                    content = f.read()
+                    if is_valid_python(content):
+                        module = imp.load_source("selected",
+                                                 self.model.selected)
+                        self.erase_all()
                         try:
-                            self.display_part(module.part)
+                            self.display_assembly(module.assembly)
                         except AttributeError:
-                            print("Nothing to display")
+                            try:
+                                self.display_part(module.part)
+                            except AttributeError:
+                                self.erase_all()
+                                print("Nothing to display")
+                    else:  # the file is not a valid Python file
+                        self.erase_all()
+                except UnicodeDecodeError as e:
+                    print("%s" % e)
+                    # content = ""
 
-        else:
-            pass
+
+        else:  # a directory is selected
+            self.erase_all()
 
         self.Layout()
 

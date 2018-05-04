@@ -6,7 +6,7 @@ r"""Main UI for osvcad"""
 # import sys
 import platform
 import logging
-import os.path
+from os.path import dirname, exists
 import configobj
 
 import wx
@@ -56,7 +56,7 @@ class OsvCadUiFrame(wx.Frame):
                           -1,
                           "osvcad",
                           style=wx.DEFAULT_FRAME_STYLE,
-                          size=(800, 600))
+                          size=(1200, 800))
         # Application icon
         # self.SetIcon(wx.IconFromLocation(wx.IconLocation(filename=r'fs.ico',
         #                                                  num=0)))
@@ -305,9 +305,6 @@ class OsvCadUiFrame(wx.Frame):
                             style=wx.FD_CHANGE_DIR)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
-            with open(path) as f:
-                self.model.set_code(f.read())
-                from os.path import dirname
             self.model.set_root_folder(dirname(path))
             import sys
             sys.path.append(dirname(path))
@@ -333,10 +330,10 @@ def get_config():
     configobj.ConfigObj or None
 
     """
-    # app_path = os.path.abspath(os.path.dirname(os.path.join(sys.argv[0])))
-    # inifile = os.path.join(app_path, "osvcadui.ini")
+    # app_path = abspath(dirname(join(sys.argv[0])))
+    # inifile = join(app_path, "osvcadui.ini")
     inifile = path_from_file(__file__, "./osvcadui.ini")
-    if not os.path.exists(inifile):
+    if not exists(inifile):
         logger.warning("No osvcadui.ini, using default values")
         return None
     else:

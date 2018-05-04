@@ -34,15 +34,15 @@ class Model(Atom):
         logger.debug("Notify that selected item changed")
         self.notify("selected_changed", None)
 
-    def set_code(self, code):
-        r"""Set the code
-
-        Parameters
-        ----------
-        code : str
-
-        """
-        logger.debug("Setting the code")
-        self.code = code
-        logger.debug("Notify that code_changed")
-        self.notify("code_changed", None)
+    # def set_code(self, code):
+    #     r"""Set the code
+    #
+    #     Parameters
+    #     ----------
+    #     code : str
+    #
+    #     """
+    #     logger.debug("Setting the code")
+    #     self.code = code
+    #     logger.debug("Notify that code_changed")
+    #     self.notify("code_changed", None)

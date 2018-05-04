@@ -3,15 +3,34 @@ Todo UI
 
 ******** Add a tree panel to display the files and folders under the script
 
-Update views upon selection in tree (maybe not automatic)
+-> Automatic update of views upon selection in tree
+-> Update code display upon file selection
 
-Open a folder, not a script - select something to display
+Open a folder, not a script - then select something to display
 
-Update code display upon file selection
+Wait message upon 3d display loading (BusyInfo)
 
-Adapt display to selected file
+Adapt display to selected file + change Lexer in editor
+  CAD (STEP, IGES, STL ...) -> code display when ascii + 3d display
+  STEPZIP -> no code display, but 3d viewable
+  Binary files ->
+  JSON -> change lexer
+
+Save button for modified Python files
+
+Selecting a part definition python script (see test_project) does not update the 3d viewer
 
 Display of anchor names
+
+Make sure view_* functions are under if __main__ for sample projects
+
+Graph display
+
+Redirect output to a window
+
+Launch with command line
+
+Resizing problems of 3d viewer
 
 
 ****** Separer visu du code 'core' dans nodes.py. nodes.py ne devrait pas utiliser wx

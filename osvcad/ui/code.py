@@ -28,7 +28,7 @@ class PythonEditor(wx.stc.StyledTextCtrl):
     def __init__(self, parent, model):
         wx.stc.StyledTextCtrl.__init__(self, parent)
         self.model = model
-        self.model.observe("code_changed", self.on_code_changed)
+        self.model.observe("selected_changed", self.on_selected_changed)
         # self.save_button = wx.Button(self, wx.ID_ANY, "Save code")
         self.initial_content = "".encode('utf-8')
         self.SetLexer(wx.stc.STC_LEX_PYTHON)
@@ -172,9 +172,21 @@ class PythonEditor(wx.stc.StyledTextCtrl):
         self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY,
                                                        size=(16, 16)))
 
-
-    def on_code_changed(self, evt):
-        self.SetText(self.model.code)
+    def on_selected_changed(self, evt):
+        r"""Callback for a change of selected file in the model"""
+        from os.path import isfile
+        if isfile(self.model.selected):
+            with open(self.model.selected) as f:
+                try:
+                    content = f.read()  # may raise UnicodeDecodeError
+                    self.SetText(content)
+                    self.Enable()
+                except UnicodeDecodeError as e:
+                    self.SetText("File cannot be decoded")
+                    self.Disable()
+        else:
+            self.SetText("Not a file")
+            self.Disable()
 
     def load_file(self, filepath):
         """Load a file in the PythonEditor"""

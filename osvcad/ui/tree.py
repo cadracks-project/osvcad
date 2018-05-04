@@ -341,7 +341,7 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         """Called when the GenericTreeItem selected in the tree changes"""
         print("OnTreeSelChanged")
         item = evt.GetItem()
-        data = self.GetPyData(item)
+        data = self.GetPyData(item)  # data is the path to the selected file or folder
         self.model.set_selected(data)
         self.selected_item = evt.GetItem()
         pub.sendMessage("tree_selection_changed", tree_object_reference=self)
