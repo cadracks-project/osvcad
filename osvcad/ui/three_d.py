@@ -5,7 +5,7 @@ r"""3D visualization of geometry"""
 from __future__ import division
 
 import imp
-from os.path import isdir
+from os.path import isdir, splitext
 from random import randint
 import logging
 
@@ -15,6 +15,10 @@ from OCC.Core.gp import gp_Pnt, gp_Vec
 
 from corelib.core.python_ import is_valid_python
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
+
+from aocxchange.step import StepImporter
+from aocxchange.iges import IgesImporter
+from aocxchange.stl import StlImporter
 
 logger = logging.getLogger(__name__)
 
@@ -45,37 +49,102 @@ class ThreeDPanel(Wx3dViewer):
 
     def on_selected_change(self, change):
         """Callback function for listener"""
+        from osvcad.nodes import Part
         logger.debug("Selection changed")
 
-        if not isdir(self.model.selected):
-            with open(self.model.selected) as f:
-                try:
+        sel = self.model.selected
+
+        if not isdir(sel):
+            # what extension ?
+            ext = splitext(sel)[1].lower()
+
+            logger.info("File extension : %s" % ext)
+
+            if ext == ".py":
+                with open(sel) as f:
                     content = f.read()
-                    if is_valid_python(content):
-                        with wx.BusyInfo("Loading geometry ...") as _:
-                            module_ = imp.load_source("selected",
-                                                     self.model.selected)
+
+                if is_valid_python(content) is True:
+                    with wx.BusyInfo("Loading Python defined geometry ...") as _:
+                        module_ = imp.load_source(sel, sel)
+                    has_part = hasattr(module_, "part")
+                    has_assembly = hasattr(module_, "assembly")
+                    has_anchors = hasattr(module_, "anchors")
+
+                    self.erase_all()
+
+                    if has_assembly is True:
+                        logger.info("%s has assembly" % sel)
+                        try:
+                            self.display_assembly(module_.assembly)
+                        except KeyError as ke:
                             self.erase_all()
-                            try:
-                                self.display_assembly(module_.assembly)
-                            except AttributeError:
-                                try:
-                                    self.display_part(module_.part)
-                                except AttributeError:
-                                    self.erase_all()
-                                    logger.warning("Nothing to display")
-                                except Exception as e:
-                                    logger.exception("%s" % e)
-                                    wx.MessageBox(str(e), 'Error',
-                                                  wx.OK | wx.ICON_ERROR)
-                            except Exception as e:
-                                logger.exception("%s" % e)
-                                wx.MessageBox(str(e), 'Error',
-                                              wx.OK | wx.ICON_ERROR)
-                    else:  # the file is not a valid Python file
-                        self.erase_all()
-                except UnicodeDecodeError as e:
-                    logger.exception("%s" % e)
+                            logger.exception(ke)
+                    else:
+                        if has_part is True:
+                            logger.info("%s has part" % sel)
+                            if has_anchors:
+                                p = Part.from_py_script(sel)
+                                self.display_part(p, transparency=0.3)
+                            else:
+                                self.display_part(module_.part)
+                        else:
+                            self.erase_all()
+                            logger.warning("Nothing to display")
+                else:  # the file is not a valid Python file
+                    logger.warning("Not a valid python file")
+                    self.erase_all()
+
+            elif ext in [".step", ".stp"]:
+                self.erase_all()
+                with wx.BusyInfo("Loading STEP ...") as _:
+                    shapes = StepImporter(sel).shapes
+                    logger.info("%i shapes in %s" % (len(shapes), sel))
+                    for shape in shapes:
+                        color_255 = (randint(0, 255),
+                                     randint(0, 255),
+                                     randint(0, 255))
+                        self.display_shape(shape,
+                                           color_=colour_wx_to_occ(color_255),
+                                           transparency=0.1)
+
+            elif ext in [".iges", ".igs"]:
+                self.erase_all()
+                with wx.BusyInfo("Loading IGES ...") as _:
+                    shapes = IgesImporter(sel).shapes
+                    logger.info("%i shapes in %s" % (len(shapes), sel))
+                    for shape in shapes:
+                        color_255 = (randint(0, 255),
+                                     randint(0, 255),
+                                     randint(0, 255))
+                        self.display_shape(shape,
+                                           color_=colour_wx_to_occ(color_255),
+                                           transparency=0.1)
+
+            elif ext == ".stl":
+                self.erase_all()
+                with wx.BusyInfo("Loading STL ...") as _:
+                    shape = StlImporter(sel).shape
+                    color_255 = (randint(0, 255),
+                                 randint(0, 255),
+                                 randint(0, 255))
+                    self.display_shape(shape,
+                                       color_=colour_wx_to_occ(color_255),
+                                       transparency=0.1)
+
+            elif ext == ".json":
+                self.erase_all()
+                # TODO : show library parts ?
+            elif ext == ".stepzip":
+                self.erase_all()
+                with wx.BusyInfo("Loading STEPZIP ...") as _:
+                    self.display_part(Part.from_stepzip(sel), transparency=0.3)
+            elif ext == ".anchors":
+                self.erase_all()
+            else:
+                logger.error("File has an extension %s that is not "
+                             "handled by the 3D panel" % ext)
+                self.erase_all()
 
         else:  # a directory is selected
             self.erase_all()

@@ -10,23 +10,37 @@ Todo UI
 
 ******** Wait message upon 3d display loading (BusyInfo)
 
-Adapt display to selected file + change Lexer in editor
+******** Save button for modified Python files
+
+******** Make sure view_* functions are under if __main__ for sample projects
+
+******** Redirect output to a window
+
+******** Adapt display to selected file + change Lexer in editor
+  Python
+    regular python file
+    python file with assembly
+    python file with part
+    part script python file
   CAD (STEP, IGES, STL ...) -> code display when ascii + 3d display
   STEPZIP -> no code display, but 3d viewable
   Binary files ->
   JSON -> change lexer
+    regular json library definition file
 
-******** Save button for modified Python files
+Display of parts libraries
 
-Selecting a part definition python script (see test_project) does not update the 3d viewer
+Better anchors display
+
+Extend stepzip concept to igeszip and stlzip
+
+Use a correct nomenclature for everything in sample projects
+
+******** Selecting a part definition python script (see test_project) does not update the 3d viewer
 
 Display of anchor names
 
-******** Make sure view_* functions are under if __main__ for sample projects
-
 Graph display
-
-******** Redirect output to a window
 
 Launch with command line
 

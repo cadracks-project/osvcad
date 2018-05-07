@@ -4,11 +4,12 @@ r"""Python code edition components"""
 
 import keyword
 import logging
+from os.path import splitext, isfile
 
 import wx
 import wx.stc
 
-from corelib.core.files import p_
+from corelib.core.files import p_, is_binary
 from corelib.core.python_ import is_valid_python
 
 logger = logging.getLogger(__name__)
@@ -38,7 +39,7 @@ class CodePanel(wx.Panel):
                        wx.BITMAP_TYPE_PNG).Scale(24, 24).ConvertToBitmap()
         self.save_button.SetBitmap(bmp, wx.LEFT)
         self.Bind(wx.EVT_BUTTON,
-                  self.on_parameters_save_button,
+                  self.on_save_button,
                   self.save_button)
 
         # # Sizers
@@ -58,11 +59,11 @@ class CodePanel(wx.Panel):
 
         self.SetSizer(sizer)
 
-    def on_parameters_save_button(self, evt):
+    def on_save_button(self, evt):
         r"""Callback for a click on the 'save parameters' button"""
-        self.save_parameters()
+        self.save_()
 
-    def save_parameters(self):
+    def save_(self):
         r"""Write the parameters - i.e. save the modifications"""
         # Check that the definition file has a valid python syntax
         try:
@@ -84,6 +85,8 @@ class CodePanel(wx.Panel):
 
         self.save_button.Disable()
         self.file_editor.initial_content = self.file_editor.GetText()
+        # refresh all views
+        self.model.set_selected(self.file_editor.filepath)
 
 faces = {
     'times': 'Times New Roman',
@@ -250,20 +253,51 @@ class Editor(wx.stc.StyledTextCtrl):
 
     def on_selected_changed(self, evt):
         r"""Callback for a change of selected file in the model"""
-        from os.path import isfile
-        if isfile(self.model.selected):
-            # with open(self.model.selected) as f:
-            try:
-                self.load_file(self.model.selected)
-                # content = f.read()  # may raise UnicodeDecodeError
-                # self.SetText(content)
-                self.Enable()
-            except UnicodeDecodeError as e:
-                self.SetText("File cannot be decoded")
+
+        logger.debug("Selection changed")
+
+        sel = self.model.selected
+        ext = splitext(sel)[1].lower()
+        logger.info("File extension : %s" % ext)
+
+        if isfile(sel):
+            if is_binary(sel):
+                if ext in [".stepzip"]:
+                    self.SetText("Stepzip (binary) file")
+                else:
+                    self.SetText("Binary file")
                 self.Disable()
-        else:
+            else:
+                if ext in [".py", ".anchors"]:
+                    self.SetLexer(wx.stc.STC_LEX_PYTHON)
+                    self.load_file(sel)
+                    self.Enable()
+                elif ext in [".stepzip"]:
+                    self.SetLexer(wx.stc.STC_LEX_AUTOMATIC)
+                    self.SetText("zip file")
+                    self.Disable()
+                elif ext in [".step", ".stp", ".iges", ".igs", ".stl"]:
+                    self.SetLexer(wx.stc.STC_LEX_AUTOMATIC)
+                    self.load_file(sel)
+                    self.Disable()
+                elif ext == ".json":
+                    self.SetLexer(wx.stc.STC_LEX_AUTOMATIC)
+                    self.load_file(sel)
+                    self.Disable()
+                else:
+                    self.SetLexer(wx.stc.STC_LEX_AUTOMATIC)
+                    self.load_file(sel)
+                    self.Disable()
+                    logger.error("File has an extension %s that is not "
+                                 "handled by the code panel" % ext)
+
+        else:  # a directory is selected
             self.SetText("Not a file")
             self.Disable()
+
+        self.Layout()
+
+        logger.debug("code change detected in 3D panel")
 
     def on_root_folder_changed(self, evt):
         r"""Callback for a change of root folder"""
