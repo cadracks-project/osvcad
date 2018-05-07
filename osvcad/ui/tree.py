@@ -4,9 +4,8 @@
 r"""Tree widget"""
 
 import logging
-import shutil
-from os import listdir, makedirs, rename
-from os.path import exists, isdir, normpath, join, dirname, basename
+from os import listdir
+from os.path import exists, isdir, normpath, join, basename
 
 import wx
 import wx.lib.agw.customtreectrl
@@ -17,14 +16,6 @@ from corelib.core.files import p_
 from osvcad.ui.utils import get_file_extension
 
 logger = logging.getLogger()
-
-
-# class Directory(object):
-#     """Simple class for using as the data object in the CaseTreeCtrl"""
-#     __name__ = 'Directory'
-#
-#     def __init__(self, directory=''):
-#         self.directory = directory
 
 
 class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
@@ -83,12 +74,6 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         self.add_icon(p_(__file__, './icons/folder.png'),
                       wx.BITMAP_TYPE_PNG,
                       'FOLDER')
-        # self.add_icon(p_(__file__, './icons/blue_folder.png'),
-        #               wx.BITMAP_TYPE_PNG,
-        #               'CASE')
-        # self.add_icon(p_(__file__, './icons/green_folder.png'),
-        #               wx.BITMAP_TYPE_PNG,
-        #               'SOLVED_CASE')
         self.add_icon(p_(__file__, './icons/python_icon.png'),
                       wx.BITMAP_TYPE_PNG,
                       'python')
@@ -102,6 +87,7 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         pub.subscribe(self.tree_modified_listener, "tree_modified")
 
     def on_root_folder_changed(self, evt):
+        r"""Callback for a change of root folder"""
         self.set_root_dir(self.model.root_folder)
 
     def tree_modified_listener(self, tree_object_reference):
@@ -171,14 +157,17 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         Does not add items if the node already has children
         """
         # check if directory exists and is a directory
-        print(directory)
+        logger.debug("_load_dir(%s)" % directory)
         if not isdir(directory):
-            raise Exception("%s is not a valid directory" % directory)
+            msg = "%s is not a valid directory" % directory
+            logger.error(msg)
+            raise Exception(msg)
 
         # check if node already has children
         if self.GetChildrenCount(item) == 0:
             files_and_dirs = listdir(directory)  # get files in directory
-            print(files_and_dirs)
+            logger.debug("Directory %s contains : %s" % (directory,
+                                                         str(files_and_dirs)))
             files = []
             dirs = []
             for f in files_and_dirs:
@@ -260,7 +249,7 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         """
         ext = get_file_extension(filename)
         ext = ext.lower()
-        print(ext)
+        logger.debug("Processing file extension : %s" % ext)
         excluded = ['', '.exe', '.ico', '.py']
         # do nothing if no extension found or in excluded list
         if ext not in excluded:
@@ -279,7 +268,7 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
                             icon = info[0]
                             if icon.Ok():
                                 # add to imagelist and store returned key
-                                iconkey = self.imagelist.AddIcon(icon)
+                                iconkey = self.imagelist.Add(icon)
                                 self.iconentries[ext] = iconkey
 
                                 # update tree with new imagelist - inefficient
@@ -301,7 +290,7 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
             try:
                 icon = wx.Icon(filename, wx.BITMAP_TYPE_ICO)
                 if icon.IsOk():
-                    return self.imagelist.AddIcon(icon)
+                    return self.imagelist.Add(icon)
             except Exception as e:
                 logger.exception("Error while adding icons")
                 # logger.warning(e)
@@ -319,13 +308,8 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         item = event.GetItem()
 
         # check if item has directory data
-        # if type(self.GetPyData(item)) == type(Directory()):
-        # if isinstance(self.GetPyData(item), Directory):
         d = self.GetPyData(item)
-        print(d)
         self._load_dir(item, d)
-        # else:
-        #     logger.warning('No data found for this GenericTreeItem!')
 
         event.Skip()
 
@@ -340,9 +324,12 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
 
     def OnTreeSelChanged(self, evt):
         """Called when the GenericTreeItem selected in the tree changes"""
-        print("OnTreeSelChanged")
+        logger.debug("OnTreeSelChanged")
         item = evt.GetItem()
-        data = self.GetPyData(item)  # data is the path to the selected file or folder
+
+        # data is the path to the selected file or folder
+        data = self.GetPyData(item)
+
         self.model.set_selected(data)
         self.selected_item = evt.GetItem()
         pub.sendMessage("tree_selection_changed", tree_object_reference=self)

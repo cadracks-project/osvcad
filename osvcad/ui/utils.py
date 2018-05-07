@@ -1,4 +1,9 @@
+# coding: utf-8
+
+r"""osvcad ui utilities"""
+
 from os.path import isdir
+
 
 def get_file_extension(filename):
     """Return the file extension, including the point (.)

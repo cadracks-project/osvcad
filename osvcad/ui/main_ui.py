@@ -24,7 +24,7 @@ from osvcad.ui.three_d import ThreeDPanel
 from osvcad.ui.code import PythonEditor
 from osvcad.ui.graph import GraphPanel
 from osvcad.ui.tree import Tree
-from osvcad.ui.log import LogPanel
+from corelib.ui.wx_.log import LogPanel
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +97,11 @@ class OsvCadUiFrame(wx.Frame):
         self.model = model
 
         # Panels
-        self.log_panel = LogPanel(self)
+        self.log_panel = LogPanel(self,
+                                  threadsafe=False,
+                                  format_='%(asctime)s :: %(levelname)6s :: '
+                                          '%(name)20s :: %(lineno)3d :: '
+                                          '%(message)s')
         logger.info("Starting Osvcad UI ...")
         self.three_d_panel = \
             ThreeDPanel(self,
@@ -291,7 +295,8 @@ class OsvCadUiFrame(wx.Frame):
         """
         if self.confirm_close is True:
             dlg = wx.MessageDialog(self,
-                                   "Do you really want to close this application?",
+                                   "Do you really want to close "
+                                   "this application?",
                                    "Confirm Exit",
                                    wx.OK | wx.CANCEL | wx.ICON_QUESTION)
             result = dlg.ShowModal()

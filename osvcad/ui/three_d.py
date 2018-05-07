@@ -7,11 +7,16 @@ from __future__ import division
 import imp
 from os.path import isdir
 from random import randint
+import logging
 
 import wx
 
+from OCC.Core.gp import gp_Pnt, gp_Vec
+
 from corelib.core.python_ import is_valid_python
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
+
+logger = logging.getLogger(__name__)
 
 
 class ThreeDPanel(Wx3dViewer):
@@ -40,7 +45,7 @@ class ThreeDPanel(Wx3dViewer):
 
     def on_selected_change(self, change):
         """Callback function for listener"""
-        print("Selection changed")
+        logger.debug("Selection changed")
 
         if not isdir(self.model.selected):
             with open(self.model.selected) as f:
@@ -48,35 +53,36 @@ class ThreeDPanel(Wx3dViewer):
                     content = f.read()
                     if is_valid_python(content):
                         with wx.BusyInfo("Loading geometry ...") as _:
-                            module = imp.load_source("selected",
+                            module_ = imp.load_source("selected",
                                                      self.model.selected)
                             self.erase_all()
                             try:
-                                self.display_assembly(module.assembly)
+                                self.display_assembly(module_.assembly)
                             except AttributeError:
                                 try:
-                                    self.display_part(module.part)
+                                    self.display_part(module_.part)
                                 except AttributeError:
                                     self.erase_all()
-                                    print("Nothing to display")
+                                    logger.warning("Nothing to display")
                                 except Exception as e:
+                                    logger.exception("%s" % e)
                                     wx.MessageBox(str(e), 'Error',
                                                   wx.OK | wx.ICON_ERROR)
                             except Exception as e:
+                                logger.exception("%s" % e)
                                 wx.MessageBox(str(e), 'Error',
                                               wx.OK | wx.ICON_ERROR)
                     else:  # the file is not a valid Python file
                         self.erase_all()
                 except UnicodeDecodeError as e:
-                    print("%s" % e)
-                    # content = ""
+                    logger.exception("%s" % e)
 
         else:  # a directory is selected
             self.erase_all()
 
         self.Layout()
 
-        print("code change detected in 3D panel")
+        logger.debug("code change detected in 3D panel")
 
     def display_part(self, part, color_255=None, transparency=0.):
         r"""Display a single Part (shape + anchors)
@@ -95,8 +101,8 @@ class ThreeDPanel(Wx3dViewer):
                 gp_Vec(*part.anchors[k]["direction"]),
                 gp_Pnt(*part.anchors[k]["position"]))
         self.display_shape(part.node_shape.shape,
-                                        color_=colour_wx_to_occ(color_255),
-                                        transparency=transparency)
+                           color_=colour_wx_to_occ(color_255),
+                           transparency=transparency)
 
     def display_assembly(self, assembly, transparency=0.):
         r"""Display an assembly of parts and assemblies

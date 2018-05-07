@@ -2,8 +2,6 @@
 
 r"""Python code edition components"""
 
-from __future__ import print_function
-
 import keyword
 import logging
 
