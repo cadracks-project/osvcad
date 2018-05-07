@@ -8,7 +8,82 @@ import logging
 import wx
 import wx.stc
 
-logger = logging.getLogger()
+from corelib.core.files import p_
+from corelib.core.python_ import is_valid_python
+
+logger = logging.getLogger(__name__)
+
+
+class CodePanel(wx.Panel):
+    """Panel that displays code
+
+    Parameters
+    ----------
+    parent : wx window
+
+    """
+
+    def __init__(self, parent, model):
+        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
+
+        self.model = model
+
+        self.save_button = wx.Button(self, wx.ID_ANY, "Save")
+
+        # The save_button is initially disabled and will be enabled
+        # when a modification has been made for an editable file
+        self.save_button.Disable()
+
+        bmp = wx.Image(p_(__file__, 'icons/save.png'),
+                       wx.BITMAP_TYPE_PNG).Scale(24, 24).ConvertToBitmap()
+        self.save_button.SetBitmap(bmp, wx.LEFT)
+        self.Bind(wx.EVT_BUTTON,
+                  self.on_parameters_save_button,
+                  self.save_button)
+
+        # # Sizers
+        # controls_panel_sizer = wx.BoxSizer()
+        # controls_panel_sizer.Add(self.save_button,
+        #                          0,
+        #                          wx.ALIGN_CENTER | wx.ALL, 10)
+
+        self.file_editor = Editor(self, model, self.save_button)
+        self.file_editor.Disable()
+        # self.python_definition_file_editor.EmptyUndoBuffer()
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        sizer.Add(self.file_editor, 90, wx.EXPAND)
+        sizer.Add(self.save_button, 0, wx.ALIGN_RIGHT)
+
+        self.SetSizer(sizer)
+
+    def on_parameters_save_button(self, evt):
+        r"""Callback for a click on the 'save parameters' button"""
+        self.save_parameters()
+
+    def save_parameters(self):
+        r"""Write the parameters - i.e. save the modifications"""
+        # Check that the definition file has a valid python syntax
+        try:
+            is_valid_python(self.file_editor.GetText())
+        except SyntaxError as e:
+            dlg = wx.MessageBox(
+                'The parameters file contains the following '
+                'error:\n    %s\n'
+                'Do you want to save it anyway?' % e,
+                'Save invalid parameters file ?',
+                wx.YES_NO | wx.ICON_QUESTION)
+            if dlg == wx.YES:
+                pass
+            elif dlg == wx.NO:
+                return
+
+        with open(self.file_editor.filepath, 'w') as f:
+            f.write(self.file_editor.GetText())
+
+        self.save_button.Disable()
+        self.file_editor.initial_content = self.file_editor.GetText()
 
 faces = {
     'times': 'Times New Roman',
@@ -21,14 +96,17 @@ faces = {
     }
 
 
-class PythonEditor(wx.stc.StyledTextCtrl):
-    """PythonEditor"""
-    def __init__(self, parent, model):
+class Editor(wx.stc.StyledTextCtrl):
+    """Code Editor"""
+    def __init__(self, parent, model, save_button):
         wx.stc.StyledTextCtrl.__init__(self, parent)
         self.model = model
+        self.save_button = save_button
         self.model.observe("selected_changed", self.on_selected_changed)
+        self.model.observe("root_folder_changed", self.on_root_folder_changed)
         # self.save_button = wx.Button(self, wx.ID_ANY, "Save code")
         self.initial_content = "".encode('utf-8')
+        self.filepath = None
         self.SetLexer(wx.stc.STC_LEX_PYTHON)
         self.SetTabWidth(4)
 
@@ -174,23 +252,30 @@ class PythonEditor(wx.stc.StyledTextCtrl):
         r"""Callback for a change of selected file in the model"""
         from os.path import isfile
         if isfile(self.model.selected):
-            with open(self.model.selected) as f:
-                try:
-                    content = f.read()  # may raise UnicodeDecodeError
-                    self.SetText(content)
-                    self.Enable()
-                except UnicodeDecodeError as e:
-                    self.SetText("File cannot be decoded")
-                    self.Disable()
+            # with open(self.model.selected) as f:
+            try:
+                self.load_file(self.model.selected)
+                # content = f.read()  # may raise UnicodeDecodeError
+                # self.SetText(content)
+                self.Enable()
+            except UnicodeDecodeError as e:
+                self.SetText("File cannot be decoded")
+                self.Disable()
         else:
             self.SetText("Not a file")
             self.Disable()
 
+    def on_root_folder_changed(self, evt):
+        r"""Callback for a change of root folder"""
+        self.SetText("")
+        self.Disable()
+
     def load_file(self, filepath):
         """Load a file in the PythonEditor"""
-        parameters_file = open(filepath)
-        self.initial_content = parameters_file.read()
-        parameters_file.close()
+        with open(filepath) as f:
+            self.initial_content = f.read()
+            self.filepath = filepath
+
         # self.SetTextUTF8(self.initial_content)
         self.SetText(self.initial_content)
         # self.save_button.Disable()
@@ -237,10 +322,10 @@ class PythonEditor(wx.stc.StyledTextCtrl):
     def onUpdateUI(self, evt):
         """Update the user interface"""
 
-        # if self.has_been_modified():
-        #     self.save_button.Enable()
-        # else:
-        #     self.save_button.Disable()
+        if self.has_been_modified():
+            self.save_button.Enable()
+        else:
+            self.save_button.Disable()
 
         # check for matching braces
         brace_at_caret = -1
@@ -279,14 +364,14 @@ class PythonEditor(wx.stc.StyledTextCtrl):
                 if self.GetFoldLevel(line_clicked) &\
                         wx.stc.STC_FOLDLEVELHEADERFLAG:
                     if evt.GetShift():
-                        self.SetFoldexpanded(line_clicked, True)
+                        self.SetFoldExpanded(line_clicked, True)
                         self.expand(line_clicked, True, True, 1)
                     elif evt.GetControl():
-                        if self.GetFoldexpanded(line_clicked):
-                            self.SetFoldexpanded(line_clicked, False)
+                        if self.GetFoldExpanded(line_clicked):
+                            self.SetFoldExpanded(line_clicked, False)
                             self.expand(line_clicked, False, True, 0)
                         else:
-                            self.SetFoldexpanded(line_clicked, True)
+                            self.SetFoldExpanded(line_clicked, True)
                             self.expand(line_clicked, True, True, 100)
                     else:
                         self.ToggleFold(line_clicked)
@@ -299,7 +384,7 @@ class PythonEditor(wx.stc.StyledTextCtrl):
         for line_num in range(line_count):
             if self.GetFoldLevel(line_num) &\
                     wx.stc.STC_FOLDLEVELHEADERFLAG:
-                expanding = not self.GetFoldexpanded(line_num)
+                expanding = not self.GetFoldExpanded(line_num)
                 break
         line_num = 0
         while line_num < line_count:
@@ -307,12 +392,12 @@ class PythonEditor(wx.stc.StyledTextCtrl):
             if level & wx.stc.STC_FOLDLEVELHEADERFLAG\
                     and (level & wx.stc.STC_FOLDLEVELNUMBERMASK) == wx.stc.STC_FOLDLEVELBASE:
                 if expanding:
-                    self.SetFoldexpanded(line_num, True)
+                    self.SetFoldExpanded(line_num, True)
                     line_num = self.expand(line_num, True)
                     line_num -= 1
                 else:
                     last_child = self.GetLastChild(line_num, -1)
-                    self.SetFoldexpanded(line_num, False)
+                    self.SetFoldExpanded(line_num, False)
                     if last_child > line_num:
                         self.HideLines(line_num+1, last_child)
             line_num += 1
@@ -335,12 +420,12 @@ class PythonEditor(wx.stc.StyledTextCtrl):
             if level & wx.stc.STC_FOLDLEVELHEADERFLAG:
                 if force:
                     if vis_levels > 1:
-                        self.SetFoldexpanded(line, True)
+                        self.SetFoldExpanded(line, True)
                     else:
-                        self.SetFoldexpanded(line, False)
+                        self.SetFoldExpanded(line, False)
                     line = self.expand(line, doexpand, force, vis_levels-1)
                 else:
-                    if doexpand and self.GetFoldexpanded(line):
+                    if doexpand and self.GetFoldExpanded(line):
                         line = self.expand(line, True, force, vis_levels-1)
                     else:
                         line = self.expand(line, False, force, vis_levels-1)

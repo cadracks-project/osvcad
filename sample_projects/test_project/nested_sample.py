@@ -39,6 +39,7 @@ for i in range(4):
                                              distance=0,
                                              angle=0))
 
-view_assembly(A)
-view_assembly(project)
-view_assembly_graph(project)
+if __name__ == "__main__":
+    view_assembly(A)
+    view_assembly(project)
+    view_assembly_graph(project)

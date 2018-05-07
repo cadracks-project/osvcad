@@ -15,7 +15,7 @@ from corelib.core.files import p_
 
 from osvcad.ui.utils import get_file_extension
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):

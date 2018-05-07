@@ -16,13 +16,13 @@ Adapt display to selected file + change Lexer in editor
   Binary files ->
   JSON -> change lexer
 
-Save button for modified Python files
+******** Save button for modified Python files
 
 Selecting a part definition python script (see test_project) does not update the 3d viewer
 
 Display of anchor names
 
-Make sure view_* functions are under if __main__ for sample projects
+******** Make sure view_* functions are under if __main__ for sample projects
 
 Graph display
 

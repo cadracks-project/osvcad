@@ -21,7 +21,7 @@ import osvcad
 from osvcad.ui.model import Model
 
 from osvcad.ui.three_d import ThreeDPanel
-from osvcad.ui.code import PythonEditor
+from osvcad.ui.code import CodePanel
 from osvcad.ui.graph import GraphPanel
 from osvcad.ui.tree import Tree
 from corelib.ui.wx_.log import LogPanel
@@ -110,7 +110,7 @@ class OsvCadUiFrame(wx.Frame):
                         object_transparency=self.objects_transparency,
                         text_height=self.text_height,
                         text_colour=self.text_colour)
-        self.code_panel = PythonEditor(self, self.model)
+        self.code_panel = CodePanel(self, self.model)
         self.graph_panel = GraphPanel(self, self.model)
         self.tree_panel = Tree(self, self.model)
 
