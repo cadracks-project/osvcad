@@ -101,9 +101,7 @@ class ThreeDPanel(Wx3dViewer):
                     shapes = StepImporter(sel).shapes
                     logger.info("%i shapes in %s" % (len(shapes), sel))
                     for shape in shapes:
-                        color_255 = (randint(0, 255),
-                                     randint(0, 255),
-                                     randint(0, 255))
+                        color_255 = (255, 255, 255)
                         self.display_shape(shape,
                                            color_=colour_wx_to_occ(color_255),
                                            transparency=0.1)
@@ -114,9 +112,7 @@ class ThreeDPanel(Wx3dViewer):
                     shapes = IgesImporter(sel).shapes
                     logger.info("%i shapes in %s" % (len(shapes), sel))
                     for shape in shapes:
-                        color_255 = (randint(0, 255),
-                                     randint(0, 255),
-                                     randint(0, 255))
+                        color_255 = (51, 255, 255)
                         self.display_shape(shape,
                                            color_=colour_wx_to_occ(color_255),
                                            transparency=0.1)
@@ -125,9 +121,7 @@ class ThreeDPanel(Wx3dViewer):
                 self.erase_all()
                 with wx.BusyInfo("Loading STL ...") as _:
                     shape = StlImporter(sel).shape
-                    color_255 = (randint(0, 255),
-                                 randint(0, 255),
-                                 randint(0, 255))
+                    color_255 = (0, 255, 0)
                     self.display_shape(shape,
                                        color_=colour_wx_to_occ(color_255),
                                        transparency=0.1)
@@ -164,11 +158,31 @@ class ThreeDPanel(Wx3dViewer):
 
         """
         if color_255 is None:
-            color_255 = (randint(0, 255), randint(0, 255), randint(0, 255))
+            # color_255 = (randint(0, 255), randint(0, 255), randint(0, 255))
+
+            # by default, always use the same color to view a part
+            color_255 = (102, 0, 102)
+
         for k, _ in part.anchors.items():
+            vec_direction = gp_Vec(*part.anchors[k]["direction"])
+            vec_direction.Multiply(100. / vec_direction.Magnitude())
+
+            to_arrow_cone_start = gp_Vec(vec_direction.X(), vec_direction.Y(), vec_direction.Z())
+            to_arrow_cone_start.Multiply(4./5.)
+
+            arrow_cone = gp_Vec(vec_direction.X(), vec_direction.Y(), vec_direction.Z())
+            arrow_cone.Multiply(1./5.)
+
+            from aocutils.brep.edge_make import edge
+
+            edge_start = gp_Pnt(*part.anchors[k]["position"])
+            edge_end = edge_start.Translated(vec_direction)
+            self.display_shape(edge(edge_start, edge_end), color_=colour_wx_to_occ((255, 255, 51)))
+
             self.display_vector(
-                gp_Vec(*part.anchors[k]["direction"]),
-                gp_Pnt(*part.anchors[k]["position"]))
+                arrow_cone,
+                gp_Pnt(*part.anchors[k]["position"]).Translated(to_arrow_cone_start))
+            self.display_message(gp_Pnt(*part.anchors[k]["position"]), k, height=20, message_color=(0, 0, 0))
         self.display_shape(part.node_shape.shape,
                            color_=colour_wx_to_occ(color_255),
                            transparency=transparency)
