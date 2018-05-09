@@ -8,14 +8,16 @@ import imp
 from os.path import isdir, splitext
 from random import randint
 import logging
+import json
+import math
 
 import wx
-
 from OCC.Core.gp import gp_Pnt, gp_Vec
 
 from corelib.core.python_ import is_valid_python
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
-
+from aocutils.analyze.bounds import BoundingBox
+from aocutils.brep.edge_make import edge
 from aocxchange.step import StepImporter
 from aocxchange.iges import IgesImporter
 from aocxchange.stl import StlImporter
@@ -49,7 +51,11 @@ class ThreeDPanel(Wx3dViewer):
 
     def on_selected_change(self, change):
         """Callback function for listener"""
+
+        # TODO: investigate why importing Part
+        # at top of file causes an app crash
         from osvcad.nodes import Part
+
         logger.debug("Selection changed")
 
         sel = self.model.selected
@@ -126,9 +132,46 @@ class ThreeDPanel(Wx3dViewer):
                                        color_=colour_wx_to_occ(color_255),
                                        transparency=0.1)
 
-            elif ext == ".json":
+            elif ext == ".json":  # parts library
                 self.erase_all()
-                # TODO : show library parts ?
+
+                with wx.BusyInfo("Loading parts library ...") as _:
+                    with open(sel) as json_file:
+                        json_file_content = json.load(json_file)
+                        print(json_file_content["data"].keys())
+                        # find the biggest bounding box
+                        biggest_bb = [0, 0, 0]
+                        # smallest_bb = [0, 0, 0]
+                        for i, k in enumerate(json_file_content["data"].keys()):
+                            library_part = Part.from_library_part(sel, k)
+                            bb = BoundingBox(library_part.node_shape.shape)
+                            if bb.x_span > biggest_bb[0]:
+                                biggest_bb[0] = bb.x_span
+                            # if bb.x_span < smallest_bb[0]:
+                            #     smallest_bb[0] = bb.x_span
+                            if bb.y_span > biggest_bb[1]:
+                                biggest_bb[1] = bb.y_span
+                            # if bb.y_span < smallest_bb[1]:
+                            #     smallest_bb[1] = bb.y_span
+                            if bb.z_span > biggest_bb[2]:
+                                biggest_bb[2] = bb.z_span
+                            # if bb.z_span < smallest_bb[2]:
+                            #     smallest_bb[2] = bb.y_span
+                        biggest_dimension = max(biggest_bb)
+                        # smallest_dimension = min(smallest_bb)
+
+                        nb_per_row = int(math.sqrt(len(json_file_content["data"].keys())))
+
+                        for i, k in enumerate(json_file_content["data"].keys()):
+                            library_part = Part.from_library_part(sel, k)
+                            x_pos = biggest_dimension*2 * (i % nb_per_row)
+                            y_pos = biggest_dimension*2 * (i // nb_per_row)
+                            library_part = library_part.translate((x_pos, y_pos, 0))
+                            self.display_part(library_part, transparency=0.3)
+                            self.display_message(gp_Pnt(x_pos + biggest_dimension / 5, y_pos + biggest_dimension / 5, 0),
+                                                 k,
+                                                 message_color=(1, 1, 1),
+                                                 height=10)
             elif ext == ".stepzip":
                 self.erase_all()
                 with wx.BusyInfo("Loading STEPZIP ...") as _:
@@ -173,16 +216,20 @@ class ThreeDPanel(Wx3dViewer):
             arrow_cone = gp_Vec(vec_direction.X(), vec_direction.Y(), vec_direction.Z())
             arrow_cone.Multiply(1./5.)
 
-            from aocutils.brep.edge_make import edge
-
             edge_start = gp_Pnt(*part.anchors[k]["position"])
             edge_end = edge_start.Translated(vec_direction)
-            self.display_shape(edge(edge_start, edge_end), color_=colour_wx_to_occ((255, 255, 51)))
+
+            # Display the line in yellow
+            self.display_shape(edge(edge_start, edge_end),
+                               color_=colour_wx_to_occ((255, 255, 51)))
 
             self.display_vector(
                 arrow_cone,
                 gp_Pnt(*part.anchors[k]["position"]).Translated(to_arrow_cone_start))
-            self.display_message(gp_Pnt(*part.anchors[k]["position"]), k, height=20, message_color=(0, 0, 0))
+            self.display_message(gp_Pnt(*part.anchors[k]["position"]),
+                                 k,
+                                 height=20,
+                                 message_color=(0, 0, 0))
         self.display_shape(part.node_shape.shape,
                            color_=colour_wx_to_occ(color_255),
                            transparency=transparency)
