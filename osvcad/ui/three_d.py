@@ -190,6 +190,33 @@ class ThreeDPanel(Wx3dViewer):
 
         logger.debug("code change detected in 3D panel")
 
+    def _display_anchors(self, anchors):
+        for k, anchor in anchors.items():
+            vec_direction = gp_Vec(*anchor["direction"])
+            vec_direction.Multiply(100. / vec_direction.Magnitude())
+
+            to_arrow_cone_start = gp_Vec(vec_direction.X(), vec_direction.Y(), vec_direction.Z())
+            to_arrow_cone_start.Multiply(4./5.)
+
+            arrow_cone = gp_Vec(vec_direction.X(), vec_direction.Y(), vec_direction.Z())
+            arrow_cone.Multiply(1./5.)
+
+            edge_start = gp_Pnt(*anchor["position"])
+            edge_end = edge_start.Translated(vec_direction)
+
+            # Display the line in yellow
+            self.display_shape(edge(edge_start, edge_end),
+                               color_=colour_wx_to_occ((255, 255, 51)))
+
+            self.display_vector(
+                arrow_cone,
+                gp_Pnt(*anchor["position"]).Translated(to_arrow_cone_start))
+
+            self.display_message(gp_Pnt(*anchor["position"]),
+                                 k,
+                                 height=20,
+                                 message_color=(0, 0, 0))
+
     def display_part(self, part, color_255=None, transparency=0.):
         r"""Display a single Part (shape + anchors)
 
@@ -206,33 +233,11 @@ class ThreeDPanel(Wx3dViewer):
             # by default, always use the same color to view a part
             color_255 = (102, 0, 102)
 
-        for k, _ in part.anchors.items():
-            vec_direction = gp_Vec(*part.anchors[k]["direction"])
-            vec_direction.Multiply(100. / vec_direction.Magnitude())
-
-            to_arrow_cone_start = gp_Vec(vec_direction.X(), vec_direction.Y(), vec_direction.Z())
-            to_arrow_cone_start.Multiply(4./5.)
-
-            arrow_cone = gp_Vec(vec_direction.X(), vec_direction.Y(), vec_direction.Z())
-            arrow_cone.Multiply(1./5.)
-
-            edge_start = gp_Pnt(*part.anchors[k]["position"])
-            edge_end = edge_start.Translated(vec_direction)
-
-            # Display the line in yellow
-            self.display_shape(edge(edge_start, edge_end),
-                               color_=colour_wx_to_occ((255, 255, 51)))
-
-            self.display_vector(
-                arrow_cone,
-                gp_Pnt(*part.anchors[k]["position"]).Translated(to_arrow_cone_start))
-            self.display_message(gp_Pnt(*part.anchors[k]["position"]),
-                                 k,
-                                 height=20,
-                                 message_color=(0, 0, 0))
         self.display_shape(part.node_shape.shape,
                            color_=colour_wx_to_occ(color_255),
                            transparency=transparency)
+
+        self._display_anchors(part.anchors)
 
     def display_assembly(self, assembly, transparency=0.):
         r"""Display an assembly of parts and assemblies
@@ -250,8 +255,9 @@ class ThreeDPanel(Wx3dViewer):
             #     frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
             #                            gp_Pnt(*node.anchors[k]["position"]))
             self.display_shape(node.node_shape.shape,
-                                            color_=colour_wx_to_occ(
-                                                (randint(0, 255),
-                                                 randint(0, 255),
-                                                 randint(0, 255))),
-                                            transparency=transparency)
+                               color_=colour_wx_to_occ((randint(0, 255),
+                                                        randint(0, 255),
+                                                        randint(0, 255))),
+                               transparency=transparency)
+
+            self._display_anchors(assembly.anchors)

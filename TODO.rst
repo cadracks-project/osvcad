@@ -36,9 +36,11 @@ Todo UI
 
 ******** Display of anchor names
 
--> Graph display
+******** Graph display
 
-Assemblies should display their anchors too
+-> Assemblies should display their anchors too
+  Transparency needs to be adjustable on the fly as some anchors/anchor names could be hidden
+  OR use wireframe mode !!
 
 Better graph display
 
