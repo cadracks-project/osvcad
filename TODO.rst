@@ -32,15 +32,19 @@ Todo UI
 
 ******** Better anchors display
 
-Extend stepzip concept to igeszip and stlzip
-
-Use a correct nomenclature for everything in sample projects
-
 ******** Selecting a part definition python script (see test_project) does not update the 3d viewer
 
 ******** Display of anchor names
 
-Graph display
+-> Graph display
+
+Assemblies should display their anchors too
+
+Better graph display
+
+Extend stepzip concept to igeszip and stlzip
+
+Use a correct nomenclature for everything in sample projects
 
 Launch with command line
 
@@ -48,7 +52,7 @@ Resizing problems of 3d viewer
 
 Pre-compute simple representations of files that take a long time to load
 
-Save button for code Enable/Disble depending on what is loaded
+Save button for code Enable/Disable depending on what is loaded
 
 
 ****** Separer visu du code 'core' dans nodes.py. nodes.py ne devrait pas utiliser wx
