@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
     """wx.lib.agw.customtreectrl.CustomTreeCtrl
-    tailored for VPP cases manipulation"""
+    tailored for osvcad cases manipulation"""
     def __init__(self,
                  parent,
                  model,
@@ -43,10 +43,6 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
 
         self.selected_item = None
 
-        if root_directory is None:
-            from os import getcwd
-            root_directory = getcwd()
-        self.root_directory = root_directory
         if checkable_extensions is None:
             checkable_extensions = []
         if disabled_extensions is None:
@@ -86,6 +82,12 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
 
         pub.subscribe(self.tree_modified_listener, "tree_modified")
 
+        if root_directory in [None, ""]:
+            from os import getcwd
+            root_directory = getcwd()
+        self.model.set_root_folder(root_directory)
+        # self.root_directory = root_directory
+
     def on_root_folder_changed(self, evt):
         r"""Callback for a change of root folder"""
         self.set_root_dir(self.model.root_folder)
@@ -101,7 +103,8 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         else:
             # Simplest option: delete the children at the root
             self.GetRootItem().DeleteChildren(self)
-            self._load_dir(self.GetRootItem(), self.root_directory)
+            # self._load_dir(self.GetRootItem(), self.root_directory)
+            self._load_dir(self.GetRootItem(), self.model.root_folder)
 
     def add_icon(self, filepath, wxBitmapType, name):
         """ Adds an icon to the imagelist and registers it with the
@@ -205,41 +208,6 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
                     #                          join(directory, f))))
                     if get_file_extension(f) in self.disabled_extensions:
                         self.EnableItem(child, enable=False, torefresh=False)
-            # for f in files_and_dirs:
-            #     if f != "__pycache__":
-            #         # process the file extension to build image list
-            #         imagekey = self.process_file_extension(join(directory, f))
-            #
-            #         # if directory, tell tree it has children
-            #         if isdir(join(directory, f)):
-            #
-            #             child = self.AppendItem(item,
-            #                                     f,
-            #                                     ct_type=0,
-            #                                     image=self.iconentries['FOLDER'],
-            #                                     selImage=-1,
-            #                                     data=Directory(normpath(join(directory, f))))
-            #             self.SetItemHasChildren(child, True)
-            #
-            #             # save item path for expanding later
-            #             # self.SetPyData(child, Directory(normpath(
-            #             #                              join(directory, f))))
-            #
-            #         else:
-            #             if get_file_extension(f) not in self.excluded_extensions:
-            #                 child = self.AppendItem(item,
-            #                                         f,
-            #                                         ct_type=0 if get_file_extension(f) not in self.checkable_extensions
-            #                                         else 1,
-            #                                         image=imagekey,
-            #                                         selImage=-1,
-            #                                         data=Directory(normpath(join(directory, f))))
-            #                 # GF : add the data because it is retrieved by the
-            #                 # selectionChanged handler
-            #                 # self.SetPyData(child, Directory(normpath(
-            #                 #                          join(directory, f))))
-            #                 if get_file_extension(f) in self.disabled_extensions:
-            #                     self.EnableItem(child, enable=False, torefresh=False)
 
     def process_file_extension(self, filename):
         """Helper function.
@@ -334,165 +302,6 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         self.selected_item = evt.GetItem()
         pub.sendMessage("tree_selection_changed", tree_object_reference=self)
         evt.Skip()
-
-    # def OnItemChecked(self, evt):
-    #     """Called when a GenericTreeItem is checked/unchecked"""
-    #     checked_item = evt.GetItem()
-    #     pub.sendMessage("tree_item_checked_or_unchecked",
-    #                     tree_object_reference=self,
-    #                     tree_item_object_reference=checked_item)
-    #     evt.Skip()
-
-    # def OnEvtTreeItemRightClick(self, evt):
-    #
-    #     if self.context_menu is False:
-    #         return
-    #
-    #     logger.debug("OnEvtTreeItemRightClick:   %s" % self.GetPyData(evt.GetItem()).directory)
-    #     menu = wx.Menu()
-    #
-    #     # Regular folder context menu
-    #     if folder_type(self.GetPyData(evt.GetItem()).directory) == 'FOLDER':
-    #
-    #         # m_create_case_here = menu.Append(1000,
-    #         #                                "Create a new case in this folder")
-    #         menu.Append(1000, "Create a new case in this folder")
-    #         wx.EVT_MENU(self, 1000, self.create_case_here)
-    #
-    #         # m_subfolder =
-    #         #             menu.Append(1001, "Create a subfolder in this folder")
-    #         menu.Append(1001, "Create a subfolder in this folder")
-    #         wx.EVT_MENU(self, 1001, self.create_subfolder)
-    #
-    #         m_rename = menu.Append(1002, "Rename this folder")
-    #         wx.EVT_MENU(self, 1002, self.rename)
-    #
-    #         if evt.GetItem().GetText() == 'Cases':
-    #             m_rename.Enable(False)
-    #     # Case and solved case context menu
-    #     elif folder_type(self.GetPyData(evt.GetItem()).directory) in ['CASE', 'SOLVED_CASE']:
-    #
-    #         # m_duplicate_case = menu.Append(2001, "Duplicate this case")
-    #         menu.Append(2001, "Duplicate this case")
-    #         wx.EVT_MENU(self, 2001, self.duplicate_case)
-    #
-    #         # m_rename = menu.Append(2002, "Rename this case")
-    #         menu.Append(2002, "Rename this case")
-    #         wx.EVT_MENU(self, 2002, self.rename)
-    #     else:
-    #         pass
-    #
-    #     self.PopupMenu(menu, evt.GetPoint())
-    #     menu.Destroy()
-
-    # def create_case_here(self, evt):
-    #     """Creates a case in the selected folder"""
-    #     new_case_dir_path = join(self.GetPyData(self.selected_item).directory,
-    #                              'New case')
-    #     makedirs(new_case_dir_path)
-    #     f = open(join(new_case_dir_path, definition_file_name), 'w')
-    #     f.write('# -*- coding: utf-8 -*-\n\n'
-    #             '# General VPP algorithm control\n'
-    #             'true_wind_speeds = (1, 2, 3, 4, 5)  # m/s\n'
-    #             'true_wind_angles = (20., 25., 30., 35., 40., 45., 50., '
-    #             '55., 60., 65., 70., 75., 80., 85., 90., 95., 100., '
-    #             '105., 110., 115., 120., 125., 130., 135., 140., 145., 150., '
-    #             '155., 160., 165., 170., 175., 180.)\n\n'
-    #             '# initial guesses\nboatspeed_initial_guess = 1.  # m/s\n'
-    #             'heel_angle_initial_guess = 45.  # deg\n'
-    #             'leeway_angle_initial_guess = 4.  # deg\n'
-    #             'trim_angle_initial_guess = 0.  # deg\n'
-    #             'rudder_angle_initial_guess = 2. # deg\n\n'
-    #             '# components\n'
-    #             'heel_righting = {}\n'
-    #             'trim_righting = {}\n'
-    #             'aerodynamics = {}\n'
-    #             'hydrodynamics = {}\n')
-    #     f.close()
-    #     self.selected_item.DeleteChildren(self)
-    #     self._load_dir(self.selected_item,
-    #                    self.GetPyData(self.selected_item).directory)
-    #     if self.selected_item.IsExpanded():
-    #         self.selected_item.Collapse()
-    #     self.selected_item.Expand()
-    #
-    #     pub.sendMessage("tree_modified", tree_object_reference=self)
-
-    # def create_subfolder(self, evt):
-    #     """Creates a subfolder in the selected folder"""
-    #     new_folder_name = 'New folder'
-    #     item_path = join(self.GetPyData(self.selected_item).directory,
-    #                      new_folder_name)
-    #
-    #     # Create the subfolder
-    #     makedirs(item_path)
-    #
-    #     item_data = Directory(normpath(item_path))
-    #     # child = self.AppendItem(self.selected_item,
-    #     _ = self.AppendItem(self.selected_item,
-    #                         new_folder_name,
-    #                         ct_type=0,
-    #                         image=self.iconentries['FOLDER'],
-    #                         selImage=-1,
-    #                         data=item_data)
-    #
-    #     pub.sendMessage("tree_modified", tree_object_reference=self)
-
-    # def duplicate_case(self, evt):
-    #     """Duplicate an existing case"""
-    #     item_directory_data = self.GetPyData(self.selected_item).directory
-    #     one_level_up_directory = dirname(item_directory_data)
-    #     case_name = basename(item_directory_data)
-    #     new_name = case_name + ' (Copy)'
-    #     new_case_dir_path = join(one_level_up_directory, new_name)
-    #     # Create the case folder
-    #     makedirs(new_case_dir_path)
-    #
-    #     # copy the definition file to the newly created case
-    #     shutil.copy2(join(item_directory_data,
-    #                       definition_file_name),
-    #                  new_case_dir_path)
-    #
-    #     # Make sure the children are properly loaded
-    #     self.selected_item.GetParent().DeleteChildren(self)
-    #     self._load_dir(self.selected_item.GetParent(), one_level_up_directory)
-    #
-    #     pub.sendMessage("tree_modified", tree_object_reference=self)
-
-    # def rename(self, evt):
-    #     """Rename a regular folder or a case.
-    #     This is called as soon as the 'rename' option of
-    #     the context menu is clicked
-    #
-    #     See also
-    #     --------
-    #     http://wxpython-users.1045709.n5.nabble.com/
-    #                            insert-edit-item-in-customtreectrl-td2359336.html
-    #
-    #     """
-    #     if self.selected_item is not None:
-    #         self.EditLabel(self.selected_item)
-    #
-    #     self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnEndLabelEdit)
-
-    # def OnEndLabelEdit(self, evt):
-    #     """At the end of GenericTreeItem label editing"""
-    #     item_label_value = self.GetEditControl().GetValue()
-    #     new_path = join(dirname(self.GetPyData(self.selected_item).directory),
-    #                     item_label_value)
-    #
-    #     # Rename the folder on disk
-    #     rename(self.GetPyData(self.selected_item).directory, new_path)
-    #
-    #     # Keep the item data in sync with the new name
-    #     self.SetPyData(self.selected_item, Directory(new_path))
-    #
-    #     # Make sure the children also keep in sync with the new name
-    #     self.selected_item.DeleteChildren(self)
-    #     self._load_dir(self.selected_item, new_path)
-    #
-    #     pub.sendMessage("tree_modified", tree_object_reference=self)
-
 
 if __name__ == '__main__':
 

@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+r"""Command line launch of the osvcad UI"""
+
+import osvcad.ui.main_ui
+
+osvcad.ui.main_ui.main()

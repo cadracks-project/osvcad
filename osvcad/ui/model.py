@@ -2,6 +2,7 @@
 
 r"""Model of the waterline app"""
 
+import sys
 import logging
 
 from atom.api import Atom
@@ -26,6 +27,7 @@ class Model(Atom):
         """
         logger.debug("Setting the root folder")
         self.root_folder = root_folder
+        sys.path.append(root_folder)
         logger.debug("Notify that root folder changed")
         self.notify("root_folder_changed", None)
 

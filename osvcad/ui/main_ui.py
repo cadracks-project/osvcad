@@ -3,19 +3,17 @@
 
 r"""Main UI for osvcad"""
 
-# import sys
 import platform
 import logging
-from os.path import dirname, exists
+from os.path import exists
 import configobj
-import sys
 
 import wx
 import wx.aui
 import wx.lib.agw.aui
 from wx.adv import AboutDialogInfo, AboutBox
 
-from corelib.core.files import path_from_file
+from corelib.core.files import p_
 
 import osvcad
 from osvcad.ui.model import Model
@@ -53,21 +51,20 @@ class OsvCadUiFrame(wx.Frame):
              PANE_TREE_NAME,
              PANE_LOG_NAME]
 
-    def __init__(self, parent, model, config):
+    def __init__(self, parent, model, config, size=(1200, 800)):
         # logger.debug("Initializing WaterlineUiFrame")
         wx.Frame.__init__(self,
                           parent,
                           -1,
                           "osvcad",
                           style=wx.DEFAULT_FRAME_STYLE,
-                          size=(1200, 800))
-        # Application icon
-        # self.SetIcon(wx.IconFromLocation(wx.IconLocation(filename=r'fs.ico',
-        #                                                  num=0)))
+                          size=size)
+
         if platform.system() == "Linux":
             self.Show()
 
-        ico = path_from_file(__file__, "./fs.ico")
+        # Application icon
+        ico = p_(__file__, "./osvcad.ico")
         self.SetIcon(wx.Icon(wx.IconLocation(filename=ico, num=0)))
         self.Bind(wx.EVT_CLOSE, self.on_close)
 
@@ -76,7 +73,7 @@ class OsvCadUiFrame(wx.Frame):
         try:
             frame_maximize = True if self.config["frame"]["maximize"] == "True" else False
             self.confirm_close = True if self.config["frame"]["confirm_close"] == "True" else False
-            self.cad_default_dir = self.config["app"]["default_dir"]
+            self.project_default_dir = self.config["app"]["default_dir"]
             self.viewer_background_colour = tuple([float(el) for el in self.config["viewer"]["viewer_background_colour"]])
             self.objects_transparency = float(self.config["viewer"]["objects_transparency"])
             self.text_height = int(self.config["viewer"]["text_height"])
@@ -84,7 +81,7 @@ class OsvCadUiFrame(wx.Frame):
         except (TypeError, KeyError):
             frame_maximize = True
             self.confirm_close = True
-            self.cad_default_dir = ""
+            self.project_default_dir = ""
             self.viewer_background_colour = (50., 50., 50.)
             self.objects_transparency = 0.2
             self.text_height = 20
@@ -112,8 +109,7 @@ class OsvCadUiFrame(wx.Frame):
                         text_colour=self.text_colour)
         self.code_panel = CodePanel(self, self.model)
         self.graph_panel = GraphPanel(self, self.model)
-        self.tree_panel = Tree(self, self.model)
-
+        self.tree_panel = Tree(self, self.model, root_directory=self.project_default_dir)
 
         # Menus, status bar ...
         self.init_ui()
@@ -174,7 +170,7 @@ class OsvCadUiFrame(wx.Frame):
                            id_=wx.ID_OPEN,
                            text='&Open\tCtrl+O',
                            handler=self.on_open,
-                           icon='./icons/open.png',
+                           icon=p_(__file__, './icons/open.png'),
                            enabled=True)
 
         file_menu.AppendSeparator()
@@ -183,7 +179,7 @@ class OsvCadUiFrame(wx.Frame):
                            id_=wx.ID_CLOSE,
                            text='&Quit\tCtrl+Q',
                            handler=self.on_quit,
-                           icon='./icons/quit.png')
+                           icon=p_(__file__, './icons/quit.png'))
         menubar.Append(file_menu, '&File')
 
         # Windows menu
@@ -200,7 +196,7 @@ class OsvCadUiFrame(wx.Frame):
                            id_=wx.NewId(),
                            text="Refresh",
                            handler=self.on_refresh,
-                           icon='./icons/refresh.png')
+                           icon=p_(__file__, './icons/refresh.png'))
         menubar.Append(refresh_menu, "&Refresh")
 
         # Help menu
@@ -316,23 +312,14 @@ class OsvCadUiFrame(wx.Frame):
         e : wx.CommandEvent
 
         """
-        # dlg = wx.FileDialog(self,
-        #                     message="Choose a file",
-        #                     defaultFile="",
-        #                     defaultDir="",
-        #                     wildcard="Python files (*.py)|*.py",
-        #                     style=wx.FD_CHANGE_DIR)
         dlg = wx.DirDialog(self,
                            message="Choose a project folder",
                            defaultPath="",
                            style=wx.DD_CHANGE_DIR)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
-            # self.model.set_root_folder(dirname(path))
             self.model.set_root_folder(path)
-            # Add the project root to PYTHONPATH
-            # sys.path.append(dirname(path))
-            sys.path.append(path)
+            self.model.set_selected(path)
         dlg.Destroy()
 
     def on_quit(self, e):
@@ -343,7 +330,6 @@ class OsvCadUiFrame(wx.Frame):
         e : wx.CommandEvent
 
         """
-        # logger.debug("Event Id : {id}".format(id=e.GetId()))
         self.Close()
 
 
@@ -355,9 +341,7 @@ def get_config():
     configobj.ConfigObj or None
 
     """
-    # app_path = abspath(dirname(join(sys.argv[0])))
-    # inifile = join(app_path, "osvcadui.ini")
-    inifile = path_from_file(__file__, "./osvcadui.ini")
+    inifile = p_(__file__, "./osvcadui.ini")
     if not exists(inifile):
         logger.warning("No osvcadui.ini, using default values")
         return None
@@ -366,12 +350,24 @@ def get_config():
     return config
 
 
-def main():
+def main(width=1200, height=800):
+    r"""Launch the main osvcad UI
+    
+    Parameters
+    ----------
+    width : int
+        Width of the osvcad UI frame
+    height : int
+        Height of the osvcad UI frame
 
+    """
     app = wx.App()
     # wx.InitAllImageHandlers()
     model = Model()
-    frame = OsvCadUiFrame(parent=None, model=model, config=get_config())
+    frame = OsvCadUiFrame(parent=None,
+                          model=model,
+                          config=get_config(),
+                          size=(width, height))
     frame.Show(True)
 
     # SafeYield(win, onlyIfNeeded)
@@ -384,8 +380,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # logging.basicConfig(stream=sys.stdout,
-    #                     level=logging.DEBUG,
-    #                     format='%(asctime)s :: %(levelname)6s :: '
-    #                            '%(module)20s :: %(lineno)3d :: %(message)s')
     main()
