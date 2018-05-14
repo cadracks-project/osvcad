@@ -58,7 +58,15 @@ class GraphPanel(wx.Panel):
 
         values = [val_map.get(node, 0.25) for node in assembly.nodes()]
 
-        pos = nx.circular_layout(assembly)
+        # pos = nx.circular_layout(assembly)
+        # pos = nx.circular_layout(assembly)
+        # pos = nx.kamada_kawai_layout(assembly)
+        # pos = nx.random_layout(assembly)
+        # pos = nx.rescale_layout(assembly)
+        # pos = nx.shell_layout(assembly)
+        # pos = nx.spring_layout(assembly)
+        # pos = nx.spectral_layout(assembly)
+        pos = nx.fruchterman_reingold_layout(assembly)
 
         nx.draw_networkx_nodes(assembly,
                                pos,

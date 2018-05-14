@@ -38,11 +38,16 @@ Todo UI
 
 ******** Graph display
 
--> Assemblies should display their anchors too
+******** Assemblies should display their anchors too
   Transparency needs to be adjustable on the fly as some anchors/anchor names could be hidden
   OR use wireframe mode !!
 
 Better graph display
+  Selectable nodes, coordinated with 3d view
+  Different color based on origin/node type
+  https://bokeh.pydata.org/en/latest/docs/user_guide/graph.html
+  OR
+  3D display with nodes position based on barycentre
 
 Extend stepzip concept to igeszip and stlzip
 
