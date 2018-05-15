@@ -3,6 +3,7 @@
 
 r"""Main UI for osvcad"""
 
+import sys
 import platform
 import logging
 from os.path import exists
@@ -299,8 +300,10 @@ class OsvCadUiFrame(wx.Frame):
             dlg.Destroy()
             if result == wx.ID_OK:
                 self.Destroy()
+                sys.exit(0)
         else:
             self.Destroy()
+            sys.exit(0)
 
     def on_open(self, e):
         r"""Handler for the Open menu item
@@ -331,6 +334,8 @@ class OsvCadUiFrame(wx.Frame):
 
         """
         self.Close()
+        self.Destroy()
+        sys.exit(0)
 
 
 def get_config():

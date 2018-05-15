@@ -26,7 +26,7 @@ Appliquer nomenclature pieces et ancres aux exemples
      ****** create bin that launches ui
      ****** conda package (0.6.0)
      ****** bin defined in setup
-    needs sys.exit() to exit process when closed (does not return to command prompt when closed otherwise)
+     ****** needs sys.exit() to exit process when closed (does not return to command prompt when closed otherwise)
 
 Resizing problems of 3d viewer
 
