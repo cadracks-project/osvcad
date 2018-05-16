@@ -22,6 +22,8 @@ from aocxchange.step import StepImporter
 from aocxchange.iges import IgesImporter
 from aocxchange.stl import StlImporter
 
+from osvcad.ui.sequences import color_from_sequence
+
 logger = logging.getLogger(__name__)
 
 
@@ -83,6 +85,7 @@ class ThreeDPanel(Wx3dViewer):
                         logger.info("%s has assembly" % sel)
                         try:
                             self.display_assembly(module_.assembly)
+                            self.viewer_display.FitAll()
                         except KeyError as ke:
                             self.erase_all()
                             logger.exception(ke)
@@ -92,8 +95,10 @@ class ThreeDPanel(Wx3dViewer):
                             if has_anchors:
                                 p = Part.from_py_script(sel)
                                 self.display_part(p, transparency=0.3)
+                                self.viewer_display.FitAll()
                             else:
                                 self.display_part(module_.part)
+                                self.viewer_display.FitAll()
                         else:
                             self.erase_all()
                             logger.warning("Nothing to display")
@@ -111,6 +116,7 @@ class ThreeDPanel(Wx3dViewer):
                         self.display_shape(shape,
                                            color_=colour_wx_to_occ(color_255),
                                            transparency=0.1)
+                        self.viewer_display.FitAll()
 
             elif ext in [".iges", ".igs"]:
                 self.erase_all()
@@ -122,6 +128,7 @@ class ThreeDPanel(Wx3dViewer):
                         self.display_shape(shape,
                                            color_=colour_wx_to_occ(color_255),
                                            transparency=0.1)
+                        self.viewer_display.FitAll()
 
             elif ext == ".stl":
                 self.erase_all()
@@ -131,6 +138,7 @@ class ThreeDPanel(Wx3dViewer):
                     self.display_shape(shape,
                                        color_=colour_wx_to_occ(color_255),
                                        transparency=0.1)
+                    self.viewer_display.FitAll()
 
             elif ext == ".json":  # parts library
                 self.erase_all()
@@ -138,7 +146,7 @@ class ThreeDPanel(Wx3dViewer):
                 with wx.BusyInfo("Loading parts library ...") as _:
                     with open(sel) as json_file:
                         json_file_content = json.load(json_file)
-                        print(json_file_content["data"].keys())
+                        # print(json_file_content["data"].keys())
                         # find the biggest bounding box
                         biggest_bb = [0, 0, 0]
                         # smallest_bb = [0, 0, 0]
@@ -172,10 +180,12 @@ class ThreeDPanel(Wx3dViewer):
                                                  k,
                                                  message_color=(1, 1, 1),
                                                  height=10)
+                            self.viewer_display.FitAll()
             elif ext == ".stepzip":
                 self.erase_all()
                 with wx.BusyInfo("Loading STEPZIP ...") as _:
                     self.display_part(Part.from_stepzip(sel), transparency=0.3)
+                    self.viewer_display.FitAll()
             elif ext == ".anchors":
                 self.erase_all()
             else:
@@ -250,14 +260,15 @@ class ThreeDPanel(Wx3dViewer):
         """
         assembly.build()
 
-        for node in assembly.nodes():
+        for i, node in enumerate(assembly.nodes()):
             # for k, v in node.anchors.items():
             #     frame.p.display_vector(gp_Vec(*node.anchors[k]["direction"]),
             #                            gp_Pnt(*node.anchors[k]["position"]))
             self.display_shape(node.node_shape.shape,
-                               color_=colour_wx_to_occ((randint(0, 255),
-                                                        randint(0, 255),
-                                                        randint(0, 255))),
+                               # color_=colour_wx_to_occ((randint(0, 255),
+                               #                          randint(0, 255),
+                               #                          randint(0, 255))),
+                               color_=colour_wx_to_occ(color_from_sequence(i, "colors")),
                                transparency=transparency)
 
             self._display_anchors(assembly.anchors)

@@ -6,10 +6,7 @@ from __future__ import division
 
 import imp
 from os.path import isdir, splitext
-from random import randint
 import logging
-import json
-import math
 
 import wx
 from OCC.Core.gp import gp_Pnt, gp_Vec
@@ -17,11 +14,8 @@ from OCC.Core.gp import gp_Pnt, gp_Vec
 from corelib.core.python_ import is_valid_python
 from corelib.core.memoize import memoize
 from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
-from aocutils.analyze.bounds import BoundingBox
-from aocutils.brep.edge_make import edge
-from aocxchange.step import StepImporter
-from aocxchange.iges import IgesImporter
-from aocxchange.stl import StlImporter
+
+from osvcad.ui.sequences import color_from_sequence
 
 logger = logging.getLogger(__name__)
 
@@ -75,16 +69,16 @@ class GraphPanel(Wx3dViewer):
                 if is_valid_python(content) is True:
                     with wx.BusyInfo("Loading Python defined geometry ...") as _:
                         module_ = imp.load_source(sel, sel)
-                    has_part = hasattr(module_, "part")
+                    # has_part = hasattr(module_, "part")
                     has_assembly = hasattr(module_, "assembly")
-                    has_anchors = hasattr(module_, "anchors")
+                    # has_anchors = hasattr(module_, "anchors")
 
                     self.erase_all()
 
                     if has_assembly is True:
                         logger.info("%s has assembly" % sel)
                         try:
-                            self.display_assembly(module_.assembly)
+                            self.display_assembly(module_.assembly, transparency=0.4)
                         except KeyError as ke:
                             self.erase_all()
                             logger.exception(ke)
@@ -127,20 +121,20 @@ class GraphPanel(Wx3dViewer):
         transparency : float from 0 to 1
 
         """
-        sphere_radius = 0.5
-
         assembly.build()
 
-        for node in assembly.nodes():
+        for i, node in enumerate(assembly.nodes()):
 
             # display a sphere at the barycentre
             from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeSphere
-            sphere = BRepPrimAPI_MakeSphere(_centre_of_mass(node.node_shape.shape), sphere_radius)
+            sphere = BRepPrimAPI_MakeSphere(_centre_of_mass(node.node_shape.shape),
+                                            _characteristic_dimension(node.node_shape.shape) / 10.)
             sphere.Build()
             self.display_shape(sphere.Shape(),
-                               color_=colour_wx_to_occ((randint(0, 255),
-                                                        randint(0, 255),
-                                                        randint(0, 255))),
+                               # color_=colour_wx_to_occ((randint(0, 255),
+                               #                          randint(0, 255),
+                               #                          randint(0, 255))),
+                               color_=colour_wx_to_occ(color_from_sequence(i, "colors")),
                                transparency=transparency)
 
             # self._display_anchors(assembly.anchors)
@@ -160,7 +154,13 @@ class GraphPanel(Wx3dViewer):
             edge_constraint = assembly.get_edge_data(edge[0],
                                                  edge[1])["object"]
 
-            self.display_message(start, text_to_write=edge_constraint.__class__.__name__, height=20, message_color=(0, 0, 0))
+            self.display_message(gp_Pnt((start.X() + 2 * end.X()) / 3,
+                                        (start.Y() + 2 * end.Y()) / 3,
+                                        (start.Z() + 2 * end.Z()) / 3),
+                                 text_to_write=edge_constraint.__class__.__name__,
+                                 height=13,
+                                 message_color=(0, 0, 0))  # black
+        self.viewer_display.FitAll()
 
 
 @memoize
@@ -181,3 +181,9 @@ def _centre_of_mass(shape):
     g = GProp_GProps()
     brepgprop_VolumeProperties(shape, g)
     return g.CentreOfMass()
+
+
+def _characteristic_dimension(shape):
+    from aocutils.analyze.bounds import BoundingBox
+    bb = BoundingBox(shape)
+    return (bb.x_span + bb.y_span + bb.z_span) / 3.
