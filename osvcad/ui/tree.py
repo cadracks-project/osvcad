@@ -82,9 +82,9 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
 
         pub.subscribe(self.tree_modified_listener, "tree_modified")
 
-        if root_directory in [None, ""]:
-            from os import getcwd
-            root_directory = getcwd()
+        # if root_directory in [None, ""]:
+        #     from os import getcwd
+        #     root_directory = getcwd()
         # self.model.set_root_folder(root_directory)
         # self.root_directory = root_directory
 
