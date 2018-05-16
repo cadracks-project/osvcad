@@ -1,91 +1,62 @@
 # coding: utf-8
 
-r"""Graph visualization component"""
+r"""3D visualization of geometry"""
 
-from os.path import splitext, isdir
-import logging
+from __future__ import division
+
 import imp
+from os.path import isdir, splitext
+from random import randint
+import logging
+import json
+import math
 
 import wx
-import networkx as nx
-
-import matplotlib
-# The following line solves the
-# Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)
-# bug on linux 64 (and maybe elsewhere)
-matplotlib.use('wx')
-
-from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
-import matplotlib.pyplot as plt
+from OCC.Core.gp import gp_Pnt, gp_Vec
 
 from corelib.core.python_ import is_valid_python
+from corelib.core.memoize import memoize
+from aocutils.display.wx_viewer import Wx3dViewer, colour_wx_to_occ
+from aocutils.analyze.bounds import BoundingBox
+from aocutils.brep.edge_make import edge
+from aocxchange.step import StepImporter
+from aocxchange.iges import IgesImporter
+from aocxchange.stl import StlImporter
 
 logger = logging.getLogger(__name__)
 
 
-class GraphPanel(wx.Panel):
-    r"""wx Panel embedding a Matplotlib plot
-
-    Parameters
-    ----------
-    parent : wx parent
-    model : Model
-
-    """
-    def __init__(self, parent, model):
-        super(GraphPanel, self).__init__(parent, wx.ID_ANY)
+class GraphPanel(Wx3dViewer):
+    r"""Panel containing topology information about the loaded shape"""
+    def __init__(self,
+                 parent,
+                 model,
+                 viewer_background_color=(50., 50., 50.),
+                 object_transparency=0.2, text_height=20,
+                 text_colour=(0., 0., 0.)):
+        super(GraphPanel, self).__init__(parent=parent,
+                                         viewer_background_color=viewer_background_color,
+                                         show_topology_menu=False)
         self.model = model
-
-        self.figure = plt.figure()
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        self.canvas = FigureCanvas(self, -1, self.figure)
-        sizer.Add(self.canvas, 1, wx.EXPAND)
-        self.toolbar = NavigationToolbar(self.canvas)
-        self.toolbar.Hide()
-        self.SetSizer(sizer)
-
         self.model.observe("selected_changed", self.on_selected_change)
 
-    def plot(self, assembly):
-        r"""Plot values with an associated color and an associated name"""
-        self.figure.clear()
-        ax = self.figure.add_subplot(111)
+        self.viewer_display.View.SetBackgroundColor(colour_wx_to_occ(viewer_background_color))
 
-        val_map = {'A': 1.0,
-                   'D': 0.5714285714285714,
-                   'H': 0.0}
+        self.objects_transparency = object_transparency
+        self.text_height = text_height
+        self.text_colour = text_colour
 
-        values = [val_map.get(node, 0.25) for node in assembly.nodes()]
+        self.Bind(wx.EVT_SIZE, self.OnSize)
 
-        # pos = nx.circular_layout(assembly)
-        # pos = nx.circular_layout(assembly)
-        # pos = nx.kamada_kawai_layout(assembly)
-        # pos = nx.random_layout(assembly)
-        # pos = nx.rescale_layout(assembly)
-        # pos = nx.shell_layout(assembly)
-        # pos = nx.spring_layout(assembly)
-        # pos = nx.spectral_layout(assembly)
-        pos = nx.fruchterman_reingold_layout(assembly)
-
-        nx.draw_networkx_nodes(assembly,
-                               pos,
-                               cmap=plt.get_cmap('jet'),
-                               node_color=values)
-        nx.draw_networkx_edges(assembly,
-                               pos,
-                               edgelist=assembly.edges(),
-                               edge_color='r',
-                               arrows=True)
-        nx.draw_networkx_labels(assembly, pos)
-        nx.draw_networkx_edge_labels(assembly, pos)
-
-        # plt.show()
-
-        self.canvas.draw()
+    def OnSize(self, event):
+        self.Layout()
 
     def on_selected_change(self, change):
         """Callback function for listener"""
+
+        # TODO: investigate why importing Part
+        # at top of file causes an app crash
+        from osvcad.nodes import Part
 
         logger.debug("Selection changed")
 
@@ -104,38 +75,109 @@ class GraphPanel(wx.Panel):
                 if is_valid_python(content) is True:
                     with wx.BusyInfo("Loading Python defined geometry ...") as _:
                         module_ = imp.load_source(sel, sel)
-                    # has_part = hasattr(module_, "part")
+                    has_part = hasattr(module_, "part")
                     has_assembly = hasattr(module_, "assembly")
-                    # has_anchors = hasattr(module_, "anchors")
+                    has_anchors = hasattr(module_, "anchors")
 
-                    self.figure.clear()
+                    self.erase_all()
 
                     if has_assembly is True:
                         logger.info("%s has assembly" % sel)
                         try:
-                            self.plot(module_.assembly)
+                            self.display_assembly(module_.assembly)
                         except KeyError as ke:
-                            self.figure.clear()
+                            self.erase_all()
                             logger.exception(ke)
                     else:
-                        self.figure.clear()
-                        logger.warning("Nothing to display")
+                        self.erase_all()
+                        logger.warning("Nothing to display in graph panel")
                 else:  # the file is not a valid Python file
                     logger.warning("Not a valid python file")
-                    self.figure.clear()
+                    self.erase_all()
 
             elif ext in [".step", ".stp", ".iges", ".igs", ".stl", ".json",
                          ".stepzip", ".anchors"]:
-                self.figure.clear()
-
-            else:
-                logger.error("File has an extension %s that is not "
-                             "handled by the 3D panel" % ext)
-                self.figure.clear()
+                self.erase_all()
 
         else:  # a directory is selected
-            self.figure.clear()
+            self.erase_all()
 
         self.Layout()
 
         logger.debug("code change detected in 3D panel")
+
+    def display_part(self, part, color_255=None, transparency=0.):
+        r"""Display a single Part (shape + anchors)
+
+        Parameters
+        ----------
+        part : PartGeometryNode
+        color_255 : tuple of integers from 0 to 255
+        transparency : float from 0 to 1
+
+        """
+        pass
+
+    def display_assembly(self, assembly, transparency=0.):
+        r"""Display an assembly of parts and assemblies
+
+        Parameters
+        ----------
+        assembly : AssemblyGeometryNode
+        transparency : float from 0 to 1
+
+        """
+        sphere_radius = 0.5
+
+        assembly.build()
+
+        for node in assembly.nodes():
+
+            # display a sphere at the barycentre
+            from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeSphere
+            sphere = BRepPrimAPI_MakeSphere(_centre_of_mass(node.node_shape.shape), sphere_radius)
+            sphere.Build()
+            self.display_shape(sphere.Shape(),
+                               color_=colour_wx_to_occ((randint(0, 255),
+                                                        randint(0, 255),
+                                                        randint(0, 255))),
+                               transparency=transparency)
+
+            # self._display_anchors(assembly.anchors)
+
+        for edge in assembly.edges(data=True):
+            start = _centre_of_mass(edge[0].node_shape.shape)  # gp_Pnt
+            end = _centre_of_mass(edge[1].node_shape.shape)  # gp_Pnt
+
+            vec = gp_Vec(end.X() - start.X(),
+                         end.Y() - start.Y(),
+                         end.Z() - start.Z())
+            from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+            e = BRepBuilderAPI_MakeEdge(start, end)
+
+            self.display_shape(e.Shape())
+
+            edge_constraint = assembly.get_edge_data(edge[0],
+                                                 edge[1])["object"]
+
+            self.display_message(start, text_to_write=edge_constraint.__class__.__name__, height=20, message_color=(0, 0, 0))
+
+
+@memoize
+def _centre_of_mass(shape):
+    r"""
+    
+    Parameters
+    ----------
+    shape : OCC Shape
+
+    Returns
+    -------
+    gp_Pnt
+
+    """
+    from OCC.Core.BRepGProp import brepgprop_VolumeProperties
+    from OCC.Core.GProp import GProp_GProps
+    g = GProp_GProps()
+    brepgprop_VolumeProperties(shape, g)
+    return g.CentreOfMass()

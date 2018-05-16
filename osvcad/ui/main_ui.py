@@ -109,7 +109,11 @@ class OsvCadUiFrame(wx.Frame):
                         text_height=self.text_height,
                         text_colour=self.text_colour)
         self.code_panel = CodePanel(self, self.model)
-        self.graph_panel = GraphPanel(self, self.model)
+        self.graph_panel = GraphPanel(self, self.model,
+                                      viewer_background_color=self.viewer_background_colour,
+                                      object_transparency=self.objects_transparency,
+                                      text_height=self.text_height,
+                                      text_colour=self.text_colour)
         # self.tree_panel = Tree(self, self.model, root_directory=self.project_default_dir)
         self.tree_panel = Tree(self, self.model)
 

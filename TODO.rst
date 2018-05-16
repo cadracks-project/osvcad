@@ -1,7 +1,9 @@
 Todo UI
 -------
 
-Répertoire par défaut si default_dir n'existe pas
+Example with nested assemblies
+
+******** Require an explicit Open (no more project default dir)
 
 Graphe a faire disparaitre
 
@@ -16,6 +18,12 @@ Better graph display
 
   Vue 3D du graphe en fonction de critères (volume = f(volume piece), volume = f(prix), couleur=f(createur))
   Boule = pièce, boite = assemblage ....
+
+  color sequence
+
+  selection sync between 3D and graph
+
+  scaling of spheres -> based on volume of part? BB of part?
 
 Gérer DataFrame général? -> ne pas parcourir le graphe à chaque requête!
 
