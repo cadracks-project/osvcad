@@ -74,7 +74,7 @@ class OsvCadUiFrame(wx.Frame):
         try:
             frame_maximize = True if self.config["frame"]["maximize"] == "True" else False
             self.confirm_close = True if self.config["frame"]["confirm_close"] == "True" else False
-            self.project_default_dir = self.config["app"]["default_dir"]
+            # self.project_default_dir = self.config["app"]["default_dir"]
             self.viewer_background_colour = tuple([float(el) for el in self.config["viewer"]["viewer_background_colour"]])
             self.objects_transparency = float(self.config["viewer"]["objects_transparency"])
             self.text_height = int(self.config["viewer"]["text_height"])
@@ -82,7 +82,7 @@ class OsvCadUiFrame(wx.Frame):
         except (TypeError, KeyError):
             frame_maximize = True
             self.confirm_close = True
-            self.project_default_dir = ""
+            # self.project_default_dir = ""
             self.viewer_background_colour = (50., 50., 50.)
             self.objects_transparency = 0.2
             self.text_height = 20
