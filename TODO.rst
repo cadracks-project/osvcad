@@ -1,12 +1,24 @@
 Todo UI
 -------
 
+Répertoire par défaut si default_dir n'existe pas
+
+Graphe a faire disparaitre
+
+Undo/Redo
+
 Better graph display
   Selectable nodes, coordinated with 3d view
   Different color based on origin/node type
   https://bokeh.pydata.org/en/latest/docs/user_guide/graph.html
   OR
   3D display with nodes position based on barycentre
+
+  Vue 3D du graphe en fonction de critères (volume = f(volume piece), volume = f(prix), couleur=f(createur))
+  Boule = pièce, boite = assemblage ....
+
+Gérer DataFrame général? -> ne pas parcourir le graphe à chaque requête!
+
 
 -> Extend stepzip concept to igeszip and stlzip
   More complex than expected. ccad limits us to solid, compound and compsolid for imports
@@ -21,12 +33,6 @@ Appliquer nomenclature pieces et ancres aux exemples
 
   Nomenclature ancres suspensions
   Nomenclature ancres chassis
-
--> Launch with command line
-     ****** create bin that launches ui
-     ****** conda package (0.6.0)
-     ****** bin defined in setup
-     ****** needs sys.exit() to exit process when closed (does not return to command prompt when closed otherwise)
 
 Resizing problems of 3d viewer
 

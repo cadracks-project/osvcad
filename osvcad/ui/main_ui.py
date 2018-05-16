@@ -110,7 +110,8 @@ class OsvCadUiFrame(wx.Frame):
                         text_colour=self.text_colour)
         self.code_panel = CodePanel(self, self.model)
         self.graph_panel = GraphPanel(self, self.model)
-        self.tree_panel = Tree(self, self.model, root_directory=self.project_default_dir)
+        # self.tree_panel = Tree(self, self.model, root_directory=self.project_default_dir)
+        self.tree_panel = Tree(self, self.model)
 
         # Menus, status bar ...
         self.init_ui()

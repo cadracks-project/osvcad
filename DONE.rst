@@ -51,6 +51,12 @@ UI
   Transparency needs to be adjustable on the fly as some anchors/anchor names could be hidden
   OR use wireframe mode !!
 
+******** Launch with command line
+     ****** create bin that launches ui
+     ****** conda package (0.6.0)
+     ****** bin defined in setup
+     ****** needs sys.exit() to exit process when closed (does not return to command prompt when closed otherwise)
+
 Core osvcad
 -----------
 

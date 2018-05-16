@@ -78,14 +78,14 @@ class Tree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
                       wx.BITMAP_TYPE_PNG,
                       'default')
 
-        self.set_root_dir(root_directory)
+        # self.set_root_dir(root_directory)
 
         pub.subscribe(self.tree_modified_listener, "tree_modified")
 
         if root_directory in [None, ""]:
             from os import getcwd
             root_directory = getcwd()
-        self.model.set_root_folder(root_directory)
+        # self.model.set_root_folder(root_directory)
         # self.root_directory = root_directory
 
     def on_root_folder_changed(self, evt):
