@@ -57,6 +57,14 @@ UI
      ****** bin defined in setup
      ****** needs sys.exit() to exit process when closed (does not return to command prompt when closed otherwise)
 
+******** Require an explicit Open (no more project default dir)
+
+******** 3D display of graph with nodes position based on barycentre
+
+******** color sequence so that a part and its corresponding display (sphere) in the graph view have the same colour
+
+******** scaling of spheres -> based on BB of parts (a part may have no volume)
+
 Core osvcad
 -----------
 

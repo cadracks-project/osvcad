@@ -1,29 +1,32 @@
-Todo UI
--------
+Todo Examples
+-------------
 
 Example with nested assemblies
 
-******** Require an explicit Open (no more project default dir)
+really global assembly of Tabby as an example
 
-Graphe a faire disparaitre
+include some parts (motor) in the car example that are created from python scripts
 
-Undo/Redo
+Appliquer nomenclature pieces et ancres aux exemples
+  Prioritaire car impacte la documentation
+
+  Nomenclature ancres suspensions
+  Nomenclature ancres chassis
+
+Todo UI
+-------
+
+Launcher must be executable
 
 Better graph display
   Selectable nodes, coordinated with 3d view
   Different color based on origin/node type
   https://bokeh.pydata.org/en/latest/docs/user_guide/graph.html
   OR
-  3D display with nodes position based on barycentre
-
   Vue 3D du graphe en fonction de critères (volume = f(volume piece), volume = f(prix), couleur=f(createur))
   Boule = pièce, boite = assemblage ....
 
-  color sequence
-
-  selection sync between 3D and graph
-
-  scaling of spheres -> based on volume of part? BB of part?
+  -> selection sync between 3D and graph
 
 Gérer DataFrame général? -> ne pas parcourir le graphe à chaque requête!
 
@@ -36,17 +39,13 @@ Gérer DataFrame général? -> ne pas parcourir le graphe à chaque requête!
      Re-read docs nomenclature
      Correct problems in sample projects
 
-Appliquer nomenclature pieces et ancres aux exemples
-  Prioritaire car impacte la documentation
-
-  Nomenclature ancres suspensions
-  Nomenclature ancres chassis
-
 Resizing problems of 3d viewer
 
 Pre-compute simple representations of files that take a long time to load
 
 Save button for code Enable/Disable depending on what is loaded
+
+Undo/Redo
 
 Core osvcad
 -----------
@@ -71,16 +70,11 @@ New anchors concept (normal + tangent)
 Notion of Assembly in ccad should disappear?
 
 is it useful to keep the initial placement of nodes?
+Appliquer nomenclature pieces et ancres aux exemples
+  Prioritaire car impacte la documentation
 
-
-Examples
---------
-
-really global assembly of Tabby as an example
-
-include some parts (motor) in the car example that are created from python scripts
-
-
+  Nomenclature ancres suspensions
+  Nomenclature ancres chassis
 Misc
 ----
 
@@ -89,8 +83,6 @@ Packaging
 
 Documentation
   10 minutes example
-
-
 
 Not a priority
 --------------
