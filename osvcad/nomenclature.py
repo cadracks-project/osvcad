@@ -196,6 +196,43 @@ def nomenclature_anchor(type_, zone, dimensional, ref, language="neutral"):
                                 dimensional,
                                 str(ref))
 
+
+def getname(**kwargs):
+    """naming a parts (legacy from Bernard)
+
+    Parameters
+    ----------
+    sector(1) : str
+        (CAR, AERO, GENERIC, MECA, ELEC)
+    domain(2)  : str
+        (SUSPENSION,WING,FASTENER)
+    function(3) :
+        (PISTON,SPAR,SCREW)
+    dimension(4) (real separated by #)
+        (21#29,7)
+    material(5) (STEEL,CARBON, PVC)
+    origin(6) (GENERIC, AUDI)
+    alpha(7) (arbitrary number, external ref)
+
+    Examples
+    --------
+
+    >>> name = getname(material="PAPER")
+
+    """
+
+    sector = kwargs.pop('sector', '')
+    domain = kwargs.pop('domain', '')
+    func_ = kwargs.pop('function', '')
+    dimension = kwargs.pop('dimension', '')
+    material = kwargs.pop('material', '')
+    origin = kwargs.pop('origin', '')
+    alpha = kwargs.pop('alpha', '1')
+
+    lattributes = [sector, domain, func_, dimension, material, origin, alpha]
+    return "_".join(lattributes)
+
+
 if __name__ == "__main__":
     print(nomenclature_part_plan("CAR", "SUSPENSION", "RAM", "long", "STEEL",
                                  "AUDI", "XZW2"))
@@ -206,3 +243,4 @@ if __name__ == "__main__":
                                      zone="TOP", beta=73, language="fr"))
     print(nomenclature_anchor("AXIS", "TOP", "d10", "A"))
     print(nomenclature_anchor("AXIS", "TOP", "d10", "A", language="fr"))
+    print(getname(material="PAPER"))

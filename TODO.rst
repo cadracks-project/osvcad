@@ -1,3 +1,16 @@
+Pbs majeurs pour adoption
+-------------------------
+
+Joindre des assemblages entre eux -> exemple nested assemblies
+
+Ancres à 2 vecteurs
+
+11 liaisons méca
+
+Perfs / Caching
+
+Install facile
+
 Todo Examples
 -------------
 
@@ -16,12 +29,10 @@ Appliquer nomenclature pieces et ancres aux exemples
 Todo UI
 -------
 
-Launcher must be executable
+******** Launcher must be executable
 
 Better graph display
   Selectable nodes, coordinated with 3d view
-  Different color based on origin/node type
-  https://bokeh.pydata.org/en/latest/docs/user_guide/graph.html
   OR
   Vue 3D du graphe en fonction de critères (volume = f(volume piece), volume = f(prix), couleur=f(createur))
   Boule = pièce, boite = assemblage ....
@@ -29,7 +40,6 @@ Better graph display
   -> selection sync between 3D and graph
 
 Gérer DataFrame général? -> ne pas parcourir le graphe à chaque requête!
-
 
 -> Extend stepzip concept to igeszip and stlzip
   More complex than expected. ccad limits us to solid, compound and compsolid for imports
