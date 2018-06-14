@@ -1,6 +1,8 @@
 Pbs majeurs pour adoption
 -------------------------
 
+Scripting should be PythonOCC bases, with ccad as an option (avoid ccad limitations)
+
 Ancres à 2 vecteurs (New anchors concept (normal + tangent))
   minimal : p, v1, v2
   extras : tolerance, dimension ...
