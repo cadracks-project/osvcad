@@ -29,6 +29,12 @@ Warning : work in progress. Early stage of development
 **Osvcad** is a CAD system that models systems using Acyclic Directed Graphs of heterogeneous geometrical entities.
 
 
+Pre-requisites
+==============
+
+If installing on Linux, make sure that glxgears (just type *glxgears* at the prompt) display its 3 gears !
+
+
 Installing
 ==========
 
