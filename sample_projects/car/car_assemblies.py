@@ -12,34 +12,34 @@ def make_chassis_assembly():
     r"""Chassis assembly creation"""
 
     p1_base = Part.from_stepzip(
-        stepzip_file="shelf/chassis/CAR_CHASSIS_BASE_2.38#0.179#1.18_STEEL__.stepzip")
+        stepzip_file="shelf/chassis/CAR-CHASSIS-BASE-2.38_0.179_1.18-STEEL--.stepzip")
     p2_l = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_ARCHLEFT_705#515#184#mm_STEEL__.stepzip")
+                     "CAR-CHASSIS-ARCHLEFT-705_515_184_mm-STEEL--.stepzip")
     p2_r = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_ARCHRIGHT_705#515#184#mm_STEEL__.stepzip")
+                     "CAR-CHASSIS-ARCHRIGHT-705_515_184_mm-STEEL--.stepzip")
     p4 = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_ARCHSTRUT_127#126#796#mm_STEEL__.stepzip")
+                     "CAR-CHASSIS-ARCHSTRUT-127_126_796_mm-STEEL--.stepzip")
     p5 = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_SEATSSUPPORT_410#151#1174#mm_STEEL__.stepzip")
+                     "CAR-CHASSIS-SEATSSUPPORT-410_151_1174_mm-STEEL--.stepzip")
     p6 = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_DASHBOARDSUPPORT_107#535#1184#mm_STEEL__.stepzip")
+                     "CAR-CHASSIS-DASHBOARDSUPPORT-107_535_1184_mm-STEEL--.stepzip")
     p7_l = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_SUSPENSION_ARCHLEFT_526#535#284#mm_STEEL__.stepzip")
+                     "CAR-SUSPENSION-ARCHLEFT-526_535_284_mm-STEEL--.stepzip")
     p7_r = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_SUSPENSION_ARCHRIGHT_526#535#284#mm_STEEL__.stepzip")
+                     "CAR-SUSPENSION-ARCHRIGHT-526_535_284_mm-STEEL--.stepzip")
     p8 = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_ARCHSTRUT_111#130#746#mm_STEEL__.stepzip")
+                     "CAR-CHASSIS-ARCHSTRUT-111_130_746_mm-STEEL--.stepzip")
     p9 = Part.from_stepzip(
         stepzip_file="shelf/chassis/"
-                     "CAR_CHASSIS_DASHBOARDSUPPORTREINFORCEMENT_205#525#75#mm_STEEL__.stepzip")
+                     "CAR-CHASSIS-DASHBOARDSUPPORTREINFORCEMENT-205_525_75_mm-STEEL--.stepzip")
 
     chassis_assembly = Assembly(root=p1_base)
 
@@ -104,43 +104,43 @@ def make_front_suspension_assembly():
     r"""Front suspension assembly creation"""
     p1 = [Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_BEARING_l54.7#d37#mm___.stepzip") for _ in range(2)]
+        "CAR-SUSPENSION-BEARING-l54.7_d37_mm---.stepzip") for _ in range(2)]
 
     p2 = Part.from_stepzip(
         "shelf/suspension/front/"
-        "CAR_SUSPENSION_FORK_320#44#270#mm___.stepzip")
+        "CAR-SUSPENSION-FORK-320_44_270_mm---.stepzip")
     p3 = Part.from_stepzip(
         "shelf/suspension/front/"
-        "CAR_SUSPENSION_LINK_28#23#124#mm___.stepzip")
+        "CAR-SUSPENSION-LINK-28_23_124_mm---.stepzip")
     p4 = Part.from_stepzip(
         "shelf/suspension/front/"
-        "CAR_DIRECTION_BALLHEAD_D23#d10#l70#mm___.stepzip")
+        "CAR-DIRECTION-BALLHEAD-D23_d10_l70_mm---.stepzip")
     p5 = Part.from_stepzip(
         "shelf/suspension/front/"
-        "CAR_SUSPENSION_HUB_107#212#84#mm___.stepzip")
+        "CAR-SUSPENSION-HUB-107_212_84_mm---.stepzip")
 
     p6 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_DISCSUPPORT_117#117#70#mm___.stepzip")
+        "CAR-SUSPENSION-DISCSUPPORT-117_117_70_mm---.stepzip")
     p7 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_AXLE_DISC_d227#h46#mm_STEEL__.stepzip",
+        "CAR-AXLE-DISC-d227_h46_mm-STEEL--.stepzip",
         instance_id="P7_Front")
     p8 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_CYLINDER_l320#d42___.stepzip")
+        "CAR-SUSPENSION-CYLINDER-l320_d42---.stepzip")
     p9 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_PISTON_l381#d33#d16_STEEL__.stepzip")
+        "CAR-SUSPENSION-PISTON-l381_d33_d16-STEEL--.stepzip")
     p10 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_HAT_102#40#70#mm___.stepzip")
+        "CAR-SUSPENSION-HAT-102_40_70_mm---.stepzip")
     p11 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_HEAD_60#48#67#mm___.stepzip")
+        "CAR-SUSPENSION-HEAD-60_48_67_mm---.stepzip")
     p12 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_NECK_d28#l51#mm___.stepzip")
+        "CAR-SUSPENSION-NECK-d28_l51_mm---.stepzip")
 
     front_suspension_assembly = Assembly(root=p2)
 
@@ -227,32 +227,32 @@ def make_rear_suspension_assembly():
     r"""Rear suspension assembly creation"""
     p1 = [Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_BEARING_l54.7#d37#mm___.stepzip") for _ in range(4)]
+        "CAR-SUSPENSION-BEARING-l54.7_d37_mm---.stepzip") for _ in range(4)]
     p2 = Part.from_stepzip(
         "shelf/suspension/rear/"
-        "CAR_SUSPENSION_FRAME_320#49#327#mm___.stepzip")
+        "CAR-SUSPENSION-FRAME-320_49_327_mm---.stepzip")
     p5 = Part.from_stepzip(
         "shelf/suspension/rear/"
-        "CAR_SUSPENSION_HUB_200#240#82#mm___.stepzip")
+        "CAR-SUSPENSION-HUB-200_240_82_mm---.stepzip")
     p7 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_AXLE_DISC_d227#h46#mm_STEEL__.stepzip",
+        "CAR-AXLE-DISC-d227_h46_mm-STEEL--.stepzip",
         instance_id="P7_Rear")
     p8 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_CYLINDER_l320#d42___.stepzip")
+        "CAR-SUSPENSION-CYLINDER-l320_d42---.stepzip")
     p9 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_PISTON_l381#d33#d16_STEEL__.stepzip")
+        "CAR-SUSPENSION-PISTON-l381_d33_d16-STEEL--.stepzip")
     p10 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_HAT_102#40#70#mm___.stepzip")
+        "CAR-SUSPENSION-HAT-102_40_70_mm---.stepzip")
     p11 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_HEAD_60#48#67#mm___.stepzip")
+        "CAR-SUSPENSION-HEAD-60_48_67_mm---.stepzip")
     p12 = Part.from_stepzip(
         "shelf/suspension/common/"
-        "CAR_SUSPENSION_NECK_d28#l51#mm___.stepzip")
+        "CAR-SUSPENSION-NECK-d28_l51_mm---.stepzip")
 
     rear_suspension_assembly = Assembly(root=p2)
 
@@ -329,10 +329,10 @@ def make_wheel_assembly():
     r"""Wheel assembly creation"""
     rim = Part.from_stepzip(
         stepzip_file="shelf/wheel/"
-                     "CAR_WHEEL_RIM_D416#l174#mm___.stepzip",
+                     "CAR-WHEEL-RIM-D416_l174_mm---.stepzip",
         instance_id="rim")
     tyre = Part.from_stepzip(
-        stepzip_file="shelf/wheel/CAR_WHEEL_TYRE_D575#l178#mm_RUBBER__.stepzip")
+        stepzip_file="shelf/wheel/CAR-WHEEL-TYRE-D575_l178_mm-RUBBER--.stepzip")
 
     wheel_assembly = Assembly(root=rim)
 
