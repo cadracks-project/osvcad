@@ -12,7 +12,9 @@ for file_a, file_b in filenames_coupled:
     print(file_a)
     print(file_b)
     print()
-    zf = zipfile.ZipFile('%s.stepzip' % splitext(file_a)[0], mode='w')
-    zf.write(file_a)
-    zf.write(file_b)
+    zf = zipfile.ZipFile('%s.stepzip' % splitext(file_a)[0],
+                         'w',
+                         zipfile.ZIP_DEFLATED)
+    zf.write(file_a, basename(file_a))
+    zf.write(file_b, basename(file_b))
     zf.close()
