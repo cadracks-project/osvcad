@@ -14,7 +14,8 @@ GeometryNodeAssembly can be a GeometryNode and a networkx DiGraph
 
 """
 
-import imp
+# import imp
+import importlib.util
 import logging
 import re
 import abc
@@ -152,8 +153,11 @@ class Part(GeometryNode):
         generate(library_file_path)
         scripts_folder = join(dirname(library_file_path), "scripts")
         module_path = join(scripts_folder, "%s.py" % part_id)
-        module_ = imp.load_source(splitext(module_path)[0],
-                                  module_path)
+        spec = importlib.util.spec_from_file_location(splitext(module_path)[0], module_path)
+        module_ = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module_)
+        # module_ = imp.load_source(splitext(module_path)[0],
+        #                           module_path)
 
         if not hasattr(module_, 'part'):
             raise ValueError("The Python module should have a 'part' variable")
@@ -212,7 +216,10 @@ class Part(GeometryNode):
 
         # name, ext = splitext(basename(py_script_path))
         name, _ = splitext(basename(py_script_path))
-        module_ = imp.load_source(name, py_script_path)
+        spec = importlib.util.spec_from_file_location(name, py_script_path)
+        module_ = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module_)
+        # module_ = imp.load_source(name, py_script_path)
 
         return cls(module_.part, module_.anchors, instance_id)
 
