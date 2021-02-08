@@ -11,7 +11,7 @@ import networkx
 import matplotlib
 import wx
 import aocutils
-import party
+import cadracks_party
 import OCC
 
 
@@ -21,7 +21,7 @@ def get_dependencies_versions():
         ('osvcad', osvcad.__version__),
         ('OCC', OCC.VERSION),
         ('ccad', ccad.__version__),
-        ('party', party.__release__),
+        ('cadracks_party', cadracks_party.__release__),
         ('numpy', numpy.__version__),
         ('networkx', networkx.__version__),
         ('matplotlib', matplotlib.__version__),

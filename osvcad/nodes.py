@@ -26,7 +26,7 @@ import networkx as nx
 
 # from aocutils.display.wx_viewer import colour_wx_to_occ
 from ccad.model import transformed, from_step
-from party.library_use import generate
+from cadracks_party.library_use import generate
 
 from osvcad.geometry import transformation_from_2_anchors, transform_anchor, \
     compound
